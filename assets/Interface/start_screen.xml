@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<nifty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
+    <useControls filename="nifty-default-controls.xml"/>
+    <useStyles filename="nifty-default-styles.xml"/>
+    <screen id="start_screen" controller="mygame.screens.StartScreen">
+        <layer id="background" childLayout="center">
+            <image id="fondo" filename="Interface/imagenes/fondomenu.jpg"/>
+            <panel id="GPanel1" childLayout="absolute" width="423px" x="172px" y="38px" style="nifty-panel-simple" height="307px">
+                <control name="button" id="buttonJugar" visibleToMouse="true" width="300px" x="61" y="77" label="Jugar" height="30px">
+                    <interact onClick="jugar()"/>
+                </control>
+                <control name="button" id="buttonSalir" visibleToMouse="true" width="300px" x="61" y="117" label="Salir" height="30px">
+                    <interact onClick="salir()"/>
+                </control>    
+            </panel>
+        </layer>
+    </screen>
+</nifty>
