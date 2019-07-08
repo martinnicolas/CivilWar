@@ -3,16 +3,44 @@
     <useControls filename="nifty-default-controls.xml"/>
     <useStyles filename="nifty-default-styles.xml"/>
     <screen id="start_screen" controller="mygame.screens.StartScreen">
-        <layer id="background" childLayout="center">
-            <image id="fondo" filename="Interface/imagenes/fondomenu.jpg"/>
-            <panel id="GPanel1" childLayout="absolute" width="423px" x="172px" y="38px" style="nifty-panel-simple" height="307px">
-                <control name="button" id="buttonJugar" visibleToMouse="true" width="300px" x="61" y="77" label="Jugar" height="30px">
-                    <interact onClick="jugar()"/>
-                </control>
-                <control name="button" id="buttonSalir" visibleToMouse="true" width="300px" x="61" y="117" label="Salir" height="30px">
-                    <interact onClick="salir()"/>
-                </control>    
+        <layer id="background" childLayout="vertical" backgroundImage="Interface/imagenes/fondomenu.jpg">            
+            <effect>
+                <onStartScreen name="fade" />
+            </effect>
+            <panel width="100%" height="20%" childLayout="center">
+                <image filename="Interface/imagenes/logo.png"></image>
+            </panel>
+            <panel width="100%" height="70%" childLayout="center">
+                <panel id="GPanel1" childLayout="absolute" width="423px" height="307px" style="nifty-panel-simple">
+                    <control name="button" id="buttonJugar" visibleToMouse="true" width="300px" x="61" y="77" label="Jugar" height="30px">
+                        <interact onClick="jugar()"/>
+                    </control>
+                    <control name="button" id="buttonAyuda" visibleToMouse="true" width="300px" x="61" y="117" label="Ayuda" height="30px">
+                        <interact onClick="ayuda()"/>
+                    </control>
+                    <control name="button" id="buttonSalir" visibleToMouse="true" width="300px" x="61" y="157" label="Salir" height="30px">
+                        <interact onClick="salir()"/>
+                    </control>    
+                </panel>
+            </panel>
+            <panel width="100%" height="10%" childLayout="horizontal">
+                <text width="10%" height="100%" font="aurulent-sans-16.fnt" halign="left" color="#ffff" text="CivilWar 1.0" />
             </panel>
         </layer>
     </screen>
+    <popup id="popupExit" backgroundColor="#000a">
+        <panel id="panel_top" height="80%" width="100%" align="center" childLayout="vertical">    
+            <text text="Está seguro que desea salir?" style="base-font" color="#eeef" valign="center" width="100%" />
+        </panel> 
+        <panel id="panel_bottom" height="20%" width="100%" align="center" childLayout="horizontal">  
+            <panel id="panel_bottom_left" height="50%" width="50%" valign="center" childLayout="center">  
+                <control name="button" label="Volver" id="StartButton" align="center" valign="center">
+                </control>
+            </panel>
+            <panel id="panel_bottom_right" height="50%" width="50%" valign="center" childLayout="center">  
+                <control name="button" label="Salir" id="QuitButton" align="center" valign="center"> 
+                </control>
+            </panel>
+        </panel>
+    </popup>
 </nifty>

@@ -28,7 +28,7 @@ public class Main extends SimpleApplication {
         cfg.setFrameRate(60); // set to less than or equal screen refresh rate
         cfg.setVSync(true);   // prevents page tearing
         cfg.setFrequency(60); // set to screen refresh rate
-        cfg.setResolution(1024, 768);   
+        cfg.setResolution(1360, 768);   
         cfg.setFullscreen(true); 
         cfg.setSamples(2);    // anti-aliasing
         cfg.setTitle("CivilWar"); // branding: window name
