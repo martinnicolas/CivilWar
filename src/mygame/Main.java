@@ -29,7 +29,7 @@ public class Main extends SimpleApplication {
         cfg.setVSync(true);   // prevents page tearing
         cfg.setFrequency(60); // set to screen refresh rate
         cfg.setResolution(1360, 768);   
-        cfg.setFullscreen(true); 
+        cfg.setFullscreen(true);         
         cfg.setSamples(2);    // anti-aliasing
         cfg.setTitle("CivilWar"); // branding: window name
         /*try {

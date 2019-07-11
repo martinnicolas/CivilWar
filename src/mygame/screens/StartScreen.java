@@ -8,6 +8,7 @@ package mygame.screens;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.audio.AudioNode;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
@@ -25,11 +26,14 @@ public class StartScreen extends AbstractAppState implements ScreenController {
     private Screen screen;
     private Main app;
     private AppStateManager stateManager;
+    private Element popUpElement;
+    private AudioNode audio_menu;
     
     @Override
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
+        this.popUpElement = this.nifty.createPopup("popupExit");
     }
 
     @Override
@@ -47,6 +51,11 @@ public class StartScreen extends AbstractAppState implements ScreenController {
         super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
         this.stateManager = stateManager;
         this.app = (Main)app;
+        this.audio_menu = new AudioNode(this.app.getAssetManager(), "Sounds/Music/ambientmain_0.ogg", false);
+        this.audio_menu.setLooping(true);  // activate continuous playing
+        this.audio_menu.setPositional(false);   
+        this.app.getRootNode().attachChild(this.audio_menu);
+        this.audio_menu.play();// play continuously!
     }
 
     @Override
@@ -58,6 +67,7 @@ public class StartScreen extends AbstractAppState implements ScreenController {
      * Comienza el Level 1
      */
     public void jugar() {
+        this.audio_menu.stop();
         this.nifty.exit();
         stateManager.attach(new Level1(this.app));
     }
@@ -75,8 +85,23 @@ public class StartScreen extends AbstractAppState implements ScreenController {
      * Mostrar popUp de confirmacion
      */
     public void salir() {
-        Element popUpElement = this.nifty.createPopup("popupExit");
-        this.nifty.showPopup(this.nifty.getCurrentScreen(), "popupExit", popUpElement);
+        this.nifty.showPopup(this.nifty.getCurrentScreen(), this.popUpElement.getId(), null);
     }
+    
+    /**
+     * Sale del juego
+     */
+    public void aceptar() {
+        this.nifty.exit();
+        this.app.stop();
+    }
+
+    /**
+     * Cierra el popup
+     */    
+    public void cancelar() { 
+        this.nifty.closePopup(this.popUpElement.getId());
+    }
+    
     
 }
