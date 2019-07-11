@@ -10,6 +10,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -31,6 +32,7 @@ public class Level1 extends AbstractAppState {
     private final AssetManager assetManager;
     private final Node localRootNode = new Node("Level 1");    
     private final InputManager inputManager;
+    private AudioNode audioNode;
     
     public Level1(SimpleApplication app) {
         rootNode = app.getRootNode();
@@ -44,6 +46,12 @@ public class Level1 extends AbstractAppState {
         //TODO: initialize your AppState, e.g. attach spatials to rootNode
         //this is called on the OpenGL thread after the AppState has been attached
         rootNode.attachChild(localRootNode);
+        
+        this.audioNode = new AudioNode(app.getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", false);
+        this.audioNode.setLooping(true);  // activate continuous playing
+        this.audioNode.setPositional(false);   
+        localRootNode.attachChild(audioNode);
+        this.audioNode.play();// play continuously!
         
         Box b = new Box(1, 1, 1);
         Geometry geom = new Geometry("Box", b);

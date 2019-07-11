@@ -9,6 +9,9 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioNode;
+import com.jme3.input.KeyInput;
+import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.KeyTrigger;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
@@ -27,7 +30,7 @@ public class StartScreen extends AbstractAppState implements ScreenController {
     private Main app;
     private AppStateManager stateManager;
     private Element popUpElement;
-    private AudioNode audio_menu;
+    private AudioNode audioMenu;
     
     @Override
     public void bind(Nifty nifty, Screen screen) {
@@ -38,12 +41,15 @@ public class StartScreen extends AbstractAppState implements ScreenController {
 
     @Override
     public void onStartScreen() {
-        
+        this.audioMenu = new AudioNode(this.app.getAssetManager(), "Sounds/Music/ambientmain_0.ogg", false);
+        this.audioMenu.setLooping(true);  // activate continuous playing
+        this.audioMenu.setPositional(false);   
+        this.audioMenu.play();// play continuously!
     }
 
     @Override
     public void onEndScreen() {
-        
+        this.audioMenu.stop();
     }
     
     @Override
@@ -51,11 +57,6 @@ public class StartScreen extends AbstractAppState implements ScreenController {
         super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
         this.stateManager = stateManager;
         this.app = (Main)app;
-        this.audio_menu = new AudioNode(this.app.getAssetManager(), "Sounds/Music/ambientmain_0.ogg", false);
-        this.audio_menu.setLooping(true);  // activate continuous playing
-        this.audio_menu.setPositional(false);   
-        this.app.getRootNode().attachChild(this.audio_menu);
-        this.audio_menu.play();// play continuously!
     }
 
     @Override
@@ -67,7 +68,6 @@ public class StartScreen extends AbstractAppState implements ScreenController {
      * Comienza el Level 1
      */
     public void jugar() {
-        this.audio_menu.stop();
         this.nifty.exit();
         stateManager.attach(new Level1(this.app));
     }
