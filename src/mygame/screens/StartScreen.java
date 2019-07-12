@@ -37,14 +37,15 @@ public class StartScreen extends AbstractAppState implements ScreenController {
         this.nifty = nifty;
         this.screen = screen;
         this.popUpElement = this.nifty.createPopup("popupExit");
-    }
-
-    @Override
-    public void onStartScreen() {
         this.audioMenu = new AudioNode(this.app.getAssetManager(), "Sounds/Music/ambientmain_0.ogg", false);
         this.audioMenu.setLooping(true);  // activate continuous playing
         this.audioMenu.setPositional(false);   
         this.audioMenu.play();// play continuously!
+    }
+
+    @Override
+    public void onStartScreen() {
+
     }
 
     @Override

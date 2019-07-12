@@ -7,9 +7,36 @@
             <effect>
                 <onStartScreen name="fade" />
             </effect>
-            <panel id="GPanel1" childLayout="vertical" width="800px" height="600px" style="nifty-panel">
-                <panel width="100%" height="80%" childLayout="center">
-                    
+            <panel id="GPanel1" childLayout="vertical" width="800px" height="600px" padding="20px,20px,20px,20px" style="nifty-panel">
+                <panel childLayout="vertical" width="100%" height="80%">                    
+                    <panel width="100%" height="25%" childLayout="horizontal">
+                        <panel width="50%" height="100%" childLayout="center">
+                        </panel>
+                        <panel width="50%" height="100%" childLayout="center">
+                            <text text="Moverse hacia adelante" style="base-font" color="#eeef" width="100%" />
+                        </panel>
+                    </panel>                    
+                    <panel width="100%" height="25%" childLayout="horizontal">
+                        <panel width="50%" height="100%" childLayout="center">
+                        </panel>
+                        <panel width="50%" height="100%" childLayout="center">
+                            <text text="Girar hacia la Derecha" style="base-font" color="#eeef" width="100%" />
+                        </panel>
+                    </panel>                    
+                    <panel width="100%" height="25%" childLayout="horizontal">
+                        <panel width="50%" height="100%" childLayout="center">
+                        </panel>
+                        <panel width="50%" height="100%" childLayout="center">
+                            <text text="Girar hacia la izquierda" style="base-font" color="#eeef" width="100%" />                            
+                        </panel>
+                    </panel>                    
+                    <panel width="100%" height="25%" childLayout="horizontal">
+                        <panel width="50%" height="100%" childLayout="center">
+                        </panel>
+                        <panel width="50%" height="100%" childLayout="center">
+                            <text text="Moverse hacia atras" style="base-font" color="#eeef" width="100%" />                            
+                        </panel>
+                    </panel>                                            
                 </panel>
                 <panel width="100%" height="20%" childLayout="center">
                     <control name="button" id="buttonVolver" visibleToMouse="true" width="300px" label="Volver" height="30px">
