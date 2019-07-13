@@ -4,12 +4,12 @@
     <useStyles filename="nifty-default-styles.xml"/>    
     <registerSound id="menu_hover" filename="Sounds/Effects/menu_hover.wav" />
     <screen id="start_screen" controller="mygame.screens.StartScreen">
-        <layer id="background" childLayout="vertical" backgroundImage="Interface/imagenes/fondomenu.jpg">            
+        <layer id="background" childLayout="vertical" backgroundImage="Interface/images/fondomenu.jpg">            
             <effect>
                 <onStartScreen name="fade" />
             </effect>
             <panel width="100%" height="20%" childLayout="center">
-                <image filename="Interface/imagenes/logo.png"></image>
+                <image filename="Interface/images/logo.png"></image>
             </panel>
             <panel width="100%" height="70%" childLayout="center">
                 <panel id="GPanel1" childLayout="vertical" width="400px" height="300px" style="nifty-panel" padding="50px,50px,50px,50px">

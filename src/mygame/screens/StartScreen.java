@@ -9,9 +9,6 @@ import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioNode;
-import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
@@ -77,9 +74,9 @@ public class StartScreen extends AbstractAppState implements ScreenController {
      * Muestra pantalla de ayuda
      */
     public void ayuda() {
-        AyudaScreen ayudaScreen = new AyudaScreen();
-        ayudaScreen.initialize(stateManager, app);
-        this.nifty.fromXml("Interface/ayuda_screen.xml", "ayuda_screen", ayudaScreen);
+        HelpScreen helpScreen = new HelpScreen();
+        helpScreen.initialize(stateManager, app);
+        this.nifty.fromXml("Interface/help_screen.xml", "help_screen", helpScreen);
     }
     
     /**

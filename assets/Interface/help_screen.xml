@@ -3,8 +3,8 @@
     <useControls filename="nifty-default-controls.xml"/>
     <useStyles filename="nifty-default-styles.xml"/>
     <registerSound id="menu_hover" filename="Sounds/Effects/menu_hover.wav" />
-    <screen id="ayuda_screen" controller="mygame.screens.AyudaScreen">
-        <layer id="background" childLayout="center" backgroundImage="Interface/imagenes/fondoayuda.jpeg">            
+    <screen id="help_screen" controller="mygame.screens.HelpScreen">
+        <layer id="background" childLayout="center" backgroundImage="Interface/images/fondoayuda.jpeg">            
             <effect>
                 <onStartScreen name="fade" />
             </effect>
@@ -12,7 +12,7 @@
                 <panel childLayout="vertical" width="100%" height="80%">                    
                     <panel width="100%" height="25%" childLayout="horizontal">
                         <panel width="50%" height="100%" childLayout="center">
-                            <image filename="Interface/imagenes/arrows.png"></image>
+                            <image filename="Interface/images/arrows.png"></image>
                         </panel>
                         <panel width="50%" height="100%" childLayout="center">
                             <text text="Girar hacia la izquierda, derecha, arriba y abajo" style="base-font" color="#eeef" width="100%" />
@@ -20,7 +20,7 @@
                     </panel>                    
                     <panel width="100%" height="25%" childLayout="horizontal">
                         <panel width="50%" height="100%" childLayout="center">
-                            <image filename="Interface/imagenes/w.png"></image>
+                            <image filename="Interface/images/w.png"></image>
                         </panel>
                         <panel width="50%" height="100%" childLayout="center">
                             <text text="Moverse hacia adelante" style="base-font" color="#eeef" width="100%" />
@@ -28,7 +28,7 @@
                     </panel>                    
                     <panel width="100%" height="25%" childLayout="horizontal">
                         <panel width="50%" height="100%" childLayout="center">
-                            <image filename="Interface/imagenes/s.png"></image>
+                            <image filename="Interface/images/s.png"></image>
                         </panel>
                         <panel width="50%" height="100%" childLayout="center">
                             <text text="Moverse hacia atras" style="base-font" color="#eeef" width="100%" />                            
@@ -36,7 +36,7 @@
                     </panel>                    
                     <panel width="100%" height="25%" childLayout="horizontal">
                         <panel width="50%" height="100%" childLayout="center">
-                            <image filename="Interface/imagenes/spacebar.png"></image>
+                            <image filename="Interface/images/spacebar.png"></image>
                         </panel>
                         <panel width="50%" height="100%" childLayout="center">
                             <text text="Saltar" style="base-font" color="#eeef" width="100%" />                            

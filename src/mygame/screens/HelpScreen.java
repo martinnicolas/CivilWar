@@ -18,7 +18,7 @@ import mygame.Main;
  *
  * @author martin
  */
-public class AyudaScreen extends AbstractAppState implements ScreenController {
+public class HelpScreen extends AbstractAppState implements ScreenController {
     
     private Nifty nifty;
     private Screen screen;
