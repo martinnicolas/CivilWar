@@ -5,6 +5,7 @@
  */
 package mygame.caracters;
 
+import com.jme3.app.state.AbstractAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.KeyInput;
@@ -12,6 +13,7 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.Vector3f;
 import mygame.Main;
+import mygame.states.Level;
 
 /**
  *
@@ -21,32 +23,21 @@ public class Player implements ActionListener {
     
     private Vector3f walkDirection = new Vector3f();
     private Main app;
+    private Level level;
     private CharacterControl control;
     boolean left = false, right = false, up = false, down = false;
     
-    public Player(Main app){
-        this.app = app;
-    }
-
-    @Override
-    public void onAction(String name, boolean isPressed, float tpf) {
-        if (name.equals("Left")) {
-            this.setLeft(isPressed);
-        } else if (name.equals("Right")) {
-            this.setRight(isPressed);
-        } else if (name.equals("Up")) {
-            this.setUp(isPressed);
-        } else if (name.equals("Down")) {
-            this.setDown(isPressed);
-        } else if (name.equals("Jump")) {
-            if (isPressed) { this.getControl().jump(); }
-        }
+    public Player(Level level){
+        this.setLevel(level);
+        this.setApp(level.getApp());
+        this.setUpProperties();
+        this.setUpKeys();
     }
     
     /**
-     * Init player properties
+     * Settup player properties
      */
-    public void initialize(){
+    private void setUpProperties(){
         // We set up collision detection for the player by creating
         // a capsule collision shape and a CharacterControl.
         // The CharacterControl offers extra settings for
@@ -59,21 +50,59 @@ public class Player implements ActionListener {
         this.getControl().setGravity(30);
         this.getControl().setPhysicsLocation(new Vector3f(-100, 20, 100));        
         this.getWalkDirection().set(0, 0, 0);
-        this.setUpKeys();
     }
         
+    /**
+     * Settup keys
+     */
     private void setUpKeys() {
         this.getApp().getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
         this.getApp().getInputManager().addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
         this.getApp().getInputManager().addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
         this.getApp().getInputManager().addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
         this.getApp().getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
+        this.getApp().getInputManager().addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
         this.getApp().getInputManager().addListener(this, "Left");
         this.getApp().getInputManager().addListener(this, "Left_arrow");
         this.getApp().getInputManager().addListener(this, "Right");
         this.getApp().getInputManager().addListener(this, "Up");
         this.getApp().getInputManager().addListener(this, "Down");
         this.getApp().getInputManager().addListener(this, "Jump");
+        this.getApp().getInputManager().addListener(this, "Pause");
+    }
+    
+    @Override
+    public void onAction(String name, boolean isPressed, float tpf) {
+        switch (name) {
+            case "Left":
+                this.setLeft(isPressed);
+                break;
+            case "Right":
+                this.setRight(isPressed);
+                break;
+            case "Up":
+                this.setUp(isPressed);
+                break;
+            case "Down":
+                this.setDown(isPressed);
+                break;
+            case "Jump":
+                if (isPressed) { this.getControl().jump(); }
+                break;
+            case "Pause":
+                if (!isPressed) { this.getLevel().setEnabled(!this.getLevel().isEnabled()); }
+                break;
+            default:
+                break;
+        }
+    }
+    
+    public AbstractAppState getLevel() {
+        return level;
+    }
+    
+    public void setLevel(Level level) {
+        this.level = level;
     }
     
     public Main getApp() {

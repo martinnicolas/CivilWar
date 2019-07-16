@@ -67,7 +67,7 @@ public class StartScreen extends AbstractAppState implements ScreenController {
      */
     public void jugar() {
         this.nifty.exit();
-        stateManager.attach(new Level1(this.app));
+        stateManager.attach(new Level1());
     }
     
     /**
