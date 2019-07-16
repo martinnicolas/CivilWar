@@ -24,4 +24,6 @@ public abstract class Level extends AbstractAppState {
     
     public abstract void setPlayer(Player player);
     
+    public abstract void pause();
+    
 }

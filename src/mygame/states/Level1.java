@@ -15,6 +15,8 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
 import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
@@ -58,7 +60,7 @@ public class Level1 extends Level {
         this.setAudioNode(new AudioNode(assetManager, "Sounds/Effects/Outdoor_Ambiance.ogg", false));
         this.getAudioNode().setLooping(true);  // activate continuous playing
         this.getAudioNode().setPositional(false);   
-        this.getLocalRootNode().attachChild(audioNode);
+        this.getLocalRootNode().attachChild(this.getAudioNode());
         this.getAudioNode().play();// play continuously!
         
         /** Set up Physics */
@@ -178,6 +180,41 @@ public class Level1 extends Level {
 
     public void setControl(RigidBodyControl control) {
         this.control = control;
+    }
+
+    @Override
+    public void pause() {
+        if (this.isEnabled()) {
+            this.setEnabled(false); 
+            this.getApp().getFlyByCamera().setEnabled(false);
+            /** Write text on the screen (HUD) */
+            this.getApp().getGuiNode().detachAllChildren();
+            BitmapFont guiFont = assetManager.loadFont("Interface/fonts/Aharoni.fnt");
+            BitmapText pauseText = new BitmapText(guiFont, false);
+            pauseText.setSize(guiFont.getCharSet().getRenderedSize());
+            pauseText.setText("PAUSE");
+            pauseText.setColor(ColorRGBA.White);
+            pauseText.setLocalTranslation(10, 750, 0);
+            this.getApp().getGuiNode().attachChild(pauseText);
+            this.getAudioNode().stop();
+            this.getLocalRootNode().detachChild(this.getAudioNode());
+            this.setAudioNode(new AudioNode(assetManager, "Sounds/Music/ambientmain_0.ogg", false));
+            this.getAudioNode().setLooping(true);  // activate continuous playing
+            this.getAudioNode().setPositional(false);   
+            this.getLocalRootNode().attachChild(this.getAudioNode());
+            this.getAudioNode().play();// play continuously!
+        } else {
+            this.setEnabled(true); 
+            this.getApp().getFlyByCamera().setEnabled(true);
+            this.getApp().getGuiNode().detachAllChildren();  
+            this.getAudioNode().stop();
+            this.getLocalRootNode().detachChild(this.getAudioNode());
+            this.setAudioNode(new AudioNode(assetManager, "Sounds/Effects/Outdoor_Ambiance.ogg", false));
+            this.getAudioNode().setLooping(true);  // activate continuous playing
+            this.getAudioNode().setPositional(false);   
+            this.getLocalRootNode().attachChild(this.getAudioNode());
+            this.getAudioNode().play();// play continuously!
+        }
     }
     
 }

@@ -48,7 +48,7 @@ public class Player implements ActionListener {
         this.getControl().setJumpSpeed(20);
         this.getControl().setFallSpeed(30);
         this.getControl().setGravity(30);
-        this.getControl().setPhysicsLocation(new Vector3f(-100, 20, 100));        
+        this.getControl().setPhysicsLocation(new Vector3f(600, 20, 650));        
         this.getWalkDirection().set(0, 0, 0);
     }
         
@@ -90,14 +90,14 @@ public class Player implements ActionListener {
                 if (isPressed) { this.getControl().jump(); }
                 break;
             case "Pause":
-                if (!isPressed) { this.getLevel().setEnabled(!this.getLevel().isEnabled()); }
+                if (isPressed) { this.getLevel().pause(); }
                 break;
             default:
                 break;
         }
     }
     
-    public AbstractAppState getLevel() {
+    public Level getLevel() {
         return level;
     }
     
