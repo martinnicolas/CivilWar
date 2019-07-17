@@ -26,4 +26,6 @@ public abstract class Level extends AbstractAppState {
     
     public abstract void pause();
     
+    public abstract void resume();
+    
 }

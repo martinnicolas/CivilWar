@@ -6,8 +6,6 @@
 package mygame.states;
 
 import com.jme3.app.Application;
-import com.jme3.app.SimpleApplication;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
@@ -17,10 +15,6 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
-import com.jme3.input.InputManager;
-import com.jme3.input.KeyInput;
-import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.KeyTrigger;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -44,44 +38,46 @@ public class Level1 extends Level {
     private Player player;
     //Temporary vectors used on each frame.
     //They here to avoid instanciating new vectors on each frame
-    private Vector3f camDir = new Vector3f(), camLeft = new Vector3f();
-    
+    private final Vector3f camDir = new Vector3f(), camLeft = new Vector3f();
+
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
         //TODO: initialize your AppState, e.g. attach spatials to rootNode
         //this is called on the OpenGL thread after the AppState has been attached
-        this.setApp((Main)app);
+        this.setApp((Main) app);
         this.setRootNode(this.getApp().getRootNode());
         this.setAssetManager(this.getApp().getAssetManager());
         this.setLocalRootNode(new Node("Level 1"));
         this.getRootNode().attachChild(this.getLocalRootNode());
-        
+
         this.setAudioNode(new AudioNode(assetManager, "Sounds/Effects/Outdoor_Ambiance.ogg", false));
         this.getAudioNode().setLooping(true);  // activate continuous playing
-        this.getAudioNode().setPositional(false);   
+        this.getAudioNode().setPositional(false);
         this.getLocalRootNode().attachChild(this.getAudioNode());
         this.getAudioNode().play();// play continuously!
-        
-        /** Set up Physics */
+
+        /**
+         * Set up Physics
+         */
         bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
- 
+
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         this.getApp().getViewPort().setBackgroundColor(new ColorRGBA(0.7f, 0.8f, 1f, 1f));
         this.getApp().getFlyByCamera().setMoveSpeed(100);
-        
+
         // We load the scene from the zip file and adjust its size.
         //assetManager.registerLocator("town.zip", ZipLocator.class);
         Spatial sceneModel = assetManager.loadModel("Scenes/Level1.j3o");
-        sceneModel.setLocalScale(2f); 
-        
+        sceneModel.setLocalScale(2f);
+
         // We set up collision detection for the scene by creating a
         // compound collision shape and a static RigidBodyControl with mass zero.
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) sceneModel);
         this.setControl(new RigidBodyControl(sceneShape, 0));
-        sceneModel.addControl(this.getControl()); 
-        
+        sceneModel.addControl(this.getControl());
+
         // We attach the scene and the player to the rootnode and the physics space,
         // to make them appear in the game world.
         this.getLocalRootNode().attachChild(sceneModel);
@@ -89,13 +85,13 @@ public class Level1 extends Level {
         bulletAppState.getPhysicsSpace().add(this.getPlayer().getControl());
         bulletAppState.getPhysicsSpace().add(control);
     }
-    
+
     @Override
     public void update(float tpf) {
         //TODO: implement behavior during runtime
-        camDir.set(this.getApp().getCam().getDirection()).multLocal(0.6f);
-        camLeft.set(this.getApp().getCam().getLeft()).multLocal(0.4f);        
-        this.getPlayer().getWalkDirection().set(0,0,0);
+        camDir.set(this.getApp().getCamera().getDirection()).multLocal(0.6f);
+        camLeft.set(this.getApp().getCamera().getLeft()).multLocal(0.4f);
+        this.getPlayer().getWalkDirection().set(0, 0, 0);
         if (this.getPlayer().isLeft()) {
             this.getPlayer().getWalkDirection().addLocal(camLeft);
         }
@@ -108,10 +104,11 @@ public class Level1 extends Level {
         if (this.getPlayer().isDown()) {
             this.getPlayer().getWalkDirection().addLocal(camDir.negate());
         }
-        this.getPlayer().getControl().setWalkDirection(this.getPlayer().getWalkDirection());        
-        this.getApp().getCam().setLocation(this.getPlayer().getControl().getPhysicsLocation());
+        this.getPlayer().getControl().setWalkDirection(this.getPlayer().getWalkDirection());
+        
+        this.getApp().getCamera().setLocation(this.getPlayer().getControl().getPhysicsLocation());
     }
-    
+
     @Override
     public void cleanup() {
         super.cleanup();
@@ -184,39 +181,40 @@ public class Level1 extends Level {
 
     @Override
     public void pause() {
-        if (this.isEnabled()) {
-            this.setEnabled(false); 
-            this.getApp().getFlyByCamera().setEnabled(false);
-            /** Write text on the screen (HUD) */
-            this.getApp().getGuiNode().detachAllChildren();
-            BitmapFont guiFont = assetManager.loadFont("Interface/fonts/Aharoni.fnt");
-            BitmapText pauseText = new BitmapText(guiFont, false);
-            pauseText.setSize(guiFont.getCharSet().getRenderedSize());
-            pauseText.setText("PAUSE");
-            pauseText.setColor(ColorRGBA.Red);
-            pauseText.setLocalTranslation(10, 750, 0);
-            this.getApp().getGuiNode().attachChild(pauseText);
-            this.getAudioNode().stop();
-            this.getLocalRootNode().detachChild(this.getAudioNode());
-            this.setAudioNode(new AudioNode(assetManager, "Sounds/Music/ambientmain_0.ogg", false));
-            this.getAudioNode().setLooping(true);  // activate continuous playing
-            this.getAudioNode().setPositional(false);   
-            this.getLocalRootNode().attachChild(this.getAudioNode());
-            this.getAudioNode().play();// play continuously!
-            this.getPlayer().getControl().setEnabled(false);
-        } else {
-            this.setEnabled(true); 
-            this.getApp().getFlyByCamera().setEnabled(true);
-            this.getApp().getGuiNode().detachAllChildren();
-            this.getAudioNode().stop();
-            this.getLocalRootNode().detachChild(this.getAudioNode());
-            this.setAudioNode(new AudioNode(assetManager, "Sounds/Effects/Outdoor_Ambiance.ogg", false));
-            this.getAudioNode().setLooping(true);  // activate continuous playing
-            this.getAudioNode().setPositional(false);   
-            this.getLocalRootNode().attachChild(this.getAudioNode());
-            this.getAudioNode().play();// play continuously!
-            this.getPlayer().getControl().setEnabled(true);            
-        }
+        this.setEnabled(false);
+        this.getApp().getFlyByCamera().setEnabled(false);
+        //Write text on the screen (HUD)
+        this.getApp().getGuiNode().detachAllChildren();
+        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/fonts/Aharoni.fnt");
+        BitmapText pauseText = new BitmapText(guiFont, false);
+        pauseText.setSize(guiFont.getCharSet().getRenderedSize());
+        pauseText.setText("PAUSE");
+        pauseText.setColor(ColorRGBA.Red);
+        pauseText.setLocalTranslation(10, 750, 0);
+        this.getApp().getGuiNode().attachChild(pauseText);
+        this.getAudioNode().stop();
+        this.getLocalRootNode().detachChild(this.getAudioNode());
+        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", false));
+        this.getAudioNode().setLooping(true);  // activate continuous playing
+        this.getAudioNode().setPositional(false);
+        this.getLocalRootNode().attachChild(this.getAudioNode());
+        this.getAudioNode().play();// play continuously!
+        this.getPlayer().getControl().setEnabled(false);
     }
-    
+
+    @Override
+    public void resume() {
+        this.setEnabled(true);
+        this.getApp().getFlyByCamera().setEnabled(true);
+        this.getApp().getGuiNode().detachAllChildren();
+        this.getAudioNode().stop();
+        this.getLocalRootNode().detachChild(this.getAudioNode());
+        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", false));
+        this.getAudioNode().setLooping(true);  // activate continuous playing
+        this.getAudioNode().setPositional(false);
+        this.getLocalRootNode().attachChild(this.getAudioNode());
+        this.getAudioNode().play();// play continuously!
+        this.getPlayer().getControl().setEnabled(true);
+    }
+
 }

@@ -5,7 +5,6 @@
  */
 package mygame.caracters;
 
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.input.KeyInput;
@@ -90,7 +89,10 @@ public class Player implements ActionListener {
                 if (isPressed) { this.getControl().jump(); }
                 break;
             case "Pause":
-                if (isPressed) { this.getLevel().pause(); }
+                if (isPressed && this.getLevel().isEnabled()) 
+                    this.getLevel().pause(); 
+                else if (isPressed && !this.getLevel().isEnabled())
+                    this.getLevel().resume(); 
                 break;
             default:
                 break;

@@ -1,10 +1,7 @@
 package mygame;
 
 import com.jme3.app.SimpleApplication;
-import com.jme3.font.BitmapFont;
-import com.jme3.input.FlyByCamera;
 import com.jme3.niftygui.NiftyJmeDisplay;
-import com.jme3.renderer.Camera;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
@@ -72,14 +69,6 @@ public class Main extends SimpleApplication {
     @Override
     public void simpleRender(RenderManager rm) {
         //TODO: add render code
-    }
-
-    public Camera getCam() {
-        return cam;
-    }
-
-    public BitmapFont getGuiFont() {
-        return guiFont;
     }
     
 }
