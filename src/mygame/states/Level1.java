@@ -46,9 +46,7 @@ public class Level1 extends Level {
         this.getLocalRootNode().attachChild(this.getAudioNode());
         this.getAudioNode().play();// play continuously!
 
-        /**
-         * Set up Physics
-         */
+        //Set up Physics
         BulletAppState bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
