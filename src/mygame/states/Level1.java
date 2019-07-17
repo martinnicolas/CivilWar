@@ -7,14 +7,11 @@ package mygame.states;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
-import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -28,14 +25,6 @@ import mygame.caracters.Player;
  */
 public class Level1 extends Level {
 
-    private Node rootNode;
-    private AssetManager assetManager;
-    private Node localRootNode;
-    private AudioNode audioNode;
-    private Main app;
-    private BulletAppState bulletAppState;
-    private RigidBodyControl control;
-    private Player player;
     //Temporary vectors used on each frame.
     //They here to avoid instanciating new vectors on each frame
     private final Vector3f camDir = new Vector3f(), camLeft = new Vector3f();
@@ -51,7 +40,7 @@ public class Level1 extends Level {
         this.setLocalRootNode(new Node("Level 1"));
         this.getRootNode().attachChild(this.getLocalRootNode());
 
-        this.setAudioNode(new AudioNode(assetManager, "Sounds/Effects/Outdoor_Ambiance.ogg", false));
+        this.setAudioNode(new AudioNode(this.getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", false));
         this.getAudioNode().setLooping(true);  // activate continuous playing
         this.getAudioNode().setPositional(false);
         this.getLocalRootNode().attachChild(this.getAudioNode());
@@ -60,7 +49,7 @@ public class Level1 extends Level {
         /**
          * Set up Physics
          */
-        bulletAppState = new BulletAppState();
+        BulletAppState bulletAppState = new BulletAppState();
         stateManager.attach(bulletAppState);
 
         // We re-use the flyby camera for rotation, while positioning is handled by physics
@@ -69,7 +58,7 @@ public class Level1 extends Level {
 
         // We load the scene from the zip file and adjust its size.
         //assetManager.registerLocator("town.zip", ZipLocator.class);
-        Spatial sceneModel = assetManager.loadModel("Scenes/Level1.j3o");
+        Spatial sceneModel = this.getApp().getAssetManager().loadModel("Scenes/Level1.j3o");
         sceneModel.setLocalScale(2f);
 
         // We set up collision detection for the scene by creating a
@@ -83,7 +72,7 @@ public class Level1 extends Level {
         this.getLocalRootNode().attachChild(sceneModel);
         this.setPlayer(new Player(this));
         bulletAppState.getPhysicsSpace().add(this.getPlayer().getControl());
-        bulletAppState.getPhysicsSpace().add(control);
+        bulletAppState.getPhysicsSpace().add(this.getControl());
     }
 
     @Override
@@ -115,106 +104,8 @@ public class Level1 extends Level {
         //TODO: clean up what you initialized in the initialize method,
         //e.g. remove all spatials from rootNode
         //this is called on the OpenGL thread after the AppState has been detached
-        this.getRootNode().detachChild(localRootNode);
+        this.getRootNode().detachChild(this.getLocalRootNode());
         super.cleanup();
-    }
-
-    @Override
-    public Main getApp() {
-        return this.app;
-    }
-
-    @Override
-    public void setApp(Main app) {
-        this.app = app;
-    }
-
-    @Override
-    public Player getPlayer() {
-        return this.player;
-    }
-
-    @Override
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-    public Node getRootNode() {
-        return rootNode;
-    }
-
-    public void setRootNode(Node rootNode) {
-        this.rootNode = rootNode;
-    }
-
-    public AssetManager getAssetManager() {
-        return assetManager;
-    }
-
-    public void setAssetManager(AssetManager assetManager) {
-        this.assetManager = assetManager;
-    }
-
-    public Node getLocalRootNode() {
-        return localRootNode;
-    }
-
-    public void setLocalRootNode(Node localRootNode) {
-        this.localRootNode = localRootNode;
-    }
-
-    public AudioNode getAudioNode() {
-        return audioNode;
-    }
-
-    public void setAudioNode(AudioNode audioNode) {
-        this.audioNode = audioNode;
-    }
-
-    public RigidBodyControl getControl() {
-        return control;
-    }
-
-    public void setControl(RigidBodyControl control) {
-        this.control = control;
-    }
-
-    @Override
-    public void pause() {
-        this.setEnabled(false);
-        this.getApp().getFlyByCamera().setEnabled(false);
-        //Write text on the screen (HUD)
-        this.getApp().getGuiNode().detachAllChildren();
-        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/fonts/Aharoni.fnt");
-        BitmapText pauseText = new BitmapText(guiFont, false);
-        pauseText.setSize(guiFont.getCharSet().getRenderedSize());
-        pauseText.setText("PAUSE");
-        pauseText.setColor(ColorRGBA.Red);
-        pauseText.setLocalTranslation(10, 750, 0);
-        this.getApp().getGuiNode().attachChild(pauseText);
-        this.getAudioNode().stop();
-        this.getLocalRootNode().detachChild(this.getAudioNode());
-        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", false));
-        this.getAudioNode().setLooping(true);  // activate continuous playing
-        this.getAudioNode().setPositional(false);
-        this.getLocalRootNode().attachChild(this.getAudioNode());
-        this.getAudioNode().play();// play continuously!
-        this.getPlayer().getControl().setEnabled(false);
-    }
-
-    @Override
-    public void resume() {
-        this.setEnabled(true);
-        this.getApp().getFlyByCamera().setEnabled(true);
-        this.getApp().getGuiNode().detachAllChildren();
-        this.getAudioNode().stop();
-        this.getLocalRootNode().detachChild(this.getAudioNode());
-        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", false));
-        this.getAudioNode().setLooping(true);  // activate continuous playing
-        this.getAudioNode().setPositional(false);
-        this.getLocalRootNode().attachChild(this.getAudioNode());
-        this.getAudioNode().play();// play continuously!
-        this.getPlayer().getControl().setEnabled(true);
     }
 
 }

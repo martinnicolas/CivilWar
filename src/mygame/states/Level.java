@@ -6,6 +6,13 @@
 package mygame.states;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.asset.AssetManager;
+import com.jme3.audio.AudioNode;
+import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.font.BitmapFont;
+import com.jme3.font.BitmapText;
+import com.jme3.math.ColorRGBA;
+import com.jme3.scene.Node;
 import mygame.Main;
 import mygame.caracters.Player;
 
@@ -15,17 +22,104 @@ import mygame.caracters.Player;
  */
 public abstract class Level extends AbstractAppState {
     
+    private Main app;
+    private Player player;
+    private AudioNode audioNode;
+    private Node localRootNode;
+    private Node rootNode;
+    private AssetManager assetManager;
+    private RigidBodyControl control;
     
-    public abstract Main getApp();
+    public void pause() {
+        this.setEnabled(false);
+        this.getApp().getFlyByCamera().setEnabled(false);
+        //Write text on the screen (HUD)
+        this.getApp().getGuiNode().detachAllChildren();
+        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/fonts/Aharoni.fnt");
+        BitmapText pauseText = new BitmapText(guiFont, false);
+        pauseText.setSize(guiFont.getCharSet().getRenderedSize());
+        pauseText.setText("PAUSE");
+        pauseText.setColor(ColorRGBA.Red);
+        pauseText.setLocalTranslation(10, 750, 0);
+        this.getApp().getGuiNode().attachChild(pauseText);
+        this.getAudioNode().stop();
+        this.getLocalRootNode().detachChild(this.getAudioNode());
+        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", false));
+        this.getAudioNode().setLooping(true);  // activate continuous playing
+        this.getAudioNode().setPositional(false);
+        this.getLocalRootNode().attachChild(this.getAudioNode());
+        this.getAudioNode().play();// play continuously!
+        this.getPlayer().getControl().setEnabled(false);
+    }
     
-    public abstract void setApp(Main app);
+    public void resume() {
+        this.setEnabled(true);
+        this.getApp().getFlyByCamera().setEnabled(true);
+        this.getApp().getGuiNode().detachAllChildren();
+        this.getAudioNode().stop();
+        this.getLocalRootNode().detachChild(this.getAudioNode());
+        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", false));
+        this.getAudioNode().setLooping(true);  // activate continuous playing
+        this.getAudioNode().setPositional(false);
+        this.getLocalRootNode().attachChild(this.getAudioNode());
+        this.getAudioNode().play();// play continuously!
+        this.getPlayer().getControl().setEnabled(true);
+    }    
     
-    public abstract Player getPlayer();
+    public Main getApp() {
+        return this.app;
+    };
     
-    public abstract void setPlayer(Player player);
+    public void setApp(Main app) {
+        this.app = app;
+    };
     
-    public abstract void pause();
+    public Player getPlayer() {
+        return this.player;
+    };
     
-    public abstract void resume();
+    public void setPlayer(Player player) {
+        this.player = player;
+    };
+    
+    public Node getRootNode() {
+        return rootNode;
+    }
+
+    public void setRootNode(Node rootNode) {
+        this.rootNode = rootNode;
+    }
+
+    public AssetManager getAssetManager() {
+        return assetManager;
+    }
+
+    public void setAssetManager(AssetManager assetManager) {
+        this.assetManager = assetManager;
+    }
+
+    public RigidBodyControl getControl() {
+        return control;
+    }
+
+    public void setControl(RigidBodyControl control) {
+        this.control = control;
+    }
+    
+    public Node getLocalRootNode() {
+        return localRootNode;
+    }
+
+    public void setLocalRootNode(Node localRootNode) {
+        this.localRootNode = localRootNode;
+    }
+    
+    public AudioNode getAudioNode() {
+        return audioNode;
+    }
+
+    public void setAudioNode(AudioNode audioNode) {
+        this.audioNode = audioNode;
+    }
     
 }
