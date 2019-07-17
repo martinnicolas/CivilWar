@@ -193,7 +193,7 @@ public class Level1 extends Level {
             BitmapText pauseText = new BitmapText(guiFont, false);
             pauseText.setSize(guiFont.getCharSet().getRenderedSize());
             pauseText.setText("PAUSE");
-            pauseText.setColor(ColorRGBA.White);
+            pauseText.setColor(ColorRGBA.Red);
             pauseText.setLocalTranslation(10, 750, 0);
             this.getApp().getGuiNode().attachChild(pauseText);
             this.getAudioNode().stop();
@@ -203,10 +203,11 @@ public class Level1 extends Level {
             this.getAudioNode().setPositional(false);   
             this.getLocalRootNode().attachChild(this.getAudioNode());
             this.getAudioNode().play();// play continuously!
+            this.getPlayer().getControl().setEnabled(false);
         } else {
             this.setEnabled(true); 
             this.getApp().getFlyByCamera().setEnabled(true);
-            this.getApp().getGuiNode().detachAllChildren();  
+            this.getApp().getGuiNode().detachAllChildren();
             this.getAudioNode().stop();
             this.getLocalRootNode().detachChild(this.getAudioNode());
             this.setAudioNode(new AudioNode(assetManager, "Sounds/Effects/Outdoor_Ambiance.ogg", false));
@@ -214,6 +215,7 @@ public class Level1 extends Level {
             this.getAudioNode().setPositional(false);   
             this.getLocalRootNode().attachChild(this.getAudioNode());
             this.getAudioNode().play();// play continuously!
+            this.getPlayer().getControl().setEnabled(true);            
         }
     }
     
