@@ -30,6 +30,9 @@ public abstract class Level extends AbstractAppState {
     private AssetManager assetManager;
     private RigidBodyControl control;
     
+    /**
+     * Pause game. Rewrite specific implementation in every class if it's necesary
+     */
     public void pause() {
         this.setEnabled(false);
         this.getApp().getFlyByCamera().setEnabled(false);
@@ -52,9 +55,13 @@ public abstract class Level extends AbstractAppState {
         this.getPlayer().getControl().setEnabled(false);
     }
     
+    /**
+     * Resume game. Rewrite specific implementation in every class if it's necesary
+     */
     public void resume() {
         this.setEnabled(true);
         this.getApp().getFlyByCamera().setEnabled(true);
+        this.getApp().getInputManager().setCursorVisible(false);
         this.getApp().getGuiNode().detachAllChildren();
         this.getAudioNode().stop();
         this.getLocalRootNode().detachChild(this.getAudioNode());
