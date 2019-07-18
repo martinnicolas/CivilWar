@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import mygame.screens.StartScreen;
-import mygame.states.Level1;
 
 /**
  * This is the Main Class of your Game. You should only do initialization here.
