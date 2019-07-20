@@ -69,6 +69,7 @@ public class Level1 extends Level {
         // to make them appear in the game world.
         this.getLocalRootNode().attachChild(sceneModel);
         this.setPlayer(new Player(this));
+        this.getPlayer().setPlayerPhisycsLocation(600, 20, 650);
         bulletAppState.getPhysicsSpace().add(this.getPlayer().getControl());
         bulletAppState.getPhysicsSpace().add(this.getControl());
     }

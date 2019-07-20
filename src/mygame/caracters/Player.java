@@ -47,8 +47,27 @@ public class Player implements ActionListener {
         this.getControl().setJumpSpeed(20);
         this.getControl().setFallSpeed(30);
         this.getControl().setGravity(30);
-        this.getControl().setPhysicsLocation(new Vector3f(600, 20, 650));        
         this.getWalkDirection().set(0, 0, 0);
+    }
+    
+    /**
+     * Set player Physics Location.
+     * 
+     * @param physicsLocation Vector3f for players location
+     */
+    public void setPlayerPhisycsLocation(Vector3f physicsLocation) {
+        this.getControl().setPhysicsLocation(physicsLocation);
+    }
+
+    /**
+     * Set player Physics Location. 
+     * 
+     * @param x
+     * @param y
+     * @param z 
+     */
+    public void setPlayerPhisycsLocation(float x, float y, float z) {
+        this.getControl().setPhysicsLocation(new Vector3f(x, y, z));
     }
         
     /**
