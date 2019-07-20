@@ -49,26 +49,6 @@ public class Player implements ActionListener {
         this.getControl().setGravity(30);
         this.getWalkDirection().set(0, 0, 0);
     }
-    
-    /**
-     * Set player Physics Location.
-     * 
-     * @param physicsLocation Vector3f for players location
-     */
-    public void setPlayerPhisycsLocation(Vector3f physicsLocation) {
-        this.getControl().setPhysicsLocation(physicsLocation);
-    }
-
-    /**
-     * Set player Physics Location. 
-     * 
-     * @param x
-     * @param y
-     * @param z 
-     */
-    public void setPlayerPhisycsLocation(float x, float y, float z) {
-        this.getControl().setPhysicsLocation(new Vector3f(x, y, z));
-    }
         
     /**
      * Settup keys
@@ -87,6 +67,15 @@ public class Player implements ActionListener {
         this.getApp().getInputManager().addListener(this, "Down");
         this.getApp().getInputManager().addListener(this, "Jump");
         this.getApp().getInputManager().addListener(this, "Pause");
+    }
+    
+    /**
+     * Set player initial location.
+     * 
+     * @param initialLocation Vector3f for players location
+     */
+    public void setInitialLocation(Vector3f initialLocation) {
+        this.getControl().setPhysicsLocation(initialLocation);
     }
     
     @Override

@@ -28,6 +28,8 @@ public class Level1 extends Level {
     //Temporary vectors used on each frame.
     //They here to avoid instanciating new vectors on each frame
     private final Vector3f camDir = new Vector3f(), camLeft = new Vector3f();
+    //Player initial location for Level 1.
+    private static final Vector3f PLAYER_INITIAL_LOCATION = new Vector3f(600, 20, 650);
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -40,6 +42,7 @@ public class Level1 extends Level {
         this.setLocalRootNode(new Node("Level 1"));
         this.getRootNode().attachChild(this.getLocalRootNode());
 
+        //Set up audio effects for Level 1
         this.setAudioNode(new AudioNode(this.getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", false));
         this.getAudioNode().setLooping(true);  // activate continuous playing
         this.getAudioNode().setPositional(false);
@@ -69,7 +72,7 @@ public class Level1 extends Level {
         // to make them appear in the game world.
         this.getLocalRootNode().attachChild(sceneModel);
         this.setPlayer(new Player(this));
-        this.getPlayer().setPlayerPhisycsLocation(600, 20, 650);
+        this.getPlayer().setInitialLocation(Level1.PLAYER_INITIAL_LOCATION);
         bulletAppState.getPhysicsSpace().add(this.getPlayer().getControl());
         bulletAppState.getPhysicsSpace().add(this.getControl());
     }
