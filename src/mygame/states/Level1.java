@@ -95,8 +95,7 @@ public class Level1 extends Level {
         if (this.getPlayer().isDown()) {
             this.getPlayer().getWalkDirection().addLocal(camDir.negate());
         }
-        this.getPlayer().getControl().setWalkDirection(this.getPlayer().getWalkDirection());
-        
+        this.getPlayer().getControl().setWalkDirection(this.getPlayer().getWalkDirection());        
         this.getApp().getCamera().setLocation(this.getPlayer().getControl().getPhysicsLocation());
     }
 
