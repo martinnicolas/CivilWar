@@ -60,7 +60,7 @@ public class Level1 extends Level {
 
         // We load the scene from the zip file and adjust its size.
         //assetManager.registerLocator("town.zip", ZipLocator.class);
-        Spatial sceneModel = this.getApp().getAssetManager().loadModel("Scenes/Level1.j3o");
+        Spatial sceneModel = this.getAssetManager().loadModel("Scenes/Level1.j3o");
         sceneModel.setLocalScale(2f);
 
         // We set up collision detection for the scene by creating a

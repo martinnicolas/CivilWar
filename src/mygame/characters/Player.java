@@ -5,6 +5,7 @@
  */
 package mygame.characters;
 
+import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData.DataType;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
@@ -21,6 +22,7 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
+import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import mygame.Main;
 import mygame.states.Level;
@@ -34,6 +36,8 @@ public class Player implements ActionListener {
     private Vector3f walkDirection = new Vector3f();
     private Main app;
     private Level level;
+    private Node rootNode;
+    private AssetManager assetManager;
     private CharacterControl control;
     private AudioNode jumpAudio, walkAudio, shootAudio;
     private boolean left = false, right = false, up = false, down = false;
@@ -41,6 +45,8 @@ public class Player implements ActionListener {
     public Player(Level level) {
         this.setLevel(level);
         this.setApp(level.getApp());
+        this.setRootNode(level.getRootNode());
+        this.setAssetManager(level.getAssetManager());
         this.setUpProperties();
         this.setUpAudio();
         this.setUpKeys();
@@ -54,7 +60,6 @@ public class Player implements ActionListener {
         // a capsule collision shape and a CharacterControl.
         // The CharacterControl offers extra settings for
         // size, stepheight, jumping, falling, and gravity.
-        // We also put the player in its starting position.
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
         this.setControl(new CharacterControl(capsuleShape, 0.05f));
         this.getControl().setJumpSpeed(20);
@@ -68,7 +73,7 @@ public class Player implements ActionListener {
      * Settup crosshairs for aim
      */
     protected void initCrossHairs() {
-        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/Fonts/Default.fnt");
+        BitmapFont guiFont = this.getAssetManager().loadFont("Interface/Fonts/Default.fnt");
         BitmapText crossHairs = new BitmapText(guiFont, false);
         crossHairs.setSize(guiFont.getCharSet().getRenderedSize() * 2);
         crossHairs.setText("+"); // crosshairs
@@ -83,23 +88,23 @@ public class Player implements ActionListener {
      */
     private void setUpAudio() {
         //Attach audio for jump action
-        this.setJumpAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/jumppp11.ogg", DataType.Buffer));
+        this.setJumpAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/jumppp11.ogg", DataType.Buffer));
         this.getJumpAudio().setPositional(false);
         this.getJumpAudio().setLooping(false);
         this.getJumpAudio().setVolume(20);
-        this.getApp().getRootNode().attachChild(this.getJumpAudio());
+        this.getRootNode().attachChild(this.getJumpAudio());
         //Attach audio for walk action
-        this.setWalkAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/sfx_step_grass_l.ogg", DataType.Buffer));
+        this.setWalkAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/sfx_step_grass_l.ogg", DataType.Buffer));
         this.getWalkAudio().setPositional(false);
         this.getWalkAudio().setLooping(true);
         this.getWalkAudio().setVolume(2);
-        this.getApp().getRootNode().attachChild(this.getWalkAudio());
+        this.getRootNode().attachChild(this.getWalkAudio());
         //Attach audio for shoot action
-        this.setShootAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/shots/pistol.wav", DataType.Buffer));
+        this.setShootAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/shots/pistol.wav", DataType.Buffer));
         this.getShootAudio().setPositional(false);
         this.getShootAudio().setLooping(false);
         this.getShootAudio().setVolume(2);
-        this.getApp().getRootNode().attachChild(this.getShootAudio());
+        this.getRootNode().attachChild(this.getShootAudio());
     }
 
     /**
@@ -190,11 +195,11 @@ public class Player implements ActionListener {
             // Let's interact - we mark the hit
             Sphere sphere = new Sphere(3, 3, 0.1f);
             Geometry shootsMark = new Geometry("shoots_mark", sphere);
-            Material markMaterial = new Material(this.getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+            Material markMaterial = new Material(this.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
             markMaterial.setColor("Color", ColorRGBA.Black);
             shootsMark.setMaterial(markMaterial);
             shootsMark.setLocalTranslation(closest.getContactPoint());
-            this.getApp().getRootNode().attachChild(shootsMark);
+            this.getRootNode().attachChild(shootsMark);
         } 
     }
 
@@ -212,6 +217,22 @@ public class Player implements ActionListener {
 
     public void setApp(Main app) {
         this.app = app;
+    }
+    
+    public Node getRootNode() {
+        return rootNode;
+    }
+
+    public void setRootNode(Node rootNode) {
+        this.rootNode = rootNode;
+    }
+
+    public AssetManager getAssetManager() {
+        return assetManager;
+    }
+
+    public void setAssetManager(AssetManager assetManager) {
+        this.assetManager = assetManager;
     }
 
     public CharacterControl getControl() {
