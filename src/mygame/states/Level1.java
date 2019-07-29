@@ -7,6 +7,7 @@ package mygame.states;
 
 import com.jme3.app.Application;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CollisionShape;
@@ -17,7 +18,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import mygame.Main;
-import mygame.caracters.Player;
+import mygame.characters.Player;
 
 /**
  *
@@ -43,7 +44,7 @@ public class Level1 extends Level {
         this.getRootNode().attachChild(this.getLocalRootNode());
 
         //Set up audio effects for Level 1
-        this.setAudioNode(new AudioNode(this.getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", false));
+        this.setAudioNode(new AudioNode(this.getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", AudioData.DataType.Stream));
         this.getAudioNode().setLooping(true);  // activate continuous playing
         this.getAudioNode().setPositional(false);
         this.getLocalRootNode().attachChild(this.getAudioNode());

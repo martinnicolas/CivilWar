@@ -8,6 +8,7 @@ package mygame.screens;
 import com.jme3.app.Application;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
+import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
@@ -34,7 +35,7 @@ public class StartScreen extends AbstractAppState implements ScreenController {
         this.nifty = nifty;
         this.screen = screen;
         this.popUpElement = this.nifty.createPopup("popupExit");
-        this.audioMenu = new AudioNode(this.app.getAssetManager(), "Sounds/Music/ambientmain_0.ogg", false);
+        this.audioMenu = new AudioNode(this.app.getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream);
         this.audioMenu.setLooping(true);  // activate continuous playing
         this.audioMenu.setPositional(false);   
         this.audioMenu.play();// play continuously!
