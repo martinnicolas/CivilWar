@@ -30,7 +30,7 @@ public abstract class Level extends AbstractAppState {
     private Node rootNode;
     private AssetManager assetManager;
     private RigidBodyControl control;
-    BitmapText pauseText;
+    private BitmapText pauseText;
     
     /**
      * Pause game. Rewrite specific implementation in every class if it's necesary
@@ -38,14 +38,14 @@ public abstract class Level extends AbstractAppState {
     public void pause() {
         this.setEnabled(false);
         this.getApp().getFlyByCamera().setEnabled(false);
-        //Write text on the screen (HUD)
+        //Write text on the screen
         BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/fonts/Aharoni.fnt");
         this.setPauseText(new BitmapText(guiFont, false));
         this.getPauseText().setSize(guiFont.getCharSet().getRenderedSize());
         this.getPauseText().setText("PAUSE");
         this.getPauseText().setColor(ColorRGBA.Red);
         this.getPauseText().setLocalTranslation(10, 750, 0);
-        this.getApp().getGuiNode().attachChild(pauseText);
+        this.getApp().getGuiNode().attachChild(this.getPauseText());
         this.getAudioNode().stop();
         this.getLocalRootNode().detachChild(this.getAudioNode());
         this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));

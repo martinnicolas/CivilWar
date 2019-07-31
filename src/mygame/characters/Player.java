@@ -39,8 +39,16 @@ public class Player implements ActionListener {
     private Node rootNode;
     private AssetManager assetManager;
     private CharacterControl control;
-    private AudioNode jumpAudio, walkAudio, shootAudio;
+    private AudioNode jumpAudio, walkAudio, shootAudio, emptyGunAudio;
     private boolean left = false, right = false, up = false, down = false;
+    //Player settings for the game
+    private static final int MAX_AMMOS = 100;
+    private static final int MAX_HEALTH = 100;
+    private int ammoes = MAX_AMMOS;
+    private int health = MAX_HEALTH;
+    //Variables for HUD texts
+    private BitmapText ammoesText;
+    private BitmapText healthText;
 
     public Player(Level level) {
         this.setLevel(level);
@@ -67,6 +75,7 @@ public class Player implements ActionListener {
         this.getControl().setGravity(30);
         this.getWalkDirection().set(0, 0, 0);
         this.initCrossHairs();
+        this.initHUD();
     }
 
     /**
@@ -79,8 +88,40 @@ public class Player implements ActionListener {
         crossHairs.setText("+"); // crosshairs
         crossHairs.setLocalTranslation( // center
                 this.getApp().getCamera().getWidth() / 2 - crossHairs.getLineWidth() / 2,
-                this.getApp().getCamera().getHeight() / 2 + crossHairs.getLineHeight() / 2, 0);
+                this.getApp().getCamera().getHeight() / 2 + crossHairs.getLineHeight() / 2, 
+                0
+        );
         this.getApp().getGuiNode().attachChild(crossHairs);
+    }
+    
+    /**
+     * Init HUD
+     */
+    private void initHUD() {
+        //Write text for ammoes
+        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/Fonts/Default.fnt");
+        this.setAmmoesText(new BitmapText(guiFont, false));
+        this.getAmmoesText().setSize(guiFont.getCharSet().getRenderedSize());
+        this.getAmmoesText().setText("Ammo:     "+Integer.toString(MAX_AMMOS));
+        this.getAmmoesText().setLocalTranslation(this.getApp().getCamera().getWidth() - 150, 750, 0);
+        this.getApp().getGuiNode().attachChild(this.getAmmoesText());
+        //Write text for health
+        this.setHealthText(new BitmapText(guiFont, false));
+        this.getHealthText().setSize(guiFont.getCharSet().getRenderedSize());
+        this.getHealthText().setText("Health:     "+Integer.toString(MAX_HEALTH));
+        this.getHealthText().setLocalTranslation(this.getApp().getCamera().getWidth() - 150, 725, 0);
+        this.getApp().getGuiNode().attachChild(this.getHealthText());
+    }
+    
+    /**
+     * Update HUD
+     */
+    private void updateHUD() {
+        //Update ammoes text
+        if (!this.haveEnoughAmmoes())
+            this.getAmmoesText().setColor(ColorRGBA.Red);
+        this.getAmmoesText().setText("Ammo:     "+Integer.toString(this.getAmmoes()));
+        //Update health text
     }
 
     /**
@@ -105,6 +146,12 @@ public class Player implements ActionListener {
         this.getShootAudio().setLooping(false);
         this.getShootAudio().setVolume(2);
         this.getRootNode().attachChild(this.getShootAudio());
+        //Attach audio for empty gun
+        this.setEmptyGunAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/shots/Gun_Cock.wav", DataType.Buffer));
+        this.getEmptyGunAudio().setPositional(false);
+        this.getEmptyGunAudio().setLooping(false);
+        this.getEmptyGunAudio().setVolume(2);
+        this.getRootNode().attachChild(this.getEmptyGunAudio());
     }
 
     /**
@@ -159,11 +206,17 @@ public class Player implements ActionListener {
                             this.getJumpAudio().playInstance();
                         }
                         break;
-                    case "Shoot":
+                    case "Shoot":                        
                         if (isPressed) {
-                            this.getShootAudio().playInstance();
-                            this.checkForCollisions();
-                        }
+                            if (this.haveEnoughAmmoes()) {
+                                this.getShootAudio().playInstance();
+                                this.discountAmmoes();
+                                this.updateHUD();
+                                this.checkForShootingCollisions();           
+                            } else {
+                                this.getEmptyGunAudio().playInstance();
+                            }
+                        } 
                         break;
                     default:
                         break;
@@ -177,11 +230,11 @@ public class Player implements ActionListener {
             }
         }
     }
-    
+
     /**
-     * Checks for collisions on shooting
+     * Checks for shooting collisions
      */
-    private void checkForCollisions() {
+    private void checkForShootingCollisions() {
         CollisionResults results = new CollisionResults();
         // Aim the ray from cam loc to cam direction
         Ray ray = new Ray(this.getApp().getCamera().getLocation(), this.getApp().getCamera().getDirection());
@@ -203,6 +256,46 @@ public class Player implements ActionListener {
         } 
     }
 
+    public BitmapText getAmmoesText() {
+        return ammoesText;
+    }
+
+    public void setAmmoesText(BitmapText ammoesText) {
+        this.ammoesText = ammoesText;
+    }
+
+    public BitmapText getHealthText() {
+        return healthText;
+    }
+
+    public void setHealthText(BitmapText healthText) {
+        this.healthText = healthText;
+    }
+    
+    private boolean haveEnoughAmmoes() {
+        return this.getAmmoes() > 0;
+    }
+    
+    private void discountAmmoes() {
+        this.setAmmoes(this.getAmmoes() - 1);
+    }
+
+    public int getAmmoes() {
+        return ammoes;
+    }
+
+    public void setAmmoes(int ammoes) {
+        this.ammoes = ammoes;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public void setHealth(int health) {
+        this.health = health;
+    }
+    
     public Level getLevel() {
         return level;
     }
@@ -305,6 +398,14 @@ public class Player implements ActionListener {
 
     public void setShootAudio(AudioNode shootAudio) {
         this.shootAudio = shootAudio;
+    }
+
+    public AudioNode getEmptyGunAudio() {
+        return emptyGunAudio;
+    }
+
+    public void setEmptyGunAudio(AudioNode emptyGunAudio) {
+        this.emptyGunAudio = emptyGunAudio;
     }
 
 }
