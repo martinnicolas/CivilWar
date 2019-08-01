@@ -10,9 +10,12 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.collision.PhysicsCollisionEvent;
+import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
+import com.jme3.light.DirectionalLight;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
@@ -24,7 +27,7 @@ import mygame.characters.Player;
  *
  * @author martin
  */
-public class Level1 extends Level {
+public class Level1 extends Level implements PhysicsCollisionListener{
 
     //Temporary vectors used on each frame.
     //They here to avoid instanciating new vectors on each frame
@@ -44,11 +47,7 @@ public class Level1 extends Level {
         this.getRootNode().attachChild(this.getLocalRootNode());
 
         //Set up audio effects for Level 1
-        this.setAudioNode(new AudioNode(this.getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", AudioData.DataType.Stream));
-        this.getAudioNode().setLooping(true);  // activate continuous playing
-        this.getAudioNode().setPositional(false);
-        this.getLocalRootNode().attachChild(this.getAudioNode());
-        this.getAudioNode().play();// play continuously!
+        this.setUpAudio();
 
         //Set up Physics
         BulletAppState bulletAppState = new BulletAppState();
@@ -76,6 +75,23 @@ public class Level1 extends Level {
         this.getPlayer().setInitialLocation(Level1.PLAYER_INITIAL_LOCATION);
         bulletAppState.getPhysicsSpace().add(this.getPlayer().getControl());
         bulletAppState.getPhysicsSpace().add(this.getControl());
+        
+        //Load model for jeep
+        Spatial jeep1 = this.getAssetManager().loadModel("Models/jeep1/jeep1.j3o");        
+        jeep1.setName("jeep1");
+        jeep1.setLocalTranslation(600, 0, 700);        
+        jeep1.setLocalScale(7f);
+        jeep1.addControl(new RigidBodyControl(10));
+        this.getLocalRootNode().attachChild(jeep1);
+        bulletAppState.getPhysicsSpace().add(jeep1);
+        
+        //Add some light
+        DirectionalLight directionalLight = new DirectionalLight();
+        directionalLight.setDirection(new Vector3f(-0.5f, -0.5f, -0.5f).normalizeLocal());
+        this.getRootNode().addLight(directionalLight);
+        
+        //Add collision listener
+        bulletAppState.getPhysicsSpace().addCollisionListener(this);
     }
 
     @Override
@@ -109,5 +125,21 @@ public class Level1 extends Level {
         this.getRootNode().detachChild(this.getLocalRootNode());
         super.cleanup();
     }
-
+    
+    @Override
+    public void collision(PhysicsCollisionEvent event) {
+        
+    }
+    
+    /**
+     * Settup audio
+     */
+    private void setUpAudio() {
+        this.setAudioNode(new AudioNode(this.getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", AudioData.DataType.Stream));
+        this.getAudioNode().setLooping(true);  // activate continuous playing
+        this.getAudioNode().setPositional(false);
+        this.getLocalRootNode().attachChild(this.getAudioNode());
+        this.getAudioNode().play();// play continuously!
+    }
+    
 }

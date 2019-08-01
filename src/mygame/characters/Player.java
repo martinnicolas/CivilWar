@@ -23,6 +23,7 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 import mygame.Main;
 import mygame.states.Level;
@@ -252,7 +253,7 @@ public class Player implements ActionListener {
             markMaterial.setColor("Color", ColorRGBA.Black);
             shootsMark.setMaterial(markMaterial);
             shootsMark.setLocalTranslation(closest.getContactPoint());
-            this.getRootNode().attachChild(shootsMark);
+            this.getLevel().getLocalRootNode().attachChild(shootsMark);
         } 
     }
 
