@@ -6,6 +6,7 @@
 package mygame.states;
 
 import com.jme3.app.state.AbstractAppState;
+import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
@@ -24,6 +25,7 @@ import mygame.characters.Player;
 public abstract class Level extends AbstractAppState {
     
     private Main app;
+    private AppStateManager stateManager;
     private Player player;
     private AudioNode audioNode;
     private Node localRootNode;
@@ -80,6 +82,14 @@ public abstract class Level extends AbstractAppState {
 
     public void setPauseText(BitmapText pauseText) {
         this.pauseText = pauseText;
+    }
+    
+    public AppStateManager getStateManager() {
+        return stateManager;
+    }
+
+    public void setStateManager(AppStateManager stateManager) {
+        this.stateManager = stateManager;
     }
     
     public Main getApp() {
