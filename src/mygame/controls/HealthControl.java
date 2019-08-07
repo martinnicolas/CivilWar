@@ -5,8 +5,6 @@
  */
 package mygame.controls;
 
-import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -15,7 +13,7 @@ import com.jme3.scene.control.AbstractControl;
  *
  * @author martin
  */
-public class HealthControl extends AbstractControl implements PhysicsTickListener{
+public class HealthControl extends AbstractControl{
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -25,16 +23,6 @@ public class HealthControl extends AbstractControl implements PhysicsTickListene
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void prePhysicsTick(PhysicsSpace space, float tpf) {
-        
-    }
-
-    @Override
-    public void physicsTick(PhysicsSpace space, float tpf) {
-        
     }
     
 }

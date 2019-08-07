@@ -11,4 +11,18 @@ package mygame.collectibles;
  */
 public class Health {
     
+    private int bonus;
+    
+    public Health(int bonus) {
+        this.setBonus(bonus);
+    }
+
+    public int getBonus() {
+        return bonus;
+    }
+
+    public void setBonus(int bonus) {
+        this.bonus = bonus;
+    }
+    
 }

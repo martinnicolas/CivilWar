@@ -9,8 +9,13 @@ import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData.DataType;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.PhysicsSpace;
+import com.jme3.bullet.PhysicsTickListener;
+import com.jme3.bullet.collision.PhysicsCollisionObject;
+import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
@@ -25,8 +30,10 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
+import java.util.List;
 import mygame.Main;
 import mygame.states.Level;
 
@@ -34,7 +41,7 @@ import mygame.states.Level;
  *
  * @author martin
  */
-public class Player implements ActionListener {
+public class Player implements ActionListener, PhysicsTickListener {
 
     private Vector3f walkDirection = new Vector3f();
     private Main app;
@@ -42,7 +49,7 @@ public class Player implements ActionListener {
     private Node rootNode;
     private AssetManager assetManager;
     private CharacterControl control;
-    private Geometry playerGeometry;
+    private Node playerNode;
     private AudioNode jumpAudio, walkAudio, shootAudio, emptyGunAudio;
     private boolean left = false, right = false, up = false, down = false;
     //Player settings for the game
@@ -65,7 +72,7 @@ public class Player implements ActionListener {
     }
 
     /**
-     * Settup player properties
+     * Setup player properties
      */
     private void setUpProperties() {
         // We set up collision detection for the player by creating
@@ -73,15 +80,17 @@ public class Player implements ActionListener {
         // The CharacterControl offers extra settings for
         // size, stepheight, jumping, falling, and gravity.
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
-        //set up box and geometry for collision detection
-        Box box = new Box(1.5f, 6f, 1.5f);
-        this.setPlayerGeometry(new Geometry("player", box));
-        this.setControl(new CharacterControl(capsuleShape, 0.05f));
-        this.getPlayerGeometry().addControl(this.getControl());        
+        this.setPlayerNode(new Node("player"));
+        this.getPlayerNode().addControl(new GhostControl(capsuleShape));
+        this.setControl(new CharacterControl(capsuleShape, 0.05f));                
         this.getControl().setJumpSpeed(20);
         this.getControl().setFallSpeed(30);
         this.getControl().setGravity(30);
+        this.getPlayerNode().addControl(this.getControl());
+        // We re-use the flyby camera for rotation, while positioning is handled by physics
+        this.getApp().getFlyByCamera().setMoveSpeed(100);
         this.getWalkDirection().set(0, 0, 0);
+        this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().addTickListener(this);
         this.initCrossHairs();
         this.initHUD();
     }
@@ -96,12 +105,12 @@ public class Player implements ActionListener {
         crossHairs.setText("+"); // crosshairs
         crossHairs.setLocalTranslation( // center
                 this.getApp().getCamera().getWidth() / 2 - crossHairs.getLineWidth() / 2,
-                this.getApp().getCamera().getHeight() / 2 + crossHairs.getLineHeight() / 2, 
+                this.getApp().getCamera().getHeight() / 2 + crossHairs.getLineHeight() / 2,
                 0
         );
         this.getApp().getGuiNode().attachChild(crossHairs);
     }
-    
+
     /**
      * Init HUD
      */
@@ -110,29 +119,30 @@ public class Player implements ActionListener {
         BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/Fonts/Default.fnt");
         this.setAmmoesText(new BitmapText(guiFont, false));
         this.getAmmoesText().setSize(guiFont.getCharSet().getRenderedSize());
-        this.getAmmoesText().setText("Ammo:     "+Integer.toString(MAX_AMMOS));
+        this.getAmmoesText().setText("Ammo:     " + Integer.toString(MAX_AMMOS));
         this.getAmmoesText().setLocalTranslation(this.getApp().getCamera().getWidth() - 150, 750, 0);
         this.getApp().getGuiNode().attachChild(this.getAmmoesText());
         //Write text for health
         this.setHealthText(new BitmapText(guiFont, false));
         this.getHealthText().setSize(guiFont.getCharSet().getRenderedSize());
-        this.getHealthText().setText("Health:     "+Integer.toString(MAX_HEALTH));
+        this.getHealthText().setText("Health:     " + Integer.toString(MAX_HEALTH));
         this.getHealthText().setLocalTranslation(this.getApp().getCamera().getWidth() - 150, 725, 0);
         this.getApp().getGuiNode().attachChild(this.getHealthText());
     }
-    
+
     /**
      * Update HUD
      */
     private void updateHUD() {
         //Update ammoes text
-        if (!this.haveEnoughAmmoes())
+        if (!this.haveEnoughAmmoes()) {
             this.getAmmoesText().setColor(ColorRGBA.Red);
-        else
+        } else {
             this.getAmmoesText().setColor(ColorRGBA.White);
-        this.getAmmoesText().setText("Ammo:     "+Integer.toString(this.getAmmoes()));
+        }
+        this.getAmmoesText().setText("Ammo:     " + Integer.toString(this.getAmmoes()));
         //Update health text
-        this.getHealthText().setText("Health:     "+Integer.toString(this.getHealth()));
+        this.getHealthText().setText("Health:     " + Integer.toString(this.getHealth()));
     }
 
     /**
@@ -217,17 +227,16 @@ public class Player implements ActionListener {
                             this.getJumpAudio().playInstance();
                         }
                         break;
-                    case "Shoot":                        
+                    case "Shoot":
                         if (isPressed) {
                             if (this.haveEnoughAmmoes()) {
                                 this.getShootAudio().playInstance();
                                 this.discountAmmoes();
-                                this.updateHUD();
-                                this.checkForShootingCollisions();           
+                                this.checkForShootingCollisions();
                             } else {
                                 this.getEmptyGunAudio().playInstance();
                             }
-                        } 
+                        }
                         break;
                     default:
                         break;
@@ -238,6 +247,32 @@ public class Player implements ActionListener {
                 this.getLevel().pause();
             } else if (isPressed && !this.getLevel().isEnabled()) {
                 this.getLevel().resume();
+            }
+        }
+    }
+    
+    @Override
+    public void prePhysicsTick(PhysicsSpace space, float tpf) {
+
+    }
+
+    @Override
+    public void physicsTick(PhysicsSpace space, float tpf) {
+        for (PhysicsCollisionObject o : this.getPlayerNode().getControl(GhostControl.class).getOverlappingObjects()) {
+            Spatial spatial = (Spatial) o.getUserObject();
+            // Collision with ammo
+            if (spatial.getName().equals("ammo")) {
+                this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().remove(spatial);
+                this.plusAmmoes(10);
+            }
+            // Collision with health
+            if (spatial.getName().equals("health")) {
+                this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().remove(spatial);
+                this.plusHealth(10);
+            }
+            // Collision with enemy
+            if (spatial.getName().equals("enemy")) {
+                this.discountHealth(1);
             }
         }
     }
@@ -263,18 +298,17 @@ public class Player implements ActionListener {
             markMaterial.setColor("Color", ColorRGBA.Black);
             shootsMark.setMaterial(markMaterial);
             shootsMark.setLocalTranslation(closest.getContactPoint());
-            RigidBodyControl rigidBodyControl = new RigidBodyControl(1f);
-            shootsMark.addControl(rigidBodyControl);
-            this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().add(rigidBodyControl);
+            shootsMark.addControl(new RigidBodyControl(1f));            
             this.getLevel().getLocalRootNode().attachChild(shootsMark);
-        } 
+            this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().addAll(shootsMark);
+        }
     }
-    
+
     public void plusAmmoes(int plusAmmoes) {
-        this.setAmmoes(this.getAmmoes() + plusAmmoes);        
+        this.setAmmoes(this.getAmmoes() + plusAmmoes);
         this.updateHUD();
     }
-    
+
     public void plusHealth(int plusHealth) {
         this.setHealth(this.getHealth() + plusHealth);
         this.updateHUD();
@@ -295,13 +329,19 @@ public class Player implements ActionListener {
     public void setHealthText(BitmapText healthText) {
         this.healthText = healthText;
     }
-    
+
     private boolean haveEnoughAmmoes() {
         return this.getAmmoes() > 0;
     }
-    
+
     private void discountAmmoes() {
         this.setAmmoes(this.getAmmoes() - 1);
+        this.updateHUD();
+    }
+
+    public void discountHealth(int discount) {
+        this.setHealth(this.getHealth() - discount);
+        this.updateHUD();
     }
 
     public int getAmmoes() {
@@ -319,7 +359,7 @@ public class Player implements ActionListener {
     public void setHealth(int health) {
         this.health = health;
     }
-    
+
     public Level getLevel() {
         return level;
     }
@@ -335,7 +375,7 @@ public class Player implements ActionListener {
     public void setApp(Main app) {
         this.app = app;
     }
-    
+
     public Node getRootNode() {
         return rootNode;
     }
@@ -352,12 +392,12 @@ public class Player implements ActionListener {
         this.assetManager = assetManager;
     }
 
-    public Geometry getPlayerGeometry() {
-        return playerGeometry;
+    public Node getPlayerNode() {
+        return playerNode;
     }
 
-    public void setPlayerGeometry(Geometry playerGeometry) {
-        this.playerGeometry = playerGeometry;
+    public void setPlayerNode(Node playerNode) {
+        this.playerNode = playerNode;
     }
 
     public CharacterControl getControl() {

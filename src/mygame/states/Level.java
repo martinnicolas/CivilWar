@@ -29,6 +29,7 @@ public abstract class Level extends AbstractAppState {
     private Player player;
     private AudioNode audioNode;
     private Node localRootNode;
+    private Node bonusCollectedNode;
     private Node rootNode;
     private AssetManager assetManager;
     private RigidBodyControl control;
