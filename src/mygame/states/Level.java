@@ -10,11 +10,14 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import java.util.List;
 import mygame.Main;
 import mygame.characters.Player;
 
@@ -57,6 +60,14 @@ public abstract class Level extends AbstractAppState {
         this.getLocalRootNode().attachChild(this.getAudioNode());
         this.getAudioNode().play();// play continuously!
         this.getPlayer().getControl().setEnabled(false);
+        //disable all controls
+        List<Spatial> spatials = this.getLocalRootNode().getChildren();
+        for (Spatial spatial : spatials) {
+            RigidBodyControl spatialControl = spatial.getControl(RigidBodyControl.class);
+            if (spatialControl != null) {
+                spatialControl.setEnabled(false);
+            }
+        }
     }
     
     /**
@@ -75,6 +86,14 @@ public abstract class Level extends AbstractAppState {
         this.getLocalRootNode().attachChild(this.getAudioNode());
         this.getAudioNode().play();// play continuously!
         this.getPlayer().getControl().setEnabled(true);
+        //enable all controls
+        List<Spatial> spatials = this.getLocalRootNode().getChildren();
+        for (Spatial spatial : spatials) {
+            RigidBodyControl spatialControl = spatial.getControl(RigidBodyControl.class);
+            if (spatialControl != null) {
+                spatialControl.setEnabled(true);
+            }
+        }
     }    
 
     public BitmapText getPauseText() {

@@ -15,6 +15,13 @@ public class Health {
     
     public Health(int bonus) {
         this.setBonus(bonus);
+        this.setUpProperties();
+    }
+    
+    /**
+     * Setup properties
+     */
+    private void setUpProperties() {
     }
 
     public int getBonus() {

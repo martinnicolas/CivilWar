@@ -5,9 +5,6 @@
  */
 package mygame.collectibles;
 
-import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.scene.Spatial;
-
 /**
  *
  * @author martin

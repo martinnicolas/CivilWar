@@ -12,7 +12,6 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.PhysicsSpace;
 import com.jme3.bullet.PhysicsTickListener;
 import com.jme3.bullet.collision.PhysicsCollisionObject;
-import com.jme3.bullet.collision.shapes.BoxCollisionShape;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
@@ -31,9 +30,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
-import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
-import java.util.List;
 import mygame.Main;
 import mygame.states.Level;
 
@@ -46,17 +43,17 @@ public class Player implements ActionListener, PhysicsTickListener {
     private Vector3f walkDirection = new Vector3f();
     private Main app;
     private Level level;
-    private Node rootNode;
+    private Node localRootNode;
     private AssetManager assetManager;
     private CharacterControl control;
     private Node playerNode;
-    private AudioNode jumpAudio, walkAudio, shootAudio, emptyGunAudio;
+    private AudioNode pickedAmmoAudio, pickedHealthAudio, jumpAudio, walkAudio, shootAudio, emptyGunAudio;
     private boolean left = false, right = false, up = false, down = false;
     //Player settings for the game
     private static final int MAX_AMMOS = 100;
-    private static final int MAX_HEALTH = 100;
+    private static final float MAX_HEALTH = 100;
     private int ammoes = MAX_AMMOS;
-    private int health = MAX_HEALTH;
+    private float health = MAX_HEALTH;
     //Variables for HUD texts
     private BitmapText ammoesText;
     private BitmapText healthText;
@@ -64,7 +61,7 @@ public class Player implements ActionListener, PhysicsTickListener {
     public Player(Level level) {
         this.setLevel(level);
         this.setApp(level.getApp());
-        this.setRootNode(level.getRootNode());
+        this.setLocalRootNode(level.getLocalRootNode());
         this.setAssetManager(level.getAssetManager());
         this.setUpProperties();
         this.setUpAudio();
@@ -125,7 +122,7 @@ public class Player implements ActionListener, PhysicsTickListener {
         //Write text for health
         this.setHealthText(new BitmapText(guiFont, false));
         this.getHealthText().setSize(guiFont.getCharSet().getRenderedSize());
-        this.getHealthText().setText("Health:     " + Integer.toString(MAX_HEALTH));
+        this.getHealthText().setText("Health:     " + Integer.toString(Math.round(MAX_HEALTH)));
         this.getHealthText().setLocalTranslation(this.getApp().getCamera().getWidth() - 150, 725, 0);
         this.getApp().getGuiNode().attachChild(this.getHealthText());
     }
@@ -142,7 +139,7 @@ public class Player implements ActionListener, PhysicsTickListener {
         }
         this.getAmmoesText().setText("Ammo:     " + Integer.toString(this.getAmmoes()));
         //Update health text
-        this.getHealthText().setText("Health:     " + Integer.toString(this.getHealth()));
+        this.getHealthText().setText("Health:     " + Integer.toString(Math.round(this.getHealth())));
     }
 
     /**
@@ -154,25 +151,37 @@ public class Player implements ActionListener, PhysicsTickListener {
         this.getJumpAudio().setPositional(false);
         this.getJumpAudio().setLooping(false);
         this.getJumpAudio().setVolume(20);
-        this.getRootNode().attachChild(this.getJumpAudio());
+        this.getLocalRootNode().attachChild(this.getJumpAudio());
         //Attach audio for walk action
         this.setWalkAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/sfx_step_grass_l.ogg", DataType.Buffer));
         this.getWalkAudio().setPositional(false);
         this.getWalkAudio().setLooping(true);
         this.getWalkAudio().setVolume(2);
-        this.getRootNode().attachChild(this.getWalkAudio());
+        this.getLocalRootNode().attachChild(this.getWalkAudio());
         //Attach audio for shoot action
         this.setShootAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/shots/pistol.wav", DataType.Buffer));
         this.getShootAudio().setPositional(false);
         this.getShootAudio().setLooping(false);
         this.getShootAudio().setVolume(2);
-        this.getRootNode().attachChild(this.getShootAudio());
+        this.getLocalRootNode().attachChild(this.getShootAudio());
         //Attach audio for empty gun
         this.setEmptyGunAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/shots/Gun_Cock.wav", DataType.Buffer));
         this.getEmptyGunAudio().setPositional(false);
         this.getEmptyGunAudio().setLooping(false);
         this.getEmptyGunAudio().setVolume(2);
-        this.getRootNode().attachChild(this.getEmptyGunAudio());
+        this.getLocalRootNode().attachChild(this.getEmptyGunAudio());
+        //Attach audio for picked ammo action
+        this.setPickedAmmoAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/bonus/picked_ammo.wav", DataType.Buffer));
+        this.getPickedAmmoAudio().setPositional(false);
+        this.getPickedAmmoAudio().setLooping(false);
+        this.getPickedAmmoAudio().setVolume(2);
+        this.getLocalRootNode().attachChild(this.getPickedAmmoAudio());
+        //Attach audio for picked health action
+        this.setPickedHealthAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/bonus/picked_health.wav", DataType.Buffer));
+        this.getPickedHealthAudio().setPositional(false);
+        this.getPickedHealthAudio().setLooping(false);
+        this.getPickedHealthAudio().setVolume(2);
+        this.getLocalRootNode().attachChild(this.getPickedHealthAudio());
     }
 
     /**
@@ -261,18 +270,16 @@ public class Player implements ActionListener, PhysicsTickListener {
         for (PhysicsCollisionObject o : this.getPlayerNode().getControl(GhostControl.class).getOverlappingObjects()) {
             Spatial spatial = (Spatial) o.getUserObject();
             // Collision with ammo
-            if (spatial.getName().equals("ammo")) {
-                this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().remove(spatial);
+            /*if (spatial.getName().equals("ammo")) {
                 this.plusAmmoes(10);
             }
             // Collision with health
             if (spatial.getName().equals("health")) {
-                this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().remove(spatial);
                 this.plusHealth(10);
-            }
+            }*/
             // Collision with enemy
             if (spatial.getName().equals("enemy")) {
-                this.discountHealth(1);
+                this.discountHealth(0.5f);
             }
         }
     }
@@ -339,7 +346,7 @@ public class Player implements ActionListener, PhysicsTickListener {
         this.updateHUD();
     }
 
-    public void discountHealth(int discount) {
+    public void discountHealth(float discount) {
         this.setHealth(this.getHealth() - discount);
         this.updateHUD();
     }
@@ -352,11 +359,11 @@ public class Player implements ActionListener, PhysicsTickListener {
         this.ammoes = ammoes;
     }
 
-    public int getHealth() {
+    public float getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
+    public void setHealth(float health) {
         this.health = health;
     }
 
@@ -376,12 +383,12 @@ public class Player implements ActionListener, PhysicsTickListener {
         this.app = app;
     }
 
-    public Node getRootNode() {
-        return rootNode;
+    public Node getLocalRootNode() {
+        return localRootNode;
     }
 
-    public void setRootNode(Node rootNode) {
-        this.rootNode = rootNode;
+    public void setLocalRootNode(Node localRootNode) {
+        this.localRootNode = localRootNode;
     }
 
     public AssetManager getAssetManager() {
@@ -454,6 +461,22 @@ public class Player implements ActionListener, PhysicsTickListener {
 
     public void setJumpAudio(AudioNode jumpAudio) {
         this.jumpAudio = jumpAudio;
+    }
+    
+    public AudioNode getPickedAmmoAudio() {
+        return pickedAmmoAudio;
+    }
+
+    public void setPickedAmmoAudio(AudioNode pickedAmmoAudio) {
+        this.pickedAmmoAudio = pickedAmmoAudio;
+    }
+    
+    public AudioNode getPickedHealthAudio() {
+        return pickedHealthAudio;
+    }
+
+    public void setPickedHealthAudio(AudioNode pickedHealthAudio) {
+        this.pickedHealthAudio = pickedHealthAudio;
     }
 
     public AudioNode getWalkAudio() {
