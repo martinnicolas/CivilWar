@@ -9,9 +9,6 @@ import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData.DataType;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
-import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.PhysicsTickListener;
-import com.jme3.bullet.collision.PhysicsCollisionObject;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
@@ -29,7 +26,6 @@ import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
 import mygame.Main;
 import mygame.states.Level;
@@ -38,7 +34,7 @@ import mygame.states.Level;
  *
  * @author martin
  */
-public class Player implements ActionListener, PhysicsTickListener {
+public class Player implements ActionListener{
 
     private Vector3f walkDirection = new Vector3f();
     private Main app;
@@ -49,7 +45,8 @@ public class Player implements ActionListener, PhysicsTickListener {
     private Node playerNode;
     private AudioNode pickedAmmoAudio, pickedHealthAudio, jumpAudio, walkAudio, shootAudio, emptyGunAudio;
     private boolean left = false, right = false, up = false, down = false;
-    //Player settings for the game
+    public static final String SPATIAL_NAME = "player";
+    //Player settings for the game    
     private static final int MAX_AMMOS = 100;
     private static final float MAX_HEALTH = 100;
     private int ammoes = MAX_AMMOS;
@@ -87,15 +84,14 @@ public class Player implements ActionListener, PhysicsTickListener {
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         this.getApp().getFlyByCamera().setMoveSpeed(100);
         this.getWalkDirection().set(0, 0, 0);
-        this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().addTickListener(this);
-        this.initCrossHairs();
+        this.setUpCrossHairs();
         this.initHUD();
     }
 
     /**
-     * Settup crosshairs for aim
+     * Setup crosshairs for aim
      */
-    protected void initCrossHairs() {
+    protected void setUpCrossHairs() {
         BitmapFont guiFont = this.getAssetManager().loadFont("Interface/Fonts/Default.fnt");
         BitmapText crossHairs = new BitmapText(guiFont, false);
         crossHairs.setSize(guiFont.getCharSet().getRenderedSize() * 2);
@@ -256,30 +252,6 @@ public class Player implements ActionListener, PhysicsTickListener {
                 this.getLevel().pause();
             } else if (isPressed && !this.getLevel().isEnabled()) {
                 this.getLevel().resume();
-            }
-        }
-    }
-    
-    @Override
-    public void prePhysicsTick(PhysicsSpace space, float tpf) {
-
-    }
-
-    @Override
-    public void physicsTick(PhysicsSpace space, float tpf) {
-        for (PhysicsCollisionObject o : this.getPlayerNode().getControl(GhostControl.class).getOverlappingObjects()) {
-            Spatial spatial = (Spatial) o.getUserObject();
-            // Collision with ammo
-            /*if (spatial.getName().equals("ammo")) {
-                this.plusAmmoes(10);
-            }
-            // Collision with health
-            if (spatial.getName().equals("health")) {
-                this.plusHealth(10);
-            }*/
-            // Collision with enemy
-            if (spatial.getName().equals("enemy")) {
-                this.discountHealth(0.5f);
             }
         }
     }

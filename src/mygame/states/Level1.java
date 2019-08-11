@@ -13,13 +13,21 @@ import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.PhysicsCollisionEvent;
 import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.shapes.CollisionShape;
+import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
+import com.jme3.scene.control.Control;
+import enemies.SoldierEnemy;
+import java.util.List;
 import mygame.Main;
+import mygame.bonuses.AmmoBonus;
+import mygame.bonuses.HealthBonus;
 import mygame.characters.Player;
 
 /**
@@ -77,32 +85,23 @@ public class Level1 extends Level implements PhysicsCollisionListener{
         this.getLocalRootNode().attachChild(this.getPlayer().getPlayerNode());
         bulletAppState.getPhysicsSpace().addAll(this.getPlayer().getPlayerNode());
 
-        //Load model for enemy
-        Spatial enemy = this.getAssetManager().loadModel("Models/D05150293DS/D0515029.j3o");
-        enemy.setName("enemy");
-        enemy.setLocalTranslation(600, 0, 700);
-        enemy.setLocalScale(0.8f);
-        enemy.addControl(new RigidBodyControl(0));
-        this.getLocalRootNode().attachChild(enemy);
-        bulletAppState.getPhysicsSpace().addAll(enemy);
+        //Load some enemy
+        SoldierEnemy soldierEnemy = new SoldierEnemy(this.getAssetManager(), 100, 10);
+        soldierEnemy.setUpProperties();
+        this.getLocalRootNode().attachChild(soldierEnemy.getSpatial());
+        bulletAppState.getPhysicsSpace().addAll(soldierEnemy.getSpatial());
 
-        //Load model for ammo
-        Spatial ammo = this.getAssetManager().loadModel("Models/barrel01/barrel01.j3o");
-        ammo.setName("ammo");
-        ammo.setLocalTranslation(500, 0, 700);
-        ammo.setLocalScale(3f);
-        ammo.addControl(new RigidBodyControl(2f));
-        this.getLocalRootNode().attachChild(ammo);
-        bulletAppState.getPhysicsSpace().addAll(ammo);
+        //Load some ammo bonus
+        AmmoBonus ammoBonus = new AmmoBonus(this.getAssetManager(), 10);
+        ammoBonus.setUpProperties();
+        this.getLocalRootNode().attachChild(ammoBonus.getSpatial());
+        bulletAppState.getPhysicsSpace().addAll(ammoBonus.getSpatial());
         
-        //Load model for health
-        Spatial jeep1 = this.getAssetManager().loadModel("Models/jeep1/jeep1.j3o");
-        jeep1.setName("health");
-        jeep1.setLocalTranslation(500, 0, 750);
-        jeep1.setLocalScale(7f);
-        jeep1.addControl(new RigidBodyControl(2f));
-        this.getLocalRootNode().attachChild(jeep1);
-        bulletAppState.getPhysicsSpace().addAll(jeep1);
+        //Load some health bonus
+        HealthBonus healthBonus = new HealthBonus(this.getAssetManager(), 10);
+        healthBonus.setUpProperties();
+        this.getLocalRootNode().attachChild(healthBonus.getSpatial());
+        bulletAppState.getPhysicsSpace().addAll(healthBonus.getSpatial());
         
         //Add collision listener
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
@@ -155,9 +154,15 @@ public class Level1 extends Level implements PhysicsCollisionListener{
     @Override
     public void collision(PhysicsCollisionEvent event) {
         //Check for collisions with ammo
-        this.checkPlayerCollisionsWithBonus(event, "ammo");
+        this.checkPlayerCollisionsWithBonus(event, AmmoBonus.SPATIAL_NAME);
         //Check for collisions with health
-        this.checkPlayerCollisionsWithBonus(event, "health");
+        this.checkPlayerCollisionsWithBonus(event, HealthBonus.SPATIAL_NAME);
+        //Check for shooting collisions with enemy
+        this.checkShootingCollisionsWithEnemy(event, SoldierEnemy.SPATIAL_NAME);
+        //Check for player collisions with enemy
+        this.checkPlayerCollisionsWithEnemy(event, Player.SPATIAL_NAME);
+        //Restore controls for alive spatials
+        this.restoreControlForAlives();
     }
     
     /**
@@ -168,11 +173,49 @@ public class Level1 extends Level implements PhysicsCollisionListener{
      */
     private void checkPlayerCollisionsWithBonus(PhysicsCollisionEvent event, String bonusName) {
         if (bonusName.equals(event.getNodeA().getName()) || bonusName.equals(event.getNodeB().getName())) {
-            if ("player".equals(event.getNodeA().getName())) {
+            if (event.getNodeA().getName().equals(Player.SPATIAL_NAME)) {
                 this.removeBonusSpatial(event.getNodeB(), bonusName);
             } else {
-                if ("player".equals(event.getNodeB().getName())) {
+                if (event.getNodeB().getName().equals(Player.SPATIAL_NAME)) {
                     this.removeBonusSpatial(event.getNodeA(), bonusName);
+                }
+            }
+        }
+    }
+    
+    /**
+     * Checks shooting collisions with enemies
+     * 
+     * @param event
+     * @param enemyName 
+     */
+    private void checkShootingCollisionsWithEnemy(PhysicsCollisionEvent event, String enemyName) {
+        if (enemyName.equals(event.getNodeA().getName()) || enemyName.equals(event.getNodeB().getName())) {
+            if (event.getNodeA().getName().equals("shoots_mark")) {
+                this.removeShootingMarks(event.getNodeA());
+                this.removeDeadEnemy(event.getNodeB());
+            } else {
+                if (event.getNodeB().getName().equals("shoots_mark")) {
+                    this.removeShootingMarks(event.getNodeB());
+                    this.removeDeadEnemy(event.getNodeA());
+                }
+            }
+        }
+    }
+    
+    /**
+     * Check player collision with enemies
+     * 
+     * @param event
+     * @param playerName 
+     */
+    private void checkPlayerCollisionsWithEnemy(PhysicsCollisionEvent event, String playerName) {
+        if (playerName.equals(event.getNodeA().getName()) || playerName.equals(event.getNodeB().getName())) {
+            if (event.getNodeA().getName().equals(SoldierEnemy.SPATIAL_NAME)) {
+                this.registerPlayerDamage();
+            } else {
+                if (event.getNodeB().getName().equals(SoldierEnemy.SPATIAL_NAME)) {
+                    this.registerPlayerDamage();
                 }
             }
         }
@@ -189,12 +232,67 @@ public class Level1 extends Level implements PhysicsCollisionListener{
             spatialControl.setEnabled(false);
             spatial.removeFromParent();
             spatial.setLocalScale(0.0f);
-            if ("ammo".equals(bonusName)) {
+            if (bonusName.equals(AmmoBonus.SPATIAL_NAME)) {
                 this.getPlayer().plusAmmoes(10);
                 this.getPlayer().getPickedAmmoAudio().playInstance();
             } else {
                 this.getPlayer().plusHealth(10);
                 this.getPlayer().getPickedHealthAudio().playInstance();
+            }
+        }
+    }
+    
+    /**
+     * Remove shooting marks from scene
+     * 
+     * @param spatial 
+     */
+    private void removeShootingMarks(Spatial spatial) {
+        RigidBodyControl spatialControl = spatial.getControl(RigidBodyControl.class);
+        if(spatialControl != null && spatialControl.isEnabled()) {
+            spatialControl.setEnabled(false);
+            spatial.removeFromParent();
+            spatial.setLocalScale(0.0f);
+        }
+    }
+    
+    /**
+     * Remove dead enemy
+     * 
+     * @param spatial 
+     */
+    private void removeDeadEnemy(Spatial spatial) {
+        RigidBodyControl spatialControl = spatial.getControl(RigidBodyControl.class);
+        if(spatialControl != null && spatialControl.isEnabled()) {
+            spatialControl.setEnabled(false);
+            spatial.removeFromParent();
+            spatial.setLocalScale(0.0f);
+        }
+    }
+    
+    /**
+     * Register player damage
+     * 
+     */
+    private void registerPlayerDamage() {
+        GhostControl spatialControl = this.getPlayer().getPlayerNode().getControl(GhostControl.class);
+        if(spatialControl != null && spatialControl.isEnabled()) {
+            spatialControl.setEnabled(false);
+            this.getPlayer().discountHealth(0.1f);
+            this.getPlayer().getJumpAudio().playInstance();
+        }
+    }
+    
+    private void restoreControlForAlives() {
+        //enable all controls
+        List<Spatial> spatials = this.getLocalRootNode().getChildren();
+        for (Spatial spatial : spatials) {
+            for (int i = 0; i < spatial.getNumControls(); i++) {
+                Control spatialControl = spatial.getControl(i);
+                if (spatialControl instanceof PhysicsControl) {
+                    PhysicsControl physicsControl = (PhysicsControl) spatialControl;
+                    physicsControl.setEnabled(true);
+                }
             }
         }
     }

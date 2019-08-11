@@ -10,13 +10,15 @@ import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
-import com.jme3.bullet.BulletAppState;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.font.BitmapFont;
 import com.jme3.font.BitmapText;
 import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
+import com.jme3.scene.control.AbstractControl;
+import com.jme3.scene.control.Control;
 import java.util.List;
 import mygame.Main;
 import mygame.characters.Player;
@@ -32,7 +34,6 @@ public abstract class Level extends AbstractAppState {
     private Player player;
     private AudioNode audioNode;
     private Node localRootNode;
-    private Node bonusCollectedNode;
     private Node rootNode;
     private AssetManager assetManager;
     private RigidBodyControl control;
@@ -63,9 +64,15 @@ public abstract class Level extends AbstractAppState {
         //disable all controls
         List<Spatial> spatials = this.getLocalRootNode().getChildren();
         for (Spatial spatial : spatials) {
-            RigidBodyControl spatialControl = spatial.getControl(RigidBodyControl.class);
-            if (spatialControl != null) {
-                spatialControl.setEnabled(false);
+            for (int i = 0; i < spatial.getNumControls(); i++) {
+                Control spatialControl = spatial.getControl(i);
+                if (spatialControl instanceof PhysicsControl) {
+                    PhysicsControl physicsControl = (PhysicsControl) spatialControl;
+                    physicsControl.setEnabled(false);
+                } else {
+                    AbstractControl abstractControl = (AbstractControl) spatialControl;
+                    abstractControl.setEnabled(false);
+                }
             }
         }
     }
@@ -89,9 +96,15 @@ public abstract class Level extends AbstractAppState {
         //enable all controls
         List<Spatial> spatials = this.getLocalRootNode().getChildren();
         for (Spatial spatial : spatials) {
-            RigidBodyControl spatialControl = spatial.getControl(RigidBodyControl.class);
-            if (spatialControl != null) {
-                spatialControl.setEnabled(true);
+            for (int i = 0; i < spatial.getNumControls(); i++) {
+                Control spatialControl = spatial.getControl(i);
+                if (spatialControl instanceof PhysicsControl) {
+                    PhysicsControl physicsControl = (PhysicsControl) spatialControl;
+                    physicsControl.setEnabled(true);
+                } else {
+                    AbstractControl abstractControl = (AbstractControl) spatialControl;
+                    abstractControl.setEnabled(true);
+                }
             }
         }
     }    

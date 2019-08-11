@@ -5,6 +5,10 @@
  */
 package mygame.controls;
 
+import com.jme3.light.SpotLight;
+import com.jme3.math.ColorRGBA;
+import com.jme3.math.FastMath;
+import com.jme3.math.Quaternion;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
@@ -17,7 +21,7 @@ public class AmmoControl extends AbstractControl{
 
     @Override
     protected void controlUpdate(float tpf) {
-        
+        this.getSpatial().rotate(0, tpf, 0);
     }
 
     @Override
