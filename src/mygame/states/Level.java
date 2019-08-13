@@ -46,7 +46,7 @@ public abstract class Level extends AbstractAppState {
         this.setEnabled(false);
         this.getApp().getFlyByCamera().setEnabled(false);
         //Write text on the screen
-        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/fonts/Aharoni.fnt");
+        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/Fonts/Default.fnt");
         this.setPauseText(new BitmapText(guiFont, false));
         this.getPauseText().setSize(guiFont.getCharSet().getRenderedSize());
         this.getPauseText().setText("PAUSE");

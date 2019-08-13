@@ -15,7 +15,7 @@ import mygame.controls.HealthControl;
  */
 public class HealthBonus extends Bonus {
     
-    public final String MODEL_PATH = "Models/jeep1/jeep1.j3o";
+    public final String MODEL_PATH = "Models/MedKit_mk2/MedKit_mk2.j3o";
     public static final String SPATIAL_NAME = "health";
 
     public HealthBonus(AssetManager assetManager, int amount) {
@@ -27,7 +27,7 @@ public class HealthBonus extends Bonus {
         this.setSpatial(this.getAssetManager().loadModel(MODEL_PATH));
         this.getSpatial().setName(SPATIAL_NAME);
         this.getSpatial().setLocalTranslation(500, 0, 750);
-        this.getSpatial().setLocalScale(7f);
+        this.getSpatial().setLocalScale(2f);
         this.getSpatial().addControl(new RigidBodyControl(2f));        
         this.getSpatial().addControl(new HealthControl());
     }
