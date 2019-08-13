@@ -23,7 +23,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
-import enemies.SoldierEnemy;
+import mygame.enemies.SoldierEnemy;
 import java.util.List;
 import mygame.Main;
 import mygame.bonuses.AmmoBonus;
