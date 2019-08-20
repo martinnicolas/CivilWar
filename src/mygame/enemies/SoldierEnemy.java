@@ -27,8 +27,8 @@ public class SoldierEnemy extends Enemy {
     public void setUpProperties() {
         this.setSpatial(this.getAssetManager().loadModel(MODEL_PATH));
         this.getSpatial().setName(SPATIAL_NAME);
-        this.getSpatial().setLocalTranslation(600, 0, 700);
-        this.getSpatial().setLocalScale(0.8f);
+        this.getSpatial().setLocalTranslation(-28, 0, -26);
+        this.getSpatial().setLocalScale(0.5f);
         this.getSpatial().addControl(new RigidBodyControl(0));
         //this.getSpatial().addControl(new EnemyControl());
         //this.getSpatial().addControl(new TerrainTrackControl());

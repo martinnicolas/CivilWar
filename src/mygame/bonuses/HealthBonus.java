@@ -26,8 +26,8 @@ public class HealthBonus extends Bonus {
     public void setUpProperties() {
         this.setSpatial(this.getAssetManager().loadModel(MODEL_PATH));
         this.getSpatial().setName(SPATIAL_NAME);
-        this.getSpatial().setLocalTranslation(500, 0, 750);
-        this.getSpatial().setLocalScale(2f);
+        this.getSpatial().setLocalTranslation(-29, 10, 27);
+        this.getSpatial().setLocalScale(1f);
         this.getSpatial().addControl(new RigidBodyControl(2f));        
         this.getSpatial().addControl(new HealthControl());
     }

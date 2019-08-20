@@ -15,7 +15,7 @@ import mygame.controls.AmmoControl;
  */
 public class AmmoBonus extends Bonus { 
     
-    public static final String MODEL_PATH = "Models/barrel01/barrel01.j3o";
+    public static final String MODEL_PATH = "Models/ArmyBoxComplete/ArmyBoxComplete.j3o";
     public static final String SPATIAL_NAME = "ammo";
 
     public AmmoBonus(AssetManager assetManager, int amount) {
@@ -26,8 +26,8 @@ public class AmmoBonus extends Bonus {
     public void setUpProperties() {
         this.setSpatial(this.getAssetManager().loadModel(MODEL_PATH));
         this.getSpatial().setName(SPATIAL_NAME);
-        this.getSpatial().setLocalTranslation(500, 0, 700);
-        this.getSpatial().setLocalScale(3f);
+        this.getSpatial().setLocalTranslation(-29, 10, 26);
+        this.getSpatial().setLocalScale(0.5f);
         this.getSpatial().addControl(new RigidBodyControl(2f));
         this.getSpatial().addControl(new AmmoControl());
     }

@@ -73,16 +73,16 @@ public class Player implements ActionListener{
         // a capsule collision shape and a CharacterControl.
         // The CharacterControl offers extra settings for
         // size, stepheight, jumping, falling, and gravity.
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 6f, 1);
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 2f, 1);
         this.setPlayerNode(new Node("player"));
         this.getPlayerNode().addControl(new GhostControl(capsuleShape));
         this.setControl(new CharacterControl(capsuleShape, 0.05f));                
-        this.getControl().setJumpSpeed(20);
+        this.getControl().setJumpSpeed(15);
         this.getControl().setFallSpeed(30);
         this.getControl().setGravity(30);
         this.getPlayerNode().addControl(this.getControl());
         // We re-use the flyby camera for rotation, while positioning is handled by physics
-        this.getApp().getFlyByCamera().setMoveSpeed(100);
+        this.getApp().getFlyByCamera().setMoveSpeed(50);
         this.getWalkDirection().set(0, 0, 0);
         this.setUpCrossHairs();
         this.initHUD();
@@ -271,7 +271,7 @@ public class Player implements ActionListener{
             // The closest collision point is what was truly hit:
             CollisionResult closest = results.getClosestCollision();
             // Let's interact - we mark the hit
-            Sphere sphere = new Sphere(3, 3, 0.1f);
+            Sphere sphere = new Sphere(10, 10, 0.02f);
             Geometry shootsMark = new Geometry("shoots_mark", sphere);
             Material markMaterial = new Material(this.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
             markMaterial.setColor("Color", ColorRGBA.Black);

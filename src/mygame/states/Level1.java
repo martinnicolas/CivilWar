@@ -39,7 +39,7 @@ public class Level1 extends Level implements PhysicsCollisionListener{
     //They here to avoid instanciating new vectors on each frame
     private final Vector3f camDir = new Vector3f(), camLeft = new Vector3f();
     //Player initial location for Level 1.
-    private static final Vector3f PLAYER_INITIAL_LOCATION = new Vector3f(600, 20, 650);
+    private static final Vector3f PLAYER_INITIAL_LOCATION = new Vector3f(300, 10, 325);
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -75,7 +75,7 @@ public class Level1 extends Level implements PhysicsCollisionListener{
         bulletAppState.getPhysicsSpace().addAll(sceneModel);
         //Add some light to localRootNode
         DirectionalLight directionalLight = new DirectionalLight();
-        directionalLight.setDirection(new Vector3f(-0.5f, -0.5f, -0.5f).normalizeLocal());
+        directionalLight.setDirection(new Vector3f(0.5f, -0.5f, -0.5f).normalizeLocal());
         this.getLocalRootNode().addLight(directionalLight);
         
         //Load player
@@ -109,8 +109,8 @@ public class Level1 extends Level implements PhysicsCollisionListener{
     @Override
     public void update(float tpf) {
         //TODO: implement behavior during runtime
-        camDir.set(this.getApp().getCamera().getDirection()).multLocal(0.6f);
-        camLeft.set(this.getApp().getCamera().getLeft()).multLocal(0.4f);
+        camDir.set(this.getApp().getCamera().getDirection()).multLocal(0.3f);
+        camLeft.set(this.getApp().getCamera().getLeft()).multLocal(0.2f);
         this.getPlayer().getWalkDirection().set(0, 0, 0);
         if (this.getPlayer().isLeft()) {
             this.getPlayer().getWalkDirection().addLocal(camLeft);
