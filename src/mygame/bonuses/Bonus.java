@@ -22,8 +22,6 @@ public abstract class Bonus {
         this.setAmount(amount);
         this.setAssetManager(assetManager);
     }
-    
-    public abstract void setUpProperties();
 
     public AssetManager getAssetManager() {
         return assetManager;

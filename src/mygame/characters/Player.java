@@ -73,7 +73,7 @@ public class Player implements ActionListener{
         // a capsule collision shape and a CharacterControl.
         // The CharacterControl offers extra settings for
         // size, stepheight, jumping, falling, and gravity.
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 2f, 1);
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 3.0f, 1);
         this.setPlayerNode(new Node("player"));
         this.getPlayerNode().addControl(new GhostControl(capsuleShape));
         this.setControl(new CharacterControl(capsuleShape, 0.05f));                

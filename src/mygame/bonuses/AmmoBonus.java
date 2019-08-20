@@ -7,7 +7,7 @@ package mygame.bonuses;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.RigidBodyControl;
-import mygame.controls.AmmoControl;
+import mygame.controls.BonusControl;
 
 /**
  *
@@ -20,16 +20,19 @@ public class AmmoBonus extends Bonus {
 
     public AmmoBonus(AssetManager assetManager, int amount) {
         super(assetManager, amount);
+        this.setUpProperties();
     }
-
-    @Override
-    public void setUpProperties() {
+    
+    /**
+     * Setup ammo properties
+     */
+    private void setUpProperties() {
         this.setSpatial(this.getAssetManager().loadModel(MODEL_PATH));
         this.getSpatial().setName(SPATIAL_NAME);
         this.getSpatial().setLocalTranslation(-29, 10, 26);
         this.getSpatial().setLocalScale(0.5f);
         this.getSpatial().addControl(new RigidBodyControl(2f));
-        this.getSpatial().addControl(new AmmoControl());
+        this.getSpatial().addControl(new BonusControl(this.getAmount()));
     }
     
 }

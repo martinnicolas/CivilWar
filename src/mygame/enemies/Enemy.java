@@ -25,9 +25,7 @@ public abstract class Enemy {
         this.setAssetManager(assetManager);
     }
     
-    public abstract void setUpProperties();
-    
-        public AssetManager getAssetManager() {
+    public AssetManager getAssetManager() {
         return assetManager;
     }
 

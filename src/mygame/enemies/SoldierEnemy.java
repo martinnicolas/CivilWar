@@ -8,7 +8,6 @@ package mygame.enemies;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.RigidBodyControl;
 import mygame.controls.EnemyControl;
-import mygame.controls.TerrainTrackControl;
 
 /**
  *
@@ -21,17 +20,19 @@ public class SoldierEnemy extends Enemy {
 
     public SoldierEnemy(AssetManager assetManager, int energy, int damage) {
         super(assetManager, energy, damage);
+        this.setUpProperties();
     }
-
-    @Override
-    public void setUpProperties() {
+    
+    /**
+     * Setup soldier properties
+     */
+    private void setUpProperties() {
         this.setSpatial(this.getAssetManager().loadModel(MODEL_PATH));
         this.getSpatial().setName(SPATIAL_NAME);
         this.getSpatial().setLocalTranslation(-28, 0, -26);
         this.getSpatial().setLocalScale(0.5f);
         this.getSpatial().addControl(new RigidBodyControl(0));
-        //this.getSpatial().addControl(new EnemyControl());
-        //this.getSpatial().addControl(new TerrainTrackControl());
-    }
+        //this.getSpatial().addControl(new EnemyControl(this.getEnergy(), this.getDamage()));
+    }    
     
 }

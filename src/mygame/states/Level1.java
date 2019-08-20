@@ -86,19 +86,16 @@ public class Level1 extends Level implements PhysicsCollisionListener{
 
         //Load some enemy
         SoldierEnemy soldierEnemy = new SoldierEnemy(this.getAssetManager(), 100, 10);
-        soldierEnemy.setUpProperties();
         this.getLocalRootNode().attachChild(soldierEnemy.getSpatial());
         bulletAppState.getPhysicsSpace().addAll(soldierEnemy.getSpatial());
 
         //Load some ammo bonus
         AmmoBonus ammoBonus = new AmmoBonus(this.getAssetManager(), 10);
-        ammoBonus.setUpProperties();
         this.getLocalRootNode().attachChild(ammoBonus.getSpatial());
         bulletAppState.getPhysicsSpace().addAll(ammoBonus.getSpatial());
         
         //Load some health bonus
         HealthBonus healthBonus = new HealthBonus(this.getAssetManager(), 10);
-        healthBonus.setUpProperties();
         this.getLocalRootNode().attachChild(healthBonus.getSpatial());
         bulletAppState.getPhysicsSpace().addAll(healthBonus.getSpatial());
         

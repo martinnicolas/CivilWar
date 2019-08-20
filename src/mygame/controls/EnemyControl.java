@@ -19,7 +19,14 @@ import mygame.characters.Player;
  */
 public class EnemyControl extends AbstractControl {
     
+    private int energy;
+    private int damage;    
     private final Quaternion lookRotation = new Quaternion();
+    
+    public EnemyControl(int energy, int damage) {
+        this.setEnergy(energy);
+        this.setDamage(energy);
+    }
 
     @Override
     protected void controlUpdate(float tpf) {
@@ -37,6 +44,22 @@ public class EnemyControl extends AbstractControl {
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
         
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public void setEnergy(int energy) {
+        this.energy = energy;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public void setDamage(int damage) {
+        this.damage = damage;
     }
     
 }

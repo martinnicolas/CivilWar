@@ -13,8 +13,14 @@ import com.jme3.scene.control.AbstractControl;
  *
  * @author martin
  */
-public class AmmoControl extends AbstractControl{
-
+public class BonusControl extends AbstractControl {
+    
+    private int plusBonus;
+    
+    public BonusControl(int amount) {
+        this.setPlusBonus(amount);
+    }
+    
     @Override
     protected void controlUpdate(float tpf) {
         this.getSpatial().rotate(0, tpf, 0);
@@ -23,6 +29,14 @@ public class AmmoControl extends AbstractControl{
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
         
+    }
+
+    public int getPlusBonus() {
+        return plusBonus;
+    }
+
+    public void setPlusBonus(int plusBonus) {
+        this.plusBonus = plusBonus;
     }
     
 }
