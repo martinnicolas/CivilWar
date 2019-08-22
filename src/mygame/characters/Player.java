@@ -10,7 +10,6 @@ import com.jme3.audio.AudioData.DataType;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
-import com.jme3.bullet.control.CharacterControl;
 import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResult;
@@ -28,6 +27,8 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.shape.Sphere;
 import mygame.Main;
+import mygame.controls.PlayerControl;
+import mygame.controls.PlayerHUDControl;
 import mygame.states.Level;
 
 /**
@@ -41,19 +42,18 @@ public class Player implements ActionListener{
     private Level level;
     private Node localRootNode;
     private AssetManager assetManager;
-    private CharacterControl control;
     private Node playerNode;
     private AudioNode pickedAmmoAudio, pickedHealthAudio, jumpAudio, walkAudio, shootAudio, emptyGunAudio;
     private boolean left = false, right = false, up = false, down = false;
     public static final String SPATIAL_NAME = "player";
-    //Player settings for the game    
-    private static final int MAX_AMMOS = 100;
-    private static final float MAX_HEALTH = 100;
-    private int ammoes = MAX_AMMOS;
-    private float health = MAX_HEALTH;
-    //Variables for HUD texts
-    private BitmapText ammoesText;
-    private BitmapText healthText;
+    //String constants for Action Listener keys
+    private static final String LEFT_KEY = "Left";
+    private static final String RIGHT_KEY = "Right";
+    private static final String UP_KEY = "Up";
+    private static final String DOWN_KEY = "Down";
+    private static final String JUMP_KEY = "Jump";
+    private static final String PAUSE_KEY = "Pause";
+    private static final String SHOOT_KEY = "Shoot";
 
     public Player(Level level) {
         this.setLevel(level);
@@ -61,6 +61,7 @@ public class Player implements ActionListener{
         this.setLocalRootNode(level.getLocalRootNode());
         this.setAssetManager(level.getAssetManager());
         this.setUpProperties();
+        this.setUpCrossHairs();
         this.setUpAudio();
         this.setUpKeys();
     }
@@ -74,24 +75,19 @@ public class Player implements ActionListener{
         // The CharacterControl offers extra settings for
         // size, stepheight, jumping, falling, and gravity.
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 3.0f, 1);
-        this.setPlayerNode(new Node("player"));
+        this.setPlayerNode(new Node(SPATIAL_NAME));
         this.getPlayerNode().addControl(new GhostControl(capsuleShape));
-        this.setControl(new CharacterControl(capsuleShape, 0.05f));                
-        this.getControl().setJumpSpeed(15);
-        this.getControl().setFallSpeed(30);
-        this.getControl().setGravity(30);
-        this.getPlayerNode().addControl(this.getControl());
+        this.getPlayerNode().addControl(new PlayerControl(capsuleShape));
+        this.getPlayerNode().addControl(new PlayerHUDControl(this.getApp(), this));
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         this.getApp().getFlyByCamera().setMoveSpeed(50);
         this.getWalkDirection().set(0, 0, 0);
-        this.setUpCrossHairs();
-        this.initHUD();
     }
 
     /**
      * Setup crosshairs for aim
      */
-    protected void setUpCrossHairs() {
+    private void setUpCrossHairs() {
         BitmapFont guiFont = this.getAssetManager().loadFont("Interface/Fonts/Default.fnt");
         BitmapText crossHairs = new BitmapText(guiFont, false);
         crossHairs.setSize(guiFont.getCharSet().getRenderedSize() * 2);
@@ -102,40 +98,6 @@ public class Player implements ActionListener{
                 0
         );
         this.getApp().getGuiNode().attachChild(crossHairs);
-    }
-
-    /**
-     * Init HUD
-     */
-    private void initHUD() {
-        //Write text for ammoes
-        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/Fonts/Default.fnt");
-        this.setAmmoesText(new BitmapText(guiFont, false));
-        this.getAmmoesText().setSize(guiFont.getCharSet().getRenderedSize());
-        this.getAmmoesText().setText("Ammo:     " + Integer.toString(MAX_AMMOS));
-        this.getAmmoesText().setLocalTranslation(this.getApp().getCamera().getWidth() - 150, 750, 0);
-        this.getApp().getGuiNode().attachChild(this.getAmmoesText());
-        //Write text for health
-        this.setHealthText(new BitmapText(guiFont, false));
-        this.getHealthText().setSize(guiFont.getCharSet().getRenderedSize());
-        this.getHealthText().setText("Health:     " + Integer.toString(Math.round(MAX_HEALTH)));
-        this.getHealthText().setLocalTranslation(this.getApp().getCamera().getWidth() - 150, 725, 0);
-        this.getApp().getGuiNode().attachChild(this.getHealthText());
-    }
-
-    /**
-     * Update HUD
-     */
-    private void updateHUD() {
-        //Update ammoes text
-        if (!this.haveEnoughAmmoes()) {
-            this.getAmmoesText().setColor(ColorRGBA.Red);
-        } else {
-            this.getAmmoesText().setColor(ColorRGBA.White);
-        }
-        this.getAmmoesText().setText("Ammo:     " + Integer.toString(this.getAmmoes()));
-        //Update health text
-        this.getHealthText().setText("Health:     " + Integer.toString(Math.round(this.getHealth())));
     }
 
     /**
@@ -184,20 +146,20 @@ public class Player implements ActionListener{
      * Settup keys
      */
     private void setUpKeys() {
-        this.getApp().getInputManager().addMapping("Left", new KeyTrigger(KeyInput.KEY_A));
-        this.getApp().getInputManager().addMapping("Right", new KeyTrigger(KeyInput.KEY_D));
-        this.getApp().getInputManager().addMapping("Up", new KeyTrigger(KeyInput.KEY_W));
-        this.getApp().getInputManager().addMapping("Down", new KeyTrigger(KeyInput.KEY_S));
-        this.getApp().getInputManager().addMapping("Jump", new KeyTrigger(KeyInput.KEY_SPACE));
-        this.getApp().getInputManager().addMapping("Pause", new KeyTrigger(KeyInput.KEY_P));
-        this.getApp().getInputManager().addMapping("Shoot", new KeyTrigger(KeyInput.KEY_F));
-        this.getApp().getInputManager().addListener(this, "Left");
-        this.getApp().getInputManager().addListener(this, "Right");
-        this.getApp().getInputManager().addListener(this, "Up");
-        this.getApp().getInputManager().addListener(this, "Down");
-        this.getApp().getInputManager().addListener(this, "Jump");
-        this.getApp().getInputManager().addListener(this, "Pause");
-        this.getApp().getInputManager().addListener(this, "Shoot");
+        this.getApp().getInputManager().addMapping(Player.LEFT_KEY, new KeyTrigger(KeyInput.KEY_A));
+        this.getApp().getInputManager().addMapping(Player.RIGHT_KEY, new KeyTrigger(KeyInput.KEY_D));
+        this.getApp().getInputManager().addMapping(Player.UP_KEY, new KeyTrigger(KeyInput.KEY_W));
+        this.getApp().getInputManager().addMapping(Player.DOWN_KEY, new KeyTrigger(KeyInput.KEY_S));
+        this.getApp().getInputManager().addMapping(Player.JUMP_KEY, new KeyTrigger(KeyInput.KEY_SPACE));
+        this.getApp().getInputManager().addMapping(Player.PAUSE_KEY, new KeyTrigger(KeyInput.KEY_P));
+        this.getApp().getInputManager().addMapping(Player.SHOOT_KEY, new KeyTrigger(KeyInput.KEY_F));
+        this.getApp().getInputManager().addListener(this, Player.LEFT_KEY);
+        this.getApp().getInputManager().addListener(this, Player.RIGHT_KEY);
+        this.getApp().getInputManager().addListener(this, Player.UP_KEY);
+        this.getApp().getInputManager().addListener(this, Player.DOWN_KEY);
+        this.getApp().getInputManager().addListener(this, Player.JUMP_KEY);
+        this.getApp().getInputManager().addListener(this, Player.PAUSE_KEY);
+        this.getApp().getInputManager().addListener(this, Player.SHOOT_KEY);
     }
 
     /**
@@ -211,32 +173,32 @@ public class Player implements ActionListener{
 
     @Override
     public void onAction(String name, boolean isPressed, float tpf) {
-        if (!name.equals("Pause")) {
+        if (!name.equals(Player.PAUSE_KEY)) {
             if (this.getLevel().isEnabled()) {
                 switch (name) {
-                    case "Left":
+                    case Player.LEFT_KEY:
                         this.setLeft(isPressed);
                         break;
-                    case "Right":
+                    case Player.RIGHT_KEY:
                         this.setRight(isPressed);
                         break;
-                    case "Up":
+                    case Player.UP_KEY:
                         this.setUp(isPressed);
                         break;
-                    case "Down":
+                    case Player.DOWN_KEY:
                         this.setDown(isPressed);
                         break;
-                    case "Jump":
+                    case Player.JUMP_KEY:
                         if (isPressed) {
                             this.getControl().jump();
                             this.getJumpAudio().playInstance();
                         }
                         break;
-                    case "Shoot":
+                    case Player.SHOOT_KEY:
                         if (isPressed) {
-                            if (this.haveEnoughAmmoes()) {
+                            if (this.getControl().haveEnoughAmmoes()) {
                                 this.getShootAudio().playInstance();
-                                this.discountAmmoes();
+                                this.getControl().discountAmmoes();
                                 this.checkForShootingCollisions();
                             } else {
                                 this.getEmptyGunAudio().playInstance();
@@ -283,62 +245,6 @@ public class Player implements ActionListener{
         }
     }
 
-    public void plusAmmoes(int plusAmmoes) {
-        this.setAmmoes(this.getAmmoes() + plusAmmoes);
-        this.updateHUD();
-    }
-
-    public void plusHealth(int plusHealth) {
-        this.setHealth(this.getHealth() + plusHealth);
-        this.updateHUD();
-    }
-
-    public BitmapText getAmmoesText() {
-        return ammoesText;
-    }
-
-    public void setAmmoesText(BitmapText ammoesText) {
-        this.ammoesText = ammoesText;
-    }
-
-    public BitmapText getHealthText() {
-        return healthText;
-    }
-
-    public void setHealthText(BitmapText healthText) {
-        this.healthText = healthText;
-    }
-
-    private boolean haveEnoughAmmoes() {
-        return this.getAmmoes() > 0;
-    }
-
-    private void discountAmmoes() {
-        this.setAmmoes(this.getAmmoes() - 1);
-        this.updateHUD();
-    }
-
-    public void discountHealth(float discount) {
-        this.setHealth(this.getHealth() - discount);
-        this.updateHUD();
-    }
-
-    public int getAmmoes() {
-        return ammoes;
-    }
-
-    public void setAmmoes(int ammoes) {
-        this.ammoes = ammoes;
-    }
-
-    public float getHealth() {
-        return health;
-    }
-
-    public void setHealth(float health) {
-        this.health = health;
-    }
-
     public Level getLevel() {
         return level;
     }
@@ -379,12 +285,8 @@ public class Player implements ActionListener{
         this.playerNode = playerNode;
     }
 
-    public CharacterControl getControl() {
-        return control;
-    }
-
-    public void setControl(CharacterControl control) {
-        this.control = control;
+    public PlayerControl getControl() {
+        return this.getPlayerNode().getControl(PlayerControl.class);
     }
 
     public Vector3f getWalkDirection() {

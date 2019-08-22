@@ -22,8 +22,8 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
-import mygame.enemies.SoldierEnemy;
 import java.util.List;
+import mygame.enemies.SoldierEnemy;
 import mygame.Main;
 import mygame.bonuses.AmmoBonus;
 import mygame.bonuses.HealthBonus;
@@ -146,7 +146,7 @@ public class Level1 extends Level implements PhysicsCollisionListener{
         this.getLocalRootNode().attachChild(this.getAudioNode());
         this.getAudioNode().play();// play continuously!
     }
-
+    
     @Override
     public void collision(PhysicsCollisionEvent event) {
         //Check for collisions with ammo
@@ -208,10 +208,10 @@ public class Level1 extends Level implements PhysicsCollisionListener{
     private void checkPlayerCollisionsWithEnemy(PhysicsCollisionEvent event, String playerName) {
         if (playerName.equals(event.getNodeA().getName()) || playerName.equals(event.getNodeB().getName())) {
             if (event.getNodeA().getName().equals(SoldierEnemy.SPATIAL_NAME)) {
-                this.registerPlayerDamage();
+                this.loadPlayerDamage();
             } else {
                 if (event.getNodeB().getName().equals(SoldierEnemy.SPATIAL_NAME)) {
-                    this.registerPlayerDamage();
+                    this.loadPlayerDamage();
                 }
             }
         }
@@ -229,10 +229,10 @@ public class Level1 extends Level implements PhysicsCollisionListener{
             spatial.removeFromParent();
             spatial.setLocalScale(0.0f);
             if (bonusName.equals(AmmoBonus.SPATIAL_NAME)) {
-                this.getPlayer().plusAmmoes(10);
+                this.getPlayer().getControl().plusAmmoes(10);
                 this.getPlayer().getPickedAmmoAudio().playInstance();
             } else {
-                this.getPlayer().plusHealth(10);
+                this.getPlayer().getControl().plusHealth(10);
                 this.getPlayer().getPickedHealthAudio().playInstance();
             }
         }
@@ -267,18 +267,17 @@ public class Level1 extends Level implements PhysicsCollisionListener{
     }
     
     /**
-     * Register player damage
-     * 
+     * Load player damage
      */
-    private void registerPlayerDamage() {
+    private void loadPlayerDamage() {
         GhostControl spatialControl = this.getPlayer().getPlayerNode().getControl(GhostControl.class);
         if(spatialControl != null && spatialControl.isEnabled()) {
             spatialControl.setEnabled(false);
-            this.getPlayer().discountHealth(0.1f);
+            this.getPlayer().getControl().discountHealth(0.1f);
             this.getPlayer().getJumpAudio().playInstance();
         }
-    }
-    
+    }    
+
     private void restoreControlForAlives() {
         //enable all controls
         List<Spatial> spatials = this.getLocalRootNode().getChildren();

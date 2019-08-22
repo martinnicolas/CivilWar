@@ -60,21 +60,7 @@ public abstract class Level extends AbstractAppState {
         this.getAudioNode().setPositional(false);
         this.getLocalRootNode().attachChild(this.getAudioNode());
         this.getAudioNode().play();// play continuously!
-        this.getPlayer().getControl().setEnabled(false);
-        //disable all controls
-        List<Spatial> spatials = this.getLocalRootNode().getChildren();
-        for (Spatial spatial : spatials) {
-            for (int i = 0; i < spatial.getNumControls(); i++) {
-                Control spatialControl = spatial.getControl(i);
-                if (spatialControl instanceof PhysicsControl) {
-                    PhysicsControl physicsControl = (PhysicsControl) spatialControl;
-                    physicsControl.setEnabled(false);
-                } else {
-                    AbstractControl abstractControl = (AbstractControl) spatialControl;
-                    abstractControl.setEnabled(false);
-                }
-            }
-        }
+        this.disableAllControls();
     }
     
     /**
@@ -92,8 +78,13 @@ public abstract class Level extends AbstractAppState {
         this.getAudioNode().setPositional(false);
         this.getLocalRootNode().attachChild(this.getAudioNode());
         this.getAudioNode().play();// play continuously!
-        this.getPlayer().getControl().setEnabled(true);
-        //enable all controls
+        this.enableAllControls();
+    }    
+    
+    /**
+     * Enable all controls
+     */
+    private void enableAllControls() {
         List<Spatial> spatials = this.getLocalRootNode().getChildren();
         for (Spatial spatial : spatials) {
             for (int i = 0; i < spatial.getNumControls(); i++) {
@@ -107,7 +98,26 @@ public abstract class Level extends AbstractAppState {
                 }
             }
         }
-    }    
+    }
+    
+    /**
+     * Disable all controls
+     */
+    private void disableAllControls() {
+        List<Spatial> spatials = this.getLocalRootNode().getChildren();
+        for (Spatial spatial : spatials) {
+            for (int i = 0; i < spatial.getNumControls(); i++) {
+                Control spatialControl = spatial.getControl(i);
+                if (spatialControl instanceof PhysicsControl) {
+                    PhysicsControl physicsControl = (PhysicsControl) spatialControl;
+                    physicsControl.setEnabled(false);
+                } else {
+                    AbstractControl abstractControl = (AbstractControl) spatialControl;
+                    abstractControl.setEnabled(false);
+                }
+            }
+        }        
+    }
 
     public BitmapText getPauseText() {
         return pauseText;
