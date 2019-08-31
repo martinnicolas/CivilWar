@@ -6,14 +6,17 @@
 package mygame.controls;
 
 import com.jme3.app.Application;
-import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
-import com.jme3.math.ColorRGBA;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
 import com.jme3.scene.control.AbstractControl;
+import de.lessvoid.nifty.Nifty;
+import de.lessvoid.nifty.controls.Label;
+import de.lessvoid.nifty.screen.Screen;
+import de.lessvoid.nifty.tools.Color;
 import mygame.Main;
 import mygame.characters.Player;
+import mygame.screens.HUDScreen;
 
 /**
  *
@@ -21,16 +24,14 @@ import mygame.characters.Player;
  */
 public class PlayerHUDControl extends AbstractControl {
     
-    //Variables for HUD texts
-    private BitmapText ammoesText;
-    private BitmapText healthText;
     private Main app;
     private Player player;
+    private Nifty nifty;
     
-    public PlayerHUDControl(Application app, Player player) {
-        this.setApp((Main) app);
-        this.setPlayer(player);
-        this.initHUD();
+    public PlayerHUDControl(Main app, Player player) {
+        this.app = app;
+        this.player = player;
+        this.showHUDScreen();
     }
 
     @Override
@@ -44,51 +45,38 @@ public class PlayerHUDControl extends AbstractControl {
     }
     
     /**
-     * Init HUD
+     * Show HUD Screen
      */
-    private void initHUD() {
-        //Write text for ammoes
-        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/Fonts/Default.fnt");
-        this.setAmmoesText(new BitmapText(guiFont, false));
-        this.getAmmoesText().setSize(guiFont.getCharSet().getRenderedSize());
-        this.getAmmoesText().setText("Ammo:     " + Integer.toString(this.getPlayer().getControl().getAmmoes()));
-        this.getAmmoesText().setLocalTranslation(this.getApp().getCamera().getWidth() - 150, 750, 0);
-        this.getApp().getGuiNode().attachChild(this.getAmmoesText());
-        //Write text for health
-        this.setHealthText(new BitmapText(guiFont, false));
-        this.getHealthText().setSize(guiFont.getCharSet().getRenderedSize());
-        this.getHealthText().setText("Health:     " + Integer.toString(Math.round(this.getPlayer().getControl().getHealth())));
-        this.getHealthText().setLocalTranslation(this.getApp().getCamera().getWidth() - 150, 725, 0);
-        this.getApp().getGuiNode().attachChild(this.getHealthText());
+    private void showHUDScreen() {
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(this.getApp().getAssetManager(),
+                                                          this.getApp().getInputManager(),
+                                                          this.getApp().getAudioRenderer(),
+                                                          this.getApp().getGuiViewPort());
+        this.setNifty(niftyDisplay.getNifty());
+        HUDScreen hudScreen = new HUDScreen();
+        this.getNifty().fromXml("Interface/hud_screen.xml", "hud_screen", hudScreen);
+        this.getApp().getGuiViewPort().addProcessor(niftyDisplay);
     }
     
     /**
      * Update HUD
      */
     private void updateHUD() {
+        Screen screen = this.getNifty().getScreen("hud_screen");
+        Label ammoText = (Label) screen.findNiftyControl("ammo_text", Label.class);
+        Label ammo = (Label) screen.findNiftyControl("ammo", Label.class);
         if (!this.getPlayer().getControl().haveEnoughAmmoes()) {
-            this.getAmmoesText().setColor(ColorRGBA.Red);
-        } else {
-            this.getAmmoesText().setColor(ColorRGBA.White);
+            ammoText.setColor(new Color("#FF0000"));
+            ammo.setColor(new Color("#FF0000"));
         }
-        this.getAmmoesText().setText("Ammo:     " + Integer.toString(this.getPlayer().getControl().getAmmoes()));
-        this.getHealthText().setText("Health:     " + Integer.toString(Math.round(this.getPlayer().getControl().getHealth())));
-    }
-    
-    public BitmapText getAmmoesText() {
-        return ammoesText;
-    }
-
-    public void setAmmoesText(BitmapText ammoesText) {
-        this.ammoesText = ammoesText;
-    }
-
-    public BitmapText getHealthText() {
-        return healthText;
-    }
-
-    public void setHealthText(BitmapText healthText) {
-        this.healthText = healthText;
+        else
+            if (!"#FFF".equals(ammoText.getColor().getColorString())) {
+                ammoText.setColor(new Color("#FFF"));
+                ammo.setColor(new Color("#FFF"));
+            }
+        ammoText.setText(Integer.toString(this.getPlayer().getControl().getAmmoes()));
+        Label healthText = (Label) screen.findNiftyControl("health_text", Label.class);
+        healthText.setText(Integer.toString(Math.round(this.getPlayer().getControl().getHealth())));
     }
 
     public Main getApp() {
@@ -105,6 +93,14 @@ public class PlayerHUDControl extends AbstractControl {
 
     public void setPlayer(Player player) {
         this.player = player;
+    }
+
+    public Nifty getNifty() {
+        return nifty;
+    }
+
+    public void setNifty(Nifty nifty) {
+        this.nifty = nifty;
     }
     
 }

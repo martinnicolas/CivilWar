@@ -20,9 +20,9 @@ public abstract class Enemy {
     private int damage;
     
     public Enemy(AssetManager assetManager, int energy, int damage) {
-        this.setEnergy(energy);
-        this.setDamage(damage);
-        this.setAssetManager(assetManager);
+        this.energy = energy;
+        this.damage = damage;
+        this.assetManager = assetManager;
     }
     
     public AssetManager getAssetManager() {

@@ -1,37 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <nifty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
     <useControls filename="nifty-default-controls.xml"/>
-    <useStyles filename="nifty-default-styles.xml"/>    
+    <useStyles filename="nifty-default-styles.xml"/>
     <registerSound id="menu_hover" filename="Sounds/Effects/menu_hover.wav" />
-    <screen id="start_screen" controller="mygame.screens.StartScreen">
-        <layer id="background" childLayout="vertical" backgroundImage="Interface/images/fondomenu.jpg">            
-            <panel width="100%" height="20%" childLayout="center">
-                <image filename="Interface/images/logo.png"></image>
-            </panel>
-            <panel width="100%" height="70%" childLayout="center">
-                <panel id="GPanel1" childLayout="vertical" width="400px" height="300px" style="nifty-panel" padding="50px,50px,50px,50px">
-                    <control name="button" id="buttonJugar" visibleToMouse="true" width="300px" height="30px" marginBottom="10px" align="center" label="Jugar">
-                        <effect>
-                            <onFocus name="playSound" sound="menu_hover"/>
-                        </effect>
-                        <interact onClick="jugar()"/>
-                    </control>
-                    <control name="button" id="buttonAyuda" visibleToMouse="true" width="300px" height="30px" marginBottom="10px" align="center" label="Ayuda">
-                        <effect>
-                            <onFocus name="playSound" sound="menu_hover"/>
-                        </effect>
-                        <interact onClick="ayuda()"/>
-                    </control>
-                    <control name="button" id="buttonSalir" visibleToMouse="true" width="300px" height="30px" marginBottom="10px" align="center" label="Salir">
-                        <effect>
-                            <onFocus name="playSound" sound="menu_hover"/>
-                        </effect>
-                        <interact onClick="salir()"/>
-                    </control>    
-                </panel>
-            </panel>
-            <panel width="100%" height="10%" childLayout="horizontal">
-                <text width="10%" height="100%" font="aurulent-sans-16.fnt" halign="left" color="#ffff" text="CivilWar 1.0" />
+    <screen id="pause_screen" controller="mygame.screens.PauseScreen">
+        <layer id="background" childLayout="center" backgroundColor="#1119">
+            <panel id="menu_panel" childLayout="vertical" padding="50px,50px,50px,50px" width="400px" style="nifty-panel" height="300px">
+                <control name="button" id="buttonJugar" visibleToMouse="true" width="300px" height="30px" marginBottom="10px" align="center" label="Ayuda">
+                    <effect>
+                        <onFocus name="playSound" sound="menu_hover"/>
+                    </effect>
+                    <interact onClick="ayuda()"/>
+                </control>
+                <control name="button" id="buttonSalir" visibleToMouse="true" width="300px" marginBottom="10px" label="Salir" align="center" height="30px">
+                    <effect>
+                        <onFocus name="playSound" sound="menu_hover"/>
+                    </effect>
+                    <interact onClick="salir()"/>                    
+                </control>
             </panel>
         </layer>
     </screen>

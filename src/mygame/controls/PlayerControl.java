@@ -26,6 +26,8 @@ public class PlayerControl extends CharacterControl {
     private static final float GRAVITY = 30;
     
     public PlayerControl(CapsuleCollisionShape capsuleShape) {
+        // The CharacterControl offers extra settings for
+        // size, stepheight, jumping, falling, and gravity.
         super(capsuleShape, STEP_HEIGHT);
         super.setJumpSpeed(JUMP_SPEED);
         super.setFallSpeed(FALL_SPEED);

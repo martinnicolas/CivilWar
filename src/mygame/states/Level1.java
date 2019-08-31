@@ -134,11 +134,12 @@ public class Level1 extends Level implements PhysicsCollisionListener{
         this.getRootNode().detachChild(this.getLocalRootNode());
         super.cleanup();
     }
-
+    
     /**
-     * Settup audio
+     * Setup audio
      */
-    private void setUpAudio() {
+    @Override
+    public void setUpAudio() {
         //Setup ambient audio
         this.setAudioNode(new AudioNode(this.getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", AudioData.DataType.Stream));
         this.getAudioNode().setLooping(true);  // activate continuous playing

@@ -8,20 +8,22 @@ package mygame.states;
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.asset.AssetManager;
-import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
+import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
-import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
-import com.jme3.math.ColorRGBA;
+import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
+import de.lessvoid.nifty.Nifty;
 import java.util.List;
 import mygame.Main;
 import mygame.characters.Player;
+import mygame.controls.PlayerControl;
+import mygame.controls.PlayerHUDControl;
+import mygame.screens.PauseScreen;
 
 /**
  *
@@ -37,30 +39,22 @@ public abstract class Level extends AbstractAppState {
     private Node rootNode;
     private AssetManager assetManager;
     private RigidBodyControl control;
-    private BitmapText pauseText;
+    private boolean paused = false;
+    //For pause screen
+    private Nifty nifty;
     
     /**
      * Pause game. Rewrite specific implementation in every class if it's necesary
      */
     public void pause() {
         this.setEnabled(false);
-        this.getApp().getFlyByCamera().setEnabled(false);
-        //Write text on the screen
-        BitmapFont guiFont = this.getApp().getAssetManager().loadFont("Interface/Fonts/Default.fnt");
-        this.setPauseText(new BitmapText(guiFont, false));
-        this.getPauseText().setSize(guiFont.getCharSet().getRenderedSize());
-        this.getPauseText().setText("PAUSE");
-        this.getPauseText().setColor(ColorRGBA.Red);
-        this.getPauseText().setLocalTranslation(10, 750, 0);
-        this.getApp().getGuiNode().attachChild(this.getPauseText());
-        this.getAudioNode().stop();
-        this.getLocalRootNode().detachChild(this.getAudioNode());
-        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
-        this.getAudioNode().setLooping(true);  // activate continuous playing
-        this.getAudioNode().setPositional(false);
-        this.getLocalRootNode().attachChild(this.getAudioNode());
-        this.getAudioNode().play();// play continuously!
         this.disableAllControls();
+        this.disablePhysics();
+        this.getAudioNode().stop();
+        this.showPauseScreen();
+        this.getPlayer().removeCrossHairs();
+        this.getApp().getFlyByCamera().setEnabled(false);
+        this.getApp().getInputManager().setCursorVisible(false);
     }
     
     /**
@@ -68,21 +62,53 @@ public abstract class Level extends AbstractAppState {
      */
     public void resume() {
         this.setEnabled(true);
-        this.getApp().getFlyByCamera().setEnabled(true);
-        this.getApp().getInputManager().setCursorVisible(false);
-        this.getApp().getGuiNode().detachChild(this.getPauseText());
-        this.getAudioNode().stop();
-        this.getLocalRootNode().detachChild(this.getAudioNode());
-        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", AudioData.DataType.Stream));
-        this.getAudioNode().setLooping(true);  // activate continuous playing
-        this.getAudioNode().setPositional(false);
-        this.getLocalRootNode().attachChild(this.getAudioNode());
-        this.getAudioNode().play();// play continuously!
         this.enableAllControls();
+        this.enablePhysics();
+        this.closePauseScreen();
+        this.getAudioNode().play();
+        this.getPlayer().setUpCrossHairs();
+        this.getApp().getFlyByCamera().setEnabled(true);
     }    
     
     /**
-     * Enable all controls
+     * Show pause screen
+     */
+    private void showPauseScreen() {        
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(this.getApp().getAssetManager(),
+                                                          this.getApp().getInputManager(),
+                                                          this.getApp().getAudioRenderer(),
+                                                          this.getApp().getGuiViewPort());
+        this.setNifty(niftyDisplay.getNifty());
+        PauseScreen pauseScreen = new PauseScreen(this);
+        pauseScreen.initialize(stateManager, app);
+        this.getNifty().fromXml("Interface/pause_screen.xml", "pause_screen", pauseScreen);
+        this.getApp().getGuiViewPort().addProcessor(niftyDisplay);
+    }
+    
+    /**
+     * Close pause screen
+     */
+    private void closePauseScreen() {
+        this.getStateManager().detach(this.getStateManager().getState(PauseScreen.class));
+        this.getNifty().exit();
+    }
+    
+    /**
+     * Disable physics
+     */
+    private void disablePhysics() {
+       this.getStateManager().getState(BulletAppState.class).setEnabled(false); 
+    }
+    
+    /**
+     * Enable physics
+     */
+    private void enablePhysics() {
+       this.getStateManager().getState(BulletAppState.class).setEnabled(true);
+    }
+    
+    /**
+     * Enable all controls when Level resumes
      */
     private void enableAllControls() {
         List<Spatial> spatials = this.getLocalRootNode().getChildren();
@@ -101,7 +127,7 @@ public abstract class Level extends AbstractAppState {
     }
     
     /**
-     * Disable all controls
+     * Disable all controls when Level is paused
      */
     private void disableAllControls() {
         List<Spatial> spatials = this.getLocalRootNode().getChildren();
@@ -118,14 +144,18 @@ public abstract class Level extends AbstractAppState {
             }
         }        
     }
-
-    public BitmapText getPauseText() {
-        return pauseText;
+    
+    /**
+     * Remove player settings
+     */
+    public void removePlayerSettings() {
+        this.getPlayer().getPlayerNode().getControl(PlayerHUDControl.class).getNifty().exit();
+        this.getPlayer().getPlayerNode().removeControl(PlayerHUDControl.class);
+        this.getPlayer().removeCrossHairs();
+        this.getApp().getInputManager().removeListener(this.getPlayer());
     }
-
-    public void setPauseText(BitmapText pauseText) {
-        this.pauseText = pauseText;
-    }
+    
+    public abstract void setUpAudio();
     
     public AppStateManager getStateManager() {
         return stateManager;
@@ -189,6 +219,22 @@ public abstract class Level extends AbstractAppState {
 
     public void setAudioNode(AudioNode audioNode) {
         this.audioNode = audioNode;
+    }
+
+    public boolean isPaused() {
+        return paused;
+    }
+
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
+    public Nifty getNifty() {
+        return nifty;
+    }
+
+    public void setNifty(Nifty nifty) {
+        this.nifty = nifty;
     }
     
 }

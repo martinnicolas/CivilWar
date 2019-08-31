@@ -56,10 +56,10 @@ public class Player implements ActionListener{
     private static final String SHOOT_KEY = "Shoot";
 
     public Player(Level level) {
-        this.setLevel(level);
-        this.setApp(level.getApp());
-        this.setLocalRootNode(level.getLocalRootNode());
-        this.setAssetManager(level.getAssetManager());
+        this.level = level;
+        this.app = level.getApp();
+        this.localRootNode = level.getLocalRootNode();
+        this.assetManager = level.getAssetManager();
         this.setUpProperties();
         this.setUpCrossHairs();
         this.setUpAudio();
@@ -71,15 +71,15 @@ public class Player implements ActionListener{
      */
     private void setUpProperties() {
         // We set up collision detection for the player by creating
-        // a capsule collision shape and a CharacterControl.
-        // The CharacterControl offers extra settings for
-        // size, stepheight, jumping, falling, and gravity.
+        // a capsule collision shape and a Player Control which extends 
+        // CharacterControl.
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 3.0f, 1);
         this.setPlayerNode(new Node(SPATIAL_NAME));
         this.getPlayerNode().addControl(new GhostControl(capsuleShape));
         this.getPlayerNode().addControl(new PlayerControl(capsuleShape));
         this.getPlayerNode().addControl(new PlayerHUDControl(this.getApp(), this));
         // We re-use the flyby camera for rotation, while positioning is handled by physics
+        this.getApp().getFlyByCamera().setEnabled(true);
         this.getApp().getFlyByCamera().setMoveSpeed(50);
         this.getWalkDirection().set(0, 0, 0);
     }
@@ -87,9 +87,10 @@ public class Player implements ActionListener{
     /**
      * Setup crosshairs for aim
      */
-    private void setUpCrossHairs() {
+    public void setUpCrossHairs() {
         BitmapFont guiFont = this.getAssetManager().loadFont("Interface/Fonts/Default.fnt");
         BitmapText crossHairs = new BitmapText(guiFont, false);
+        crossHairs.setName("cross_hairs");
         crossHairs.setSize(guiFont.getCharSet().getRenderedSize() * 2);
         crossHairs.setText("+"); // crosshairs
         crossHairs.setLocalTranslation( // center
@@ -98,6 +99,13 @@ public class Player implements ActionListener{
                 0
         );
         this.getApp().getGuiNode().attachChild(crossHairs);
+    }
+    
+    /**
+     * Remove cross hairs
+     */
+    public void removeCrossHairs() {
+        this.getApp().getGuiNode().detachChildNamed("cross_hairs");
     }
 
     /**
@@ -161,7 +169,7 @@ public class Player implements ActionListener{
         this.getApp().getInputManager().addListener(this, Player.PAUSE_KEY);
         this.getApp().getInputManager().addListener(this, Player.SHOOT_KEY);
     }
-
+    
     /**
      * Set player initial location.
      *
@@ -169,6 +177,7 @@ public class Player implements ActionListener{
      */
     public void setInitialLocation(Vector3f initialLocation) {
         this.getControl().setPhysicsLocation(initialLocation);
+        this.getApp().getCamera().lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
     }
 
     @Override

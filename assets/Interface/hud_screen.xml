@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<nifty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
+    <useControls filename="nifty-default-controls.xml"/>
+    <useStyles filename="nifty-default-styles.xml"/>
+    <screen id="hud_screen" controller="mygame.screens.HUDScreen">
+        <layer id="background" childLayout="center"/>
+        <layer id="foreground" childLayout="horizontal">
+            <panel id="panel_left" childLayout="vertical" width="80%" height="100%"/>
+            <panel id="panel_right" childLayout="vertical" width="20%" height="100%">
+                <panel id="panel_top_right1" childLayout="horizontal" backgroundColor="#1119" width="100%" height="10%">
+                    <control name="label" id="ammo" color="#FFF" width="50%" text="Ammo" halign="right" height="100%"/>
+                    <control name="label" id="ammo_text" color="#FFF" width="50%" text="" halign="left" height="100%"/>
+                </panel>
+                <panel id="panel_top_right2" childLayout="horizontal" backgroundColor="#1119" width="100%" height="10%">
+                    <control name="label" id="health" color="#FFF" width="50%" text="Health" halign="right" height="100%"/>
+                    <control name="label" id="health_text" color="#FFF" width="50%" text="" halign="left" height="100%"/>
+                </panel>
+                <panel id="panel_bot_right" width="100%" valign="center" height="80%"/>
+            </panel>
+        </layer>
+    </screen>
+</nifty>

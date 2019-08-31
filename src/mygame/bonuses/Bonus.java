@@ -19,8 +19,8 @@ public abstract class Bonus {
     private int amount;
     
     public Bonus(AssetManager assetManager, int amount) {
-        this.setAmount(amount);
-        this.setAssetManager(assetManager);
+        this.amount = amount;
+        this.assetManager = assetManager;
     }
 
     public AssetManager getAssetManager() {

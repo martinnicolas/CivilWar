@@ -25,42 +25,66 @@ public class HelpScreen extends AbstractAppState implements ScreenController {
     private Screen screen;
     private Main app;
     private AppStateManager stateManager;
-    private AudioNode audioMenu;
+    private AudioNode audioHelp;
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
         this.screen = screen;
-        this.audioMenu = new AudioNode(this.app.getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream);
-        this.audioMenu.setLooping(true);  // activate continuous playing
-        this.audioMenu.setPositional(false);   
-        this.audioMenu.play();// play continuously!        
+        this.setAudioHelp(new AudioNode(this.app.getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
+        this.getAudioHelp().setLooping(true);  // activate continuous playing
+        this.getAudioHelp().setPositional(false);   
     }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
-        this.stateManager = stateManager;
-        this.app = (Main)app;
+        this.setStateManager(stateManager);
+        this.setApp((Main) app);
     }
 
     @Override
     public void onStartScreen() {
-
+        this.getAudioHelp().play(); // play continuously!
     }
 
     @Override
     public void onEndScreen() {
-        this.audioMenu.stop();
+        this.getAudioHelp().stop();
     }
     
     /**
      * Volver al menu principal
      */
     public void volver() {
+        this.getStateManager().detach(this);
         StartScreen startScreen = new StartScreen();
-        startScreen.initialize(stateManager, app);
+        startScreen.initialize(this.getStateManager(), this.getApp());
         this.nifty.fromXml("Interface/start_screen.xml", "start_screen", startScreen);
+    }
+
+    public Main getApp() {
+        return app;
+    }
+
+    public void setApp(Main app) {
+        this.app = app;
+    }
+
+    public AppStateManager getStateManager() {
+        return stateManager;
+    }
+
+    public void setStateManager(AppStateManager stateManager) {
+        this.stateManager = stateManager;
+    }
+
+    public AudioNode getAudioHelp() {
+        return audioHelp;
+    }
+
+    public void setAudioHelp(AudioNode audioHelp) {
+        this.audioHelp = audioHelp;
     }
     
 }

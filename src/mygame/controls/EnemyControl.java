@@ -24,8 +24,8 @@ public class EnemyControl extends AbstractControl {
     private final Quaternion lookRotation = new Quaternion();
     
     public EnemyControl(int energy, int damage) {
-        this.setEnergy(energy);
-        this.setDamage(energy);
+        this.energy = energy;
+        this.damage = energy;
     }
 
     @Override

@@ -18,7 +18,7 @@ public class BonusControl extends AbstractControl {
     private int plusBonus;
     
     public BonusControl(int amount) {
-        this.setPlusBonus(amount);
+        this.plusBonus = amount;
     }
     
     @Override
