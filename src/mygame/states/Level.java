@@ -21,7 +21,6 @@ import de.lessvoid.nifty.Nifty;
 import java.util.List;
 import mygame.Main;
 import mygame.characters.Player;
-import mygame.controls.PlayerControl;
 import mygame.controls.PlayerHUDControl;
 import mygame.screens.PauseScreen;
 
@@ -47,27 +46,27 @@ public abstract class Level extends AbstractAppState {
      * Pause game. Rewrite specific implementation in every class if it's necesary
      */
     public void pause() {
-        this.setEnabled(false);
-        this.disableAllControls();
-        this.disablePhysics();
         this.getAudioNode().stop();
-        this.showPauseScreen();
         this.getPlayer().removeCrossHairs();
         this.getApp().getFlyByCamera().setEnabled(false);
         this.getApp().getInputManager().setCursorVisible(false);
+        this.setEnabled(false);
+        this.disableAllControls();
+        this.disablePhysics();
+        this.showPauseScreen();
     }
     
     /**
      * Resume game. Rewrite specific implementation in every class if it's necesary
      */
     public void resume() {
-        this.setEnabled(true);
-        this.enableAllControls();
-        this.enablePhysics();
         this.closePauseScreen();
+        this.setEnabled(true);
         this.getAudioNode().play();
         this.getPlayer().setUpCrossHairs();
         this.getApp().getFlyByCamera().setEnabled(true);
+        this.enableAllControls();
+        this.enablePhysics();
     }    
     
     /**
