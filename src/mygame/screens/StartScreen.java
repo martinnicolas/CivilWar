@@ -15,7 +15,7 @@ import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
 import mygame.Main;
-import mygame.states.Level1;
+import mygame.levels.Level1;
 
 /**
  *

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package mygame.states;
+package mygame.levels;
 
 import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;

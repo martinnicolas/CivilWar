@@ -29,7 +29,7 @@ import com.jme3.scene.shape.Sphere;
 import mygame.Main;
 import mygame.controls.PlayerControl;
 import mygame.controls.PlayerHUDControl;
-import mygame.states.Level;
+import mygame.levels.Level;
 
 /**
  *
