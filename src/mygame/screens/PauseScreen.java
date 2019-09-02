@@ -92,7 +92,7 @@ public class PauseScreen extends AbstractAppState implements ScreenController{
     }
     
     public void aceptar() {
-        this.getLevel().removePlayerSettings();
+        this.getLevel().removeSettings();
         this.getStateManager().detach(this.getLevel());
         this.nifty.exit();
         this.getStateManager().detach(this);

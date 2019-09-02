@@ -147,10 +147,12 @@ public abstract class Level extends AbstractAppState {
     /**
      * Remove player settings
      */
-    public void removePlayerSettings() {
+    public void removeSettings() {
         this.getPlayer().getPlayerNode().getControl(PlayerHUDControl.class).getNifty().exit();
         this.getPlayer().getPlayerNode().removeControl(PlayerHUDControl.class);
         this.getPlayer().removeCrossHairs();
+        BulletAppState bulletAppState = this.getStateManager().getState(BulletAppState.class);
+        this.getStateManager().detach(bulletAppState);
         this.getApp().getInputManager().removeListener(this.getPlayer());
     }
     

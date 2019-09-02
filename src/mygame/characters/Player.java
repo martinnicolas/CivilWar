@@ -171,7 +171,7 @@ public class Player implements ActionListener{
     }
     
     /**
-     * Set player initial location.
+     * Set initial location for player. Also sets camera looking to the center of the scene
      *
      * @param initialLocation Vector3f for players location
      */
