@@ -127,6 +127,7 @@ public class Level1 extends Level implements PhysicsCollisionListener{
 
     @Override
     public void cleanup() {
+        this.removeSettings();
         super.cleanup();
         //TODO: clean up what you initialized in the initialize method,
         //e.g. remove all spatials from rootNode

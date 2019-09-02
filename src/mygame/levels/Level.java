@@ -145,7 +145,7 @@ public abstract class Level extends AbstractAppState {
     }
     
     /**
-     * Remove player settings
+     * Remove Level settings
      */
     public void removeSettings() {
         this.getPlayer().getPlayerNode().getControl(PlayerHUDControl.class).getNifty().exit();
