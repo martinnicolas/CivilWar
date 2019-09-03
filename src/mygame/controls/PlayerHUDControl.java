@@ -59,7 +59,7 @@ public class PlayerHUDControl extends AbstractControl {
     }
     
     /**
-     * Update HUD
+     * Update HUD indicators
      */
     private void updateHUD() {
         Screen screen = this.getNifty().getScreen("hud_screen");

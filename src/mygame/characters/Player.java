@@ -102,7 +102,7 @@ public class Player implements ActionListener{
     }
     
     /**
-     * Remove cross hairs
+     * Remove crosshairs
      */
     public void removeCrossHairs() {
         this.getApp().getGuiNode().detachChildNamed("cross_hairs");
