@@ -21,10 +21,14 @@ import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Ray;
 import com.jme3.math.Vector3f;
+import com.jme3.scene.CameraNode;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
+import com.jme3.scene.Spatial;
+import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.shape.Sphere;
 import mygame.Main;
 import mygame.controls.PlayerControl;
@@ -61,6 +65,7 @@ public class Player implements ActionListener{
         this.localRootNode = level.getLocalRootNode();
         this.assetManager = level.getAssetManager();
         this.setUpProperties();
+        this.setUpPlayerGun();
         this.setUpCrossHairs();
         this.setUpAudio();
         this.setUpKeys();
@@ -82,6 +87,22 @@ public class Player implements ActionListener{
         this.getApp().getFlyByCamera().setEnabled(true);
         this.getApp().getFlyByCamera().setMoveSpeed(50);
         this.getWalkDirection().set(0, 0, 0);
+    }
+    
+    /**
+     * Setup player gun
+     */
+    private void setUpPlayerGun() {
+        Spatial spatial = this.getAssetManager().loadModel("Models/AK-47/AK-47.j3o");
+        spatial.setName("AK47");
+        spatial.setLocalScale(0.5f);
+        spatial.setLocalTranslation(-1f,-1f, 3f);
+        spatial.setLocalRotation(new Quaternion(0f, -1f, 0f, 1f));
+        //Create camera node for gun spatial
+        CameraNode camNode = new CameraNode("camera_node", this.getApp().getCamera());
+        camNode.setControlDir(CameraControl.ControlDirection.CameraToSpatial);
+        camNode.attachChild(spatial);
+        this.getLocalRootNode().attachChild(camNode);
     }
 
     /**
