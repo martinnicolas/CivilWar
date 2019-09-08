@@ -96,7 +96,7 @@ public class Player implements ActionListener{
         Spatial spatial = this.getAssetManager().loadModel("Models/AK-47/AK-47.j3o");
         spatial.setName("AK47");
         spatial.setLocalScale(0.5f);
-        spatial.setLocalTranslation(-1f,-1f, 2f);
+        spatial.setLocalTranslation(-1f,-1.1f, 2f);
         spatial.setLocalRotation(new Quaternion(0f, -1f, 0f, 1f));
         //Create camera node for gun spatial
         CameraNode camNode = new CameraNode("camera_node", this.getApp().getCamera());
