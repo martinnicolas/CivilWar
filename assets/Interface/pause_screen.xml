@@ -21,7 +21,7 @@
             </panel>
         </layer>
     </screen>
-    <popup id="popupExit" backgroundColor="#1119" childLayout="center" controller="mygame.screens.StartScreen">
+    <popup id="popUpExit" backgroundColor="#1119" childLayout="center" controller="mygame.screens.StartScreen">
         <panel id="container" style="nifty-panel" childLayout="vertical" width="400px" height="200px">
             <panel id="panel_top" height="80%" width="100%" align="center" childLayout="center">
                 <text text="Está seguro que desea salir?" style="base-font" color="#eeef" width="100%" />
@@ -45,5 +45,51 @@
                 </panel>
             </panel>
         </panel>        
+    </popup>
+    <popup id="popUpHelpScreen" backgroundColor="#1119" childLayout="center" controller="mygame.screens.HelpScreen">
+        <panel id="GPanel1" childLayout="vertical" width="800px" height="600px" padding="20px,20px,20px,20px" style="nifty-panel">
+            <panel childLayout="vertical" width="100%" height="80%">                    
+                <panel width="100%" height="25%" childLayout="horizontal">
+                    <panel width="50%" height="100%" childLayout="center">
+                        <image filename="Interface/images/arrows.png"></image>
+                    </panel>
+                    <panel width="50%" height="100%" childLayout="center">
+                        <text text="Girar hacia la izquierda, derecha, arriba y abajo" style="base-font" color="#eeef" width="100%" />
+                    </panel>
+                </panel>                    
+                <panel width="100%" height="25%" childLayout="horizontal">
+                    <panel width="50%" height="100%" childLayout="center">
+                        <image filename="Interface/images/w.png"></image>
+                    </panel>
+                    <panel width="50%" height="100%" childLayout="center">
+                        <text text="Moverse hacia adelante" style="base-font" color="#eeef" width="100%" />
+                    </panel>
+                </panel>                    
+                <panel width="100%" height="25%" childLayout="horizontal">
+                    <panel width="50%" height="100%" childLayout="center">
+                        <image filename="Interface/images/s.png"></image>
+                    </panel>
+                    <panel width="50%" height="100%" childLayout="center">
+                        <text text="Moverse hacia atras" style="base-font" color="#eeef" width="100%" />                            
+                    </panel>
+                </panel>                    
+                <panel width="100%" height="25%" childLayout="horizontal">
+                    <panel width="50%" height="100%" childLayout="center">
+                        <image filename="Interface/images/spacebar.png"></image>
+                    </panel>
+                    <panel width="50%" height="100%" childLayout="center">
+                        <text text="Saltar" style="base-font" color="#eeef" width="100%" />                            
+                    </panel>
+                </panel>                                            
+            </panel>
+            <panel width="100%" height="25%" childLayout="center">
+                <control name="button" id="buttonVolver" visibleToMouse="true" width="300px" label="Volver" height="30px">
+                    <effect>
+                        <onFocus name="playSound" sound="menu_hover"/>
+                    </effect>
+                    <interact onClick="volver()"/>
+                </control>
+            </panel>
+        </panel>
     </popup>
 </nifty>

@@ -26,9 +26,9 @@ import mygame.levels.Level;
 public class PauseScreen extends AbstractAppState implements ScreenController{
     
     private Nifty nifty;
-    private Screen screen;
     private Level level;
-    private Element popUpElement;
+    private Element popUpExit;
+    private Element popUpHelpScreen;
     private AppStateManager stateManager;
     private Main app;
     private AudioNode pauseAudioNode;
@@ -42,8 +42,8 @@ public class PauseScreen extends AbstractAppState implements ScreenController{
     @Override
     public void bind(Nifty nifty, Screen screen) {
         this.nifty = nifty;
-        this.screen = screen;
-        this.popUpElement = this.nifty.createPopup("popupExit");
+        this.popUpExit = this.nifty.createPopup("popUpExit");
+        this.popUpHelpScreen = this.nifty.createPopup("popUpHelpScreen");
     }
 
     @Override
@@ -83,12 +83,8 @@ public class PauseScreen extends AbstractAppState implements ScreenController{
         super.cleanup();
     }
     
-    public void ayuda() {
-        System.out.println("Ayuda");
-    }
-    
     public void salir() {
-        this.nifty.showPopup(this.nifty.getCurrentScreen(), this.popUpElement.getId(), null);
+        this.nifty.showPopup(this.nifty.getCurrentScreen(), this.popUpExit.getId(), null);
     }
     
     public void aceptar() {
@@ -107,7 +103,15 @@ public class PauseScreen extends AbstractAppState implements ScreenController{
     }
     
     public void cancelar() {
-        this.nifty.closePopup(this.popUpElement.getId());
+        this.nifty.closePopup(this.popUpExit.getId());
+    }
+    
+    public void ayuda() {
+        this.nifty.showPopup(this.nifty.getCurrentScreen(), this.popUpHelpScreen.getId(), null);
+    }
+    
+    public void volver() {
+        this.nifty.closePopup(this.popUpHelpScreen.getId());
     }
     
     /**

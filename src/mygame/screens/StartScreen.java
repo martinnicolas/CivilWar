@@ -81,6 +81,16 @@ public class StartScreen extends AbstractAppState implements ScreenController {
     }
     
     /**
+     * Show About Screen
+     */
+    public void acerca() {
+        this.getStateManager().detach(this);
+        AboutScreen aboutScreen = new AboutScreen();
+        aboutScreen.initialize(this.getStateManager(), this.getApp());
+        this.nifty.fromXml("Interface/about_screen.xml", "about_screen", aboutScreen);
+    }
+    
+    /**
      * Show confirmation popUp for exit action
      */
     public void salir() {

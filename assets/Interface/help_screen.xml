@@ -43,7 +43,7 @@
                         </panel>
                     </panel>                                            
                 </panel>
-                <panel width="100%" height="20%" childLayout="center">
+                <panel width="100%" height="25%" childLayout="center">
                     <control name="button" id="buttonVolver" visibleToMouse="true" width="300px" label="Volver" height="30px">
                         <effect>
                             <onFocus name="playSound" sound="menu_hover"/>
