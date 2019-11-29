@@ -23,11 +23,13 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
 import java.util.List;
+import java.util.Random;
 import mygame.enemies.SoldierEnemy;
 import mygame.Main;
 import mygame.bonuses.AmmoBonus;
 import mygame.bonuses.HealthBonus;
 import mygame.characters.Player;
+import mygame.controls.BonusControl;
 
 /**
  *
@@ -88,14 +90,14 @@ public class Level1 extends Level implements PhysicsCollisionListener{
         SoldierEnemy soldierEnemy = new SoldierEnemy(this.getAssetManager(), 100, 10);
         this.getLocalRootNode().attachChild(soldierEnemy.getSpatial());
         bulletAppState.getPhysicsSpace().addAll(soldierEnemy.getSpatial());
-
+        
         //Load some ammo bonus
-        AmmoBonus ammoBonus = new AmmoBonus(this.getAssetManager(), 10);
+        AmmoBonus ammoBonus = new AmmoBonus(this.getAssetManager(), 10, new Vector3f(-29, 10, 26));
         this.getLocalRootNode().attachChild(ammoBonus.getSpatial());
         bulletAppState.getPhysicsSpace().addAll(ammoBonus.getSpatial());
         
         //Load some health bonus
-        HealthBonus healthBonus = new HealthBonus(this.getAssetManager(), 10);
+        HealthBonus healthBonus = new HealthBonus(this.getAssetManager(), 10, new Vector3f(-29, 10, 27));
         this.getLocalRootNode().attachChild(healthBonus.getSpatial());
         bulletAppState.getPhysicsSpace().addAll(healthBonus.getSpatial());
         
@@ -128,7 +130,6 @@ public class Level1 extends Level implements PhysicsCollisionListener{
     @Override
     public void cleanup() {
         this.removeSettings();
-        super.cleanup();
         //TODO: clean up what you initialized in the initialize method,
         //e.g. remove all spatials from rootNode
         //this is called on the OpenGL thread after the AppState has been detached
@@ -172,10 +173,10 @@ public class Level1 extends Level implements PhysicsCollisionListener{
     private void checkPlayerCollisionsWithBonus(PhysicsCollisionEvent event, String bonusName) {
         if (bonusName.equals(event.getNodeA().getName()) || bonusName.equals(event.getNodeB().getName())) {
             if (event.getNodeA().getName().equals(Player.SPATIAL_NAME)) {
-                this.removeBonusSpatial(event.getNodeB(), bonusName);
+                this.pickBonus(event.getNodeB());
             } else {
                 if (event.getNodeB().getName().equals(Player.SPATIAL_NAME)) {
-                    this.removeBonusSpatial(event.getNodeA(), bonusName);
+                    this.pickBonus(event.getNodeA());
                 }
             }
         }
@@ -220,23 +221,17 @@ public class Level1 extends Level implements PhysicsCollisionListener{
     }
     
     /**
-     * Removes spatial from scene
+     * Pick bonus spatial and remove it from scene
      * 
      * @param spatial 
      */
-    private void removeBonusSpatial(Spatial spatial, String bonusName) {
-        RigidBodyControl spatialControl = spatial.getControl(RigidBodyControl.class);
+    private void pickBonus(Spatial bonusSpatial) {
+        RigidBodyControl spatialControl = bonusSpatial.getControl(RigidBodyControl.class);
         if(spatialControl != null && spatialControl.isEnabled()) {
+            this.getPlayer().plusPickedBonus(bonusSpatial);
             spatialControl.setEnabled(false);
-            spatial.removeFromParent();
-            spatial.setLocalScale(0.0f);
-            if (bonusName.equals(AmmoBonus.SPATIAL_NAME)) {
-                this.getPlayer().getControl().plusAmmoes(10);
-                this.getPlayer().getPickedAmmoAudio().playInstance();
-            } else {
-                this.getPlayer().getControl().plusHealth(10);
-                this.getPlayer().getPickedHealthAudio().playInstance();
-            }
+            bonusSpatial.removeFromParent();
+            bonusSpatial.setLocalScale(0.0f);
         }
     }
     

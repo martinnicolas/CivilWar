@@ -47,7 +47,6 @@ public abstract class Level extends AbstractAppState {
      */
     public void pause() {
         this.getAudioNode().stop();
-        this.getPlayer().removeCrossHairs();
         this.getApp().getFlyByCamera().setEnabled(false);
         this.getApp().getInputManager().setCursorVisible(false);
         this.setEnabled(false);
@@ -63,7 +62,6 @@ public abstract class Level extends AbstractAppState {
         this.closePauseScreen();
         this.setEnabled(true);
         this.getAudioNode().play();
-        this.getPlayer().setUpCrossHairs();
         this.getApp().getFlyByCamera().setEnabled(true);
         this.enableAllControls();
         this.enablePhysics();
@@ -150,7 +148,6 @@ public abstract class Level extends AbstractAppState {
     public void removeSettings() {
         this.getPlayer().getPlayerNode().getControl(PlayerHUDControl.class).getNifty().exit();
         this.getPlayer().getPlayerNode().removeControl(PlayerHUDControl.class);
-        this.getPlayer().removeCrossHairs();
         BulletAppState bulletAppState = this.getStateManager().getState(BulletAppState.class);
         this.getStateManager().detach(bulletAppState);
         this.getApp().getInputManager().removeListener(this.getPlayer());

@@ -5,7 +5,6 @@
  */
 package mygame.controls;
 
-import com.jme3.app.Application;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;

@@ -7,6 +7,7 @@ package mygame.bonuses;
 
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.math.Vector3f;
 import mygame.controls.BonusControl;
 
 /**
@@ -18,18 +19,18 @@ public class AmmoBonus extends Bonus {
     public static final String MODEL_PATH = "Models/ArmyBoxComplete/ArmyBoxComplete.j3o";
     public static final String SPATIAL_NAME = "ammo";
 
-    public AmmoBonus(AssetManager assetManager, int amount) {
-        super(assetManager, amount);
+    public AmmoBonus(AssetManager assetManager, int amount, Vector3f localTranslation) {
+        super(assetManager, amount, localTranslation);
         this.setUpProperties();
     }
     
     /**
-     * Setup ammo properties
+     * Setup ammo spatial properties
      */
     private void setUpProperties() {
         this.setSpatial(this.getAssetManager().loadModel(MODEL_PATH));
         this.getSpatial().setName(SPATIAL_NAME);
-        this.getSpatial().setLocalTranslation(-29, 10, 26);
+        this.getSpatial().setLocalTranslation(this.getLocalTranslation());
         this.getSpatial().setLocalScale(0.5f);
         this.getSpatial().addControl(new RigidBodyControl(2f));
         this.getSpatial().addControl(new BonusControl(this.getAmount()));

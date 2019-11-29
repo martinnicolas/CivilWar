@@ -7,6 +7,10 @@ package mygame.controls;
 
 import com.jme3.bullet.collision.shapes.CapsuleCollisionShape;
 import com.jme3.bullet.control.CharacterControl;
+import com.jme3.scene.Spatial;
+import mygame.bonuses.AmmoBonus;
+import mygame.bonuses.Bonus;
+import mygame.bonuses.HealthBonus;
 
 /**
  *

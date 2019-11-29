@@ -31,6 +31,9 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl;
 import com.jme3.scene.shape.Sphere;
 import mygame.Main;
+import mygame.bonuses.AmmoBonus;
+import mygame.bonuses.HealthBonus;
+import mygame.controls.BonusControl;
 import mygame.controls.PlayerControl;
 import mygame.controls.PlayerHUDControl;
 import mygame.levels.Level;
@@ -66,7 +69,6 @@ public class Player implements ActionListener{
         this.assetManager = level.getAssetManager();
         this.setUpProperties();
         this.setUpPlayerGun();
-        this.setUpCrossHairs();
         this.setUpAudio();
         this.setUpKeys();
     }
@@ -103,30 +105,6 @@ public class Player implements ActionListener{
         camNode.setControlDir(CameraControl.ControlDirection.CameraToSpatial);
         camNode.attachChild(spatial);
         this.getLocalRootNode().attachChild(camNode);
-    }
-
-    /**
-     * Setup crosshairs for aim
-     */
-    public void setUpCrossHairs() {
-        BitmapFont guiFont = this.getAssetManager().loadFont("Interface/Fonts/Default.fnt");
-        BitmapText crossHairs = new BitmapText(guiFont, false);
-        crossHairs.setName("cross_hairs");
-        crossHairs.setSize(guiFont.getCharSet().getRenderedSize() * 2);
-        crossHairs.setText("+"); // crosshairs
-        crossHairs.setLocalTranslation( // center
-                this.getApp().getCamera().getWidth() / 2 - crossHairs.getLineWidth() / 2,
-                this.getApp().getCamera().getHeight() / 2 + crossHairs.getLineHeight() / 2,
-                0
-        );
-        this.getApp().getGuiNode().attachChild(crossHairs);
-    }
-    
-    /**
-     * Remove crosshairs
-     */
-    public void removeCrossHairs() {
-        this.getApp().getGuiNode().detachChildNamed("cross_hairs");
     }
 
     /**
@@ -272,6 +250,27 @@ public class Player implements ActionListener{
             shootsMark.addControl(new RigidBodyControl(1f));            
             this.getLevel().getLocalRootNode().attachChild(shootsMark);
             this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().addAll(shootsMark);
+        }
+    }
+    
+    /**
+     * Plus picked bonus. Receive a picked Spatial Bonus and plus its amount to the stored
+     * 
+     * @param bonusSpatial 
+     */
+    public void plusPickedBonus(Spatial bonusSpatial) {
+        BonusControl bonusControl = bonusSpatial.getControl(BonusControl.class);
+        switch (bonusSpatial.getName()) {
+            case AmmoBonus.SPATIAL_NAME:
+                this.getControl().plusAmmoes(bonusControl.getPlusBonus());
+                this.getPickedAmmoAudio().playInstance();
+                break;
+            case HealthBonus.SPATIAL_NAME:
+                this.getControl().plusHealth(bonusControl.getPlusBonus());
+                this.getPickedHealthAudio().playInstance();
+                break;
+            default:
+                break;
         }
     }
 
