@@ -38,7 +38,6 @@ public abstract class Level extends AbstractAppState {
     private Node rootNode;
     private AssetManager assetManager;
     private RigidBodyControl control;
-    private boolean paused = false;
     //For pause screen
     private Nifty nifty;
     
@@ -217,14 +216,6 @@ public abstract class Level extends AbstractAppState {
 
     public void setAudioNode(AudioNode audioNode) {
         this.audioNode = audioNode;
-    }
-
-    public boolean isPaused() {
-        return paused;
-    }
-
-    public void setPaused(boolean paused) {
-        this.paused = paused;
     }
 
     public Nifty getNifty() {

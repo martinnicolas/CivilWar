@@ -15,10 +15,10 @@ import com.jme3.scene.control.AbstractControl;
  */
 public class BonusControl extends AbstractControl {
     
-    private int plusBonus;
+    private int bonusAmount;
     
     public BonusControl(int amount) {
-        this.plusBonus = amount;
+        this.bonusAmount = amount;
     }
     
     @Override
@@ -31,12 +31,12 @@ public class BonusControl extends AbstractControl {
         
     }
 
-    public int getPlusBonus() {
-        return plusBonus;
+    public int getBonusAmount() {
+        return bonusAmount;
     }
 
-    public void setPlusBonus(int plusBonus) {
-        this.plusBonus = plusBonus;
+    public void setBonusAmount(int bonusAmount) {
+        this.bonusAmount = bonusAmount;
     }
     
 }

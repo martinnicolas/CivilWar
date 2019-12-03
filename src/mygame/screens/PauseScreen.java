@@ -118,7 +118,6 @@ public class PauseScreen extends AbstractAppState implements ScreenController{
      * Setup pause audio
      */
     public void setUpPauseAudio() {
-        //Setup pause audio
         this.setPauseAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
         this.getPauseAudioNode().setLooping(true);  // activate continuous playing
         this.getPauseAudioNode().setPositional(false);

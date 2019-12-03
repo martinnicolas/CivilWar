@@ -22,14 +22,13 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
+import com.jme3.shadow.DirectionalLightShadowRenderer;
 import java.util.List;
-import java.util.Random;
 import mygame.enemies.SoldierEnemy;
 import mygame.Main;
 import mygame.bonuses.AmmoBonus;
 import mygame.bonuses.HealthBonus;
 import mygame.characters.Player;
-import mygame.controls.BonusControl;
 
 /**
  *
@@ -37,11 +36,18 @@ import mygame.controls.BonusControl;
  */
 public class Level1 extends Level implements PhysicsCollisionListener{
 
-    //Temporary vectors used on each frame.
-    //They here to avoid instanciating new vectors on each frame
+    //Temporary vectors used on each frame. They here to avoid instanciating new vectors on each frame
     private final Vector3f camDir = new Vector3f(), camLeft = new Vector3f();
+    //Scene path for Level 1
+    private static final String SCENE_PATH = "Scenes/Level1.j3o";
     //Player initial location for Level 1.
     private static final Vector3f PLAYER_INITIAL_LOCATION = new Vector3f(300, 10, 325);
+    //Sun light direction
+    private static final Vector3f LIGHT_DIRECTION = new Vector3f(0.5f, -0.5f, -0.5f);
+    //Shadow map size
+    private static final int SHADOWMAP_SIZE = 4096;
+    //Shadow size
+    private static final int SHADOW_SIZE = 4;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -64,7 +70,7 @@ public class Level1 extends Level implements PhysicsCollisionListener{
 
         // We load the scene from the zip file and adjust its size.
         //assetManager.registerLocator("town.zip", ZipLocator.class);
-        Spatial sceneModel = this.getAssetManager().loadModel("Scenes/Level1.j3o");
+        Spatial sceneModel = this.getAssetManager().loadModel(Level1.SCENE_PATH);
         sceneModel.setLocalScale(2f);
         // We set up collision detection for the scene by creating a
         // compound collision shape and a static RigidBodyControl with mass zero.
@@ -75,10 +81,9 @@ public class Level1 extends Level implements PhysicsCollisionListener{
         sceneModel.addControl(this.getControl());
         this.getLocalRootNode().attachChild(sceneModel);
         bulletAppState.getPhysicsSpace().addAll(sceneModel);
-        //Add some light to localRootNode
-        DirectionalLight directionalLight = new DirectionalLight();
-        directionalLight.setDirection(new Vector3f(0.5f, -0.5f, -0.5f).normalizeLocal());
-        this.getLocalRootNode().addLight(directionalLight);
+        
+        //Setup lights and shadows
+        this.setUpLightsAndShadows();
         
         //Load player
         this.setPlayer(new Player(this));
@@ -135,6 +140,20 @@ public class Level1 extends Level implements PhysicsCollisionListener{
         //this is called on the OpenGL thread after the AppState has been detached
         this.getRootNode().detachChild(this.getLocalRootNode());
         super.cleanup();
+    }
+    
+    /**
+     * Setup lights and shadows
+     */
+    private void setUpLightsAndShadows() {
+        //Add some light
+        DirectionalLight directionalLight = new DirectionalLight();
+        directionalLight.setDirection(Level1.LIGHT_DIRECTION.normalizeLocal());
+        this.getLocalRootNode().addLight(directionalLight);
+        //Add some shadows
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(this.getAssetManager(), Level1.SHADOWMAP_SIZE, Level1.SHADOW_SIZE);
+        dlsr.setLight(directionalLight);
+        this.getApp().getViewPort().addProcessor(dlsr);
     }
     
     /**
@@ -211,10 +230,10 @@ public class Level1 extends Level implements PhysicsCollisionListener{
     private void checkPlayerCollisionsWithEnemy(PhysicsCollisionEvent event, String playerName) {
         if (playerName.equals(event.getNodeA().getName()) || playerName.equals(event.getNodeB().getName())) {
             if (event.getNodeA().getName().equals(SoldierEnemy.SPATIAL_NAME)) {
-                this.loadPlayerDamage();
+                this.getPlayer().loadDamage();
             } else {
                 if (event.getNodeB().getName().equals(SoldierEnemy.SPATIAL_NAME)) {
-                    this.loadPlayerDamage();
+                    this.getPlayer().loadDamage();
                 }
             }
         }
@@ -261,19 +280,7 @@ public class Level1 extends Level implements PhysicsCollisionListener{
             spatial.removeFromParent();
             spatial.setLocalScale(0.0f);
         }
-    }
-    
-    /**
-     * Load player damage
-     */
-    private void loadPlayerDamage() {
-        GhostControl spatialControl = this.getPlayer().getPlayerNode().getControl(GhostControl.class);
-        if(spatialControl != null && spatialControl.isEnabled()) {
-            spatialControl.setEnabled(false);
-            this.getPlayer().getControl().discountHealth(0.1f);
-            this.getPlayer().getJumpAudio().playInstance();
-        }
-    }    
+    }  
 
     private void restoreControlForAlives() {
         //enable all controls

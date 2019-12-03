@@ -14,8 +14,6 @@ import com.jme3.bullet.control.GhostControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.collision.CollisionResult;
 import com.jme3.collision.CollisionResults;
-import com.jme3.font.BitmapFont;
-import com.jme3.font.BitmapText;
 import com.jme3.input.KeyInput;
 import com.jme3.input.controls.ActionListener;
 import com.jme3.input.controls.KeyTrigger;
@@ -37,6 +35,7 @@ import mygame.controls.BonusControl;
 import mygame.controls.PlayerControl;
 import mygame.controls.PlayerHUDControl;
 import mygame.levels.Level;
+import mygame.weapons.AK47Weapon;
 
 /**
  *
@@ -50,7 +49,7 @@ public class Player implements ActionListener{
     private Node localRootNode;
     private AssetManager assetManager;
     private Node playerNode;
-    private AudioNode pickedAmmoAudio, pickedHealthAudio, jumpAudio, walkAudio, shootAudio, emptyGunAudio;
+    private AudioNode pickedAmmoAudio, pickedHealthAudio, jumpAudio, walkAudio, shootAudio, emptyWeaponAudio;
     private boolean left = false, right = false, up = false, down = false;
     public static final String SPATIAL_NAME = "player";
     //String constants for Action Listener keys
@@ -68,7 +67,7 @@ public class Player implements ActionListener{
         this.localRootNode = level.getLocalRootNode();
         this.assetManager = level.getAssetManager();
         this.setUpProperties();
-        this.setUpPlayerGun();
+        this.setUpPlayerWeapon();
         this.setUpAudio();
         this.setUpKeys();
     }
@@ -92,19 +91,16 @@ public class Player implements ActionListener{
     }
     
     /**
-     * Setup player gun
+     * Setup player weapon
      */
-    private void setUpPlayerGun() {
-        Spatial spatial = this.getAssetManager().loadModel("Models/AK-47/AK-47.j3o");
-        spatial.setName("AK47");
-        spatial.setLocalScale(0.5f);
-        spatial.setLocalTranslation(-1f,-1.1f, 2f);
-        spatial.setLocalRotation(new Quaternion(0f, -1f, 0f, 1f));
-        //Create camera node for gun spatial
-        CameraNode camNode = new CameraNode("camera_node", this.getApp().getCamera());
-        camNode.setControlDir(CameraControl.ControlDirection.CameraToSpatial);
-        camNode.attachChild(spatial);
-        this.getLocalRootNode().attachChild(camNode);
+    private void setUpPlayerWeapon() {
+        AK47Weapon ak47 = new AK47Weapon(this.getAssetManager(), new Vector3f(-1f,-1.1f, 2f));
+        ak47.getSpatial().setLocalRotation(new Quaternion(0f, -1f, 0f, 1f));        
+        //Create camera node for weapon spatial
+        CameraNode cameraNode = new CameraNode("camera_node", this.getApp().getCamera());
+        cameraNode.setControlDir(CameraControl.ControlDirection.CameraToSpatial);
+        cameraNode.attachChild(ak47.getSpatial());
+        this.getLocalRootNode().attachChild(cameraNode);
     }
 
     /**
@@ -129,12 +125,12 @@ public class Player implements ActionListener{
         this.getShootAudio().setLooping(false);
         this.getShootAudio().setVolume(2);
         this.getLocalRootNode().attachChild(this.getShootAudio());
-        //Attach audio for empty gun
-        this.setEmptyGunAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/shots/Gun_Cock.wav", DataType.Buffer));
-        this.getEmptyGunAudio().setPositional(false);
-        this.getEmptyGunAudio().setLooping(false);
-        this.getEmptyGunAudio().setVolume(2);
-        this.getLocalRootNode().attachChild(this.getEmptyGunAudio());
+        //Attach audio for empty weapon
+        this.setEmptyWeaponAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/shots/Gun_Cock.wav", DataType.Buffer));
+        this.getEmptyWeaponAudio().setPositional(false);
+        this.getEmptyWeaponAudio().setLooping(false);
+        this.getEmptyWeaponAudio().setVolume(2);
+        this.getLocalRootNode().attachChild(this.getEmptyWeaponAudio());
         //Attach audio for picked ammo action
         this.setPickedAmmoAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/bonus/picked_ammo.wav", DataType.Buffer));
         this.getPickedAmmoAudio().setPositional(false);
@@ -209,7 +205,7 @@ public class Player implements ActionListener{
                                 this.getControl().discountAmmoes();
                                 this.checkForShootingCollisions();
                             } else {
-                                this.getEmptyGunAudio().playInstance();
+                                this.getEmptyWeaponAudio().playInstance();
                             }
                         }
                         break;
@@ -225,6 +221,39 @@ public class Player implements ActionListener{
             }
         }
     }
+    
+    /**
+     * Plus picked bonus. Receive a picked Spatial Bonus and plus its amount to the stored
+     * 
+     * @param bonusSpatial 
+     */
+    public void plusPickedBonus(Spatial bonusSpatial) {
+        BonusControl bonusControl = bonusSpatial.getControl(BonusControl.class);
+        switch (bonusSpatial.getName()) {
+            case AmmoBonus.SPATIAL_NAME:
+                this.getControl().plusAmmoes(bonusControl.getBonusAmount());
+                this.getPickedAmmoAudio().playInstance();
+                break;
+            case HealthBonus.SPATIAL_NAME:
+                this.getControl().plusHealth(bonusControl.getBonusAmount());
+                this.getPickedHealthAudio().playInstance();
+                break;
+            default:
+                break;
+        }
+    }
+    
+    /**
+     * Load player damage
+     */
+    public void loadDamage() {
+        GhostControl spatialControl = this.getPlayerNode().getControl(GhostControl.class);
+        if(spatialControl != null && spatialControl.isEnabled()) {
+            spatialControl.setEnabled(false);
+            this.getControl().discountHealth(0.1f);
+            this.getJumpAudio().playInstance();
+        }
+    }  
 
     /**
      * Checks for shooting collisions
@@ -250,27 +279,6 @@ public class Player implements ActionListener{
             shootsMark.addControl(new RigidBodyControl(1f));            
             this.getLevel().getLocalRootNode().attachChild(shootsMark);
             this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().addAll(shootsMark);
-        }
-    }
-    
-    /**
-     * Plus picked bonus. Receive a picked Spatial Bonus and plus its amount to the stored
-     * 
-     * @param bonusSpatial 
-     */
-    public void plusPickedBonus(Spatial bonusSpatial) {
-        BonusControl bonusControl = bonusSpatial.getControl(BonusControl.class);
-        switch (bonusSpatial.getName()) {
-            case AmmoBonus.SPATIAL_NAME:
-                this.getControl().plusAmmoes(bonusControl.getPlusBonus());
-                this.getPickedAmmoAudio().playInstance();
-                break;
-            case HealthBonus.SPATIAL_NAME:
-                this.getControl().plusHealth(bonusControl.getPlusBonus());
-                this.getPickedHealthAudio().playInstance();
-                break;
-            default:
-                break;
         }
     }
 
@@ -398,12 +406,12 @@ public class Player implements ActionListener{
         this.shootAudio = shootAudio;
     }
 
-    public AudioNode getEmptyGunAudio() {
-        return emptyGunAudio;
+    public AudioNode getEmptyWeaponAudio() {
+        return emptyWeaponAudio;
     }
 
-    public void setEmptyGunAudio(AudioNode emptyGunAudio) {
-        this.emptyGunAudio = emptyGunAudio;
+    public void setEmptyWeaponAudio(AudioNode emptyWeaponAudio) {
+        this.emptyWeaponAudio = emptyWeaponAudio;
     }
 
 }

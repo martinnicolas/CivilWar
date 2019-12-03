@@ -18,7 +18,7 @@
                             <text text="CivilWar 0.0.1-alpha" style="base-font" color="#eeef" width="100%" />
                             <text text="jMonkeyEngine SDK 3.1.0-stable-FINAL" style="base-font" color="#eeef" width="100%" />
                             <text text="JDK 1.8" style="base-font" color="#eeef" width="100%" />
-                            <text text="For more information visit https://github.com/martinnicolas/CivilWar.git" style="base-font" color="#eeef" width="100%" />
+                            <text text="https://github.com/martinnicolas/CivilWar.git" style="base-font" color="#eeef" width="100%" />
                         </panel>
                     </panel>                    
                 </panel>

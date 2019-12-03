@@ -16,7 +16,7 @@ import mygame.controls.BonusControl;
  */
 public class HealthBonus extends Bonus {
     
-    public final String MODEL_PATH = "Models/MedKit_mk2/MedKit_mk2.j3o";
+    public static final String MODEL_PATH = "Models/MedKit_mk2/MedKit_mk2.j3o";
     public static final String SPATIAL_NAME = "health";
 
     public HealthBonus(AssetManager assetManager, int amount, Vector3f localTranslation) {
