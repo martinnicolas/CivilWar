@@ -18,6 +18,8 @@ public class HealthBonus extends Bonus {
     
     public static final String MODEL_PATH = "Models/MedKit_mk2/MedKit_mk2.j3o";
     public static final String SPATIAL_NAME = "health";
+    public static final float LOCAL_SCALE = 1f;
+    public static final float MASS = 2f;
 
     public HealthBonus(AssetManager assetManager, int amount, Vector3f localTranslation) {
         super(assetManager, amount, localTranslation);
@@ -28,11 +30,11 @@ public class HealthBonus extends Bonus {
      * Setup health spatial properties
      */
     private void setUpProperties() {
-        this.setSpatial(this.getAssetManager().loadModel(MODEL_PATH));
-        this.getSpatial().setName(SPATIAL_NAME);
+        this.setSpatial(this.getAssetManager().loadModel(HealthBonus.MODEL_PATH));
+        this.getSpatial().setName(HealthBonus.SPATIAL_NAME);
         this.getSpatial().setLocalTranslation(this.getLocalTranslation());
-        this.getSpatial().setLocalScale(1f);
-        this.getSpatial().addControl(new RigidBodyControl(2f));        
+        this.getSpatial().setLocalScale(HealthBonus.LOCAL_SCALE);
+        this.getSpatial().addControl(new RigidBodyControl(HealthBonus.MASS));
         this.getSpatial().addControl(new BonusControl(this.getAmount()));
     }
     

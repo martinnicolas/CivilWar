@@ -18,6 +18,8 @@ public class AmmoBonus extends Bonus {
     
     public static final String MODEL_PATH = "Models/ArmyBoxComplete/ArmyBoxComplete.j3o";
     public static final String SPATIAL_NAME = "ammo";
+    public static final float LOCAL_SCALE = 0.5f;
+    public static final float MASS = 2f;
 
     public AmmoBonus(AssetManager assetManager, int amount, Vector3f localTranslation) {
         super(assetManager, amount, localTranslation);
@@ -28,11 +30,11 @@ public class AmmoBonus extends Bonus {
      * Setup ammo spatial properties
      */
     private void setUpProperties() {
-        this.setSpatial(this.getAssetManager().loadModel(MODEL_PATH));
-        this.getSpatial().setName(SPATIAL_NAME);
+        this.setSpatial(this.getAssetManager().loadModel(AmmoBonus.MODEL_PATH));
+        this.getSpatial().setName(AmmoBonus.SPATIAL_NAME);
         this.getSpatial().setLocalTranslation(this.getLocalTranslation());
-        this.getSpatial().setLocalScale(0.5f);
-        this.getSpatial().addControl(new RigidBodyControl(2f));
+        this.getSpatial().setLocalScale(AmmoBonus.LOCAL_SCALE);
+        this.getSpatial().addControl(new RigidBodyControl(AmmoBonus.MASS));
         this.getSpatial().addControl(new BonusControl(this.getAmount()));
     }
     

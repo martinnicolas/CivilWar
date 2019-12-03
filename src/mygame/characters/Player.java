@@ -80,7 +80,7 @@ public class Player implements ActionListener{
         // a capsule collision shape and a Player Control which extends 
         // CharacterControl.
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(1.5f, 3.0f, 1);
-        this.setPlayerNode(new Node(SPATIAL_NAME));
+        this.setPlayerNode(new Node(Player.SPATIAL_NAME));
         this.getPlayerNode().addControl(new GhostControl(capsuleShape));
         this.getPlayerNode().addControl(new PlayerControl(capsuleShape));
         this.getPlayerNode().addControl(new PlayerHUDControl(this.getApp(), this));
