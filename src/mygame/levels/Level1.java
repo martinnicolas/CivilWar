@@ -18,6 +18,8 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.DirectionalLight;
 import com.jme3.math.Vector3f;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.filters.LightScatteringFilter;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.Control;
@@ -153,6 +155,12 @@ public class Level1 extends Level implements PhysicsCollisionListener{
         DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(this.getAssetManager(), Level1.SHADOWMAP_SIZE, Level1.SHADOW_SIZE);
         dlsr.setLight(directionalLight);
         this.getApp().getViewPort().addProcessor(dlsr);
+        //Add light scattering
+        FilterPostProcessor fpp=new FilterPostProcessor(this.getAssetManager());
+        LightScatteringFilter sunlight = new LightScatteringFilter(Level1.LIGHT_DIRECTION.multLocal(-3000));
+        fpp.addFilter(sunlight);
+        this.getApp().getViewPort().addProcessor(fpp); 
+
     }
     
     /**
