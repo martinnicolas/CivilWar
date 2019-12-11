@@ -35,7 +35,7 @@ import mygame.characters.Player;
  *
  * @author martin
  */
-public class Level1 extends Level implements PhysicsCollisionListener{
+public class Level1 extends Level implements PhysicsCollisionListener {
 
     //Temporary vectors used on each frame. They here to avoid instanciating new vectors on each frame
     private final Vector3f camDir = new Vector3f(), camLeft = new Vector3f();

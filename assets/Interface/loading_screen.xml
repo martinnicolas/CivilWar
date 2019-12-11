@@ -3,7 +3,7 @@
     <useControls filename="nifty-default-controls.xml"/>
     <useStyles filename="nifty-default-styles.xml"/>
     <screen id="loading_screen" controller="mygame.screens.LoadingScreen">
-        <layer id="background" childLayout="center" backgroundImage="Interface/images/fondoayuda.jpeg">            
+        <layer id="background" childLayout="center" backgroundColor="#0000">            
             <effect>
                 <onStartScreen name="fade" />
             </effect>
