@@ -46,9 +46,9 @@ public class Level1 extends Level implements PhysicsCollisionListener {
     //Sun light direction
     private static final Vector3f LIGHT_DIRECTION = new Vector3f(0.5f, -0.5f, -0.5f);
     //Shadow map size
-    private static final int SHADOWMAP_SIZE = 4096;
+    private static final int SHADOWMAP_SIZE = 2048;
     //Shadow size
-    private static final int SHADOW_SIZE = 4;
+    private static final int SHADOW_SIZE = 2;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
