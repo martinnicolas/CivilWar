@@ -6,12 +6,9 @@
 package mygame.screens;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
-import com.jme3.niftygui.NiftyJmeDisplay;
-import com.jme3.scene.Node;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.elements.Element;
 import de.lessvoid.nifty.screen.Screen;
@@ -23,17 +20,13 @@ import mygame.levels.Level;
  *
  * @author martin
  */
-public class PauseScreen extends AbstractAppState implements ScreenController{
+public class PauseScreen extends AbstractScreen implements ScreenController{
     
     private Nifty nifty;
     private Level level;
     private Element popUpExit;
     private Element popUpHelpScreen;
-    private AppStateManager stateManager;
-    private Main app;
-    private AudioNode pauseAudioNode;
-    private Node localRootNode;
-    private Node rootNode;
+    
     
     public PauseScreen(Level level) {
         this.level = level;
@@ -41,19 +34,20 @@ public class PauseScreen extends AbstractAppState implements ScreenController{
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        this.nifty = nifty;
-        this.popUpExit = this.nifty.createPopup("popUpExit");
-        this.popUpHelpScreen = this.nifty.createPopup("popUpHelpScreen");
+        this.setNifty(nifty);
+        this.setScreen(screen);
+        this.setPopUpExit(this.getNifty().createPopup("popUpExit"));
+        this.setPopUpHelpScreen(this.getNifty().createPopup("popUpHelpScreen"));
     }
 
     @Override
     public void onStartScreen() {
-        this.getPauseAudioNode().play();
+        this.getAudioNode().play();
     }
 
     @Override
     public void onEndScreen() {
-        this.getPauseAudioNode().stop();
+        this.getAudioNode().stop();
     }
     
     @Override
@@ -61,11 +55,9 @@ public class PauseScreen extends AbstractAppState implements ScreenController{
         super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
         this.setApp((Main) app);
         this.setStateManager(stateManager);
-        this.setRootNode(this.getApp().getRootNode());
-        this.setLocalRootNode(new Node("PauseScreen"));
-        this.getRootNode().attachChild(this.getLocalRootNode());
-        //Setup pause audio
-        this.setUpPauseAudio();
+        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
+        this.getAudioNode().setLooping(true);  // activate continuous playing
+        this.getAudioNode().setPositional(false);
     }
 
     @Override
@@ -73,103 +65,92 @@ public class PauseScreen extends AbstractAppState implements ScreenController{
         super.update(tpf); //To change body of generated methods, choose Tools | Templates.
     }
     
-    @Override
-    public void cleanup() {
-        super.cleanup();
-        //TODO: clean up what you initialized in the initialize method,
-        //e.g. remove all spatials from rootNode
-        //this is called on the OpenGL thread after the AppState has been detached
-        this.getRootNode().detachChild(this.getLocalRootNode());
-        super.cleanup();
-    }
-    
+    /**
+     * Shows popup confirmation screen
+     */
     public void salir() {
-        this.nifty.showPopup(this.nifty.getCurrentScreen(), this.popUpExit.getId(), null);
-    }
-    
-    public void aceptar() {
-        this.getStateManager().detach(this.getLevel());
-        this.nifty.exit();
-        this.getStateManager().detach(this);
-        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(this.getApp().getAssetManager(),
-                                                          this.getApp().getInputManager(),
-                                                          this.getApp().getAudioRenderer(),
-                                                          this.getApp().getGuiViewPort());
-        StartScreen startScreen = new StartScreen();
-        startScreen.initialize(this.getLevel().getStateManager(), this.getApp());
-        this.nifty.fromXml("Interface/start_screen.xml", "start_screen", startScreen);
-        // attach the nifty display to the gui view port as a processor
-        this.getApp().getGuiViewPort().addProcessor(niftyDisplay);
-    }
-    
-    public void cancelar() {
-        this.nifty.closePopup(this.popUpExit.getId());
-    }
-    
-    public void ayuda() {
-        this.nifty.showPopup(this.nifty.getCurrentScreen(), this.popUpHelpScreen.getId(), null);
-    }
-    
-    public void volver() {
-        this.nifty.closePopup(this.popUpHelpScreen.getId());
+        this.getNifty().showPopup(this.getNifty().getCurrentScreen(), this.getPopUpExit().getId(), null);
     }
     
     /**
-     * Setup pause audio
+     * Exit current Level and init start screen
      */
-    public void setUpPauseAudio() {
-        this.setPauseAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
-        this.getPauseAudioNode().setLooping(true);  // activate continuous playing
-        this.getPauseAudioNode().setPositional(false);
-        this.getLocalRootNode().attachChild(this.getPauseAudioNode());
-    }
-
-    public Node getRootNode() {
-        return rootNode;
-    }
-
-    public void setRootNode(Node rootNode) {
-        this.rootNode = rootNode;
-    }
-
-    public Node getLocalRootNode() {
-        return localRootNode;
-    }
-
-    public void setLocalRootNode(Node localRootNode) {
-        this.localRootNode = localRootNode;
+    public void aceptar() {
+        this.getStateManager().detach(this.getLevel());
+        this.getNifty().exit();
+        this.getStateManager().detach(this);
+        StartScreen startScreen = new StartScreen();
+        startScreen.initialize(this.getStateManager(), this.getApp());
+        this.getNifty().fromXml("Interface/start_screen.xml", "start_screen", startScreen);
     }
     
-    public AudioNode getPauseAudioNode() {
-        return pauseAudioNode;
+    /**
+     * Cancel and return to pause menu screen
+     */
+    public void cancelar() {
+        this.nifty.closePopup(this.getPopUpExit().getId());
+    }
+    
+    /**
+     * Shows a help popup screen
+     */
+    public void ayuda() {
+        this.nifty.showPopup(this.nifty.getCurrentScreen(), this.getPopUpHelpScreen().getId(), null);
+    }
+    
+    /**
+     * Close the help popup screen
+     */
+    public void volver() {
+        this.nifty.closePopup(this.getPopUpHelpScreen().getId());
     }
 
-    public void setPauseAudioNode(AudioNode pauseAudioNode) {
-        this.pauseAudioNode = pauseAudioNode;
-    }
-
+    /**
+     * Get the actual Level instance
+     * @return the actual level instance
+     */
     public Level getLevel() {
         return level;
     }
 
+    /**
+     * Set the actual level instance
+     * @param level 
+     */
     public void setLevel(Level level) {
         this.level = level;
     }
-    
-    public void setStateManager(AppStateManager stateManager) {
-        this.stateManager = stateManager;
+
+    /**
+     * Get the popUpExit
+     * @return popUpExit
+     */
+    public Element getPopUpExit() {
+        return popUpExit;
     }
-    
-    public AppStateManager getStateManager() {
-        return this.stateManager;
+
+    /**
+     * Sets the popUpExit
+     * @param popUpExit 
+     */
+    public void setPopUpExit(Element popUpExit) {
+        this.popUpExit = popUpExit;
     }
-    
-    public void setApp(Main app) {
-        this.app = app;
+
+    /**
+     * Get the popUpHelpScreen
+     * @return 
+     */
+    public Element getPopUpHelpScreen() {
+        return popUpHelpScreen;
     }
-    
-    public Main getApp() {
-        return this.app;
+
+    /**
+     * Sets popUpHelpScreen
+     * @param popUpHelpScreen 
+     */
+    public void setPopUpHelpScreen(Element popUpHelpScreen) {
+        this.popUpHelpScreen = popUpHelpScreen;
     }
     
 }

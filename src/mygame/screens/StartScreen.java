@@ -6,7 +6,6 @@
 package mygame.screens;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
@@ -21,33 +20,25 @@ import mygame.levels.Level1;
  *
  * @author martin
  */
-public class StartScreen extends AbstractAppState implements ScreenController {
+public class StartScreen extends AbstractScreen implements ScreenController {
     
-    private Nifty nifty;
-    private Screen screen;
-    private Main app;
-    private AppStateManager stateManager;
-    private Element popUpElement;
-    private AudioNode audioMenu;
+    private Element popUpExit;
     
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        this.nifty = nifty;
-        this.screen = screen;
-        this.setPopUpElement(this.nifty.createPopup("popupExit"));
-        this.setAudioMenu(new AudioNode(this.app.getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
-        this.getAudioMenu().setLooping(true);  // activate continuous playing
-        this.getAudioMenu().setPositional(false);   
+        this.setNifty(nifty);
+        this.setScreen(screen);
+        this.setPopUpExit(this.getNifty().createPopup("popupExit"));
     }
 
     @Override
     public void onStartScreen() {
-        this.getAudioMenu().play(); // play continuously!
+        this.getAudioNode().play(); // play continuously!
     }
 
     @Override
     public void onEndScreen() {
-        this.getAudioMenu().stop();
+        this.getAudioNode().stop();
     }
     
     @Override
@@ -55,6 +46,9 @@ public class StartScreen extends AbstractAppState implements ScreenController {
         super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
         this.setStateManager(stateManager);
         this.setApp((Main)app);
+        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
+        this.getAudioNode().setLooping(true);  // activate continuous playing
+        this.getAudioNode().setPositional(false);   
     }
 
     @Override
@@ -66,7 +60,7 @@ public class StartScreen extends AbstractAppState implements ScreenController {
      * Start Level 1
      */
     public void jugar() {
-        this.nifty.exit();
+        this.getNifty().exit();
         this.getStateManager().attach(new Level1());
     }
     
@@ -77,7 +71,7 @@ public class StartScreen extends AbstractAppState implements ScreenController {
         this.getStateManager().detach(this);
         HelpScreen helpScreen = new HelpScreen();
         helpScreen.initialize(this.getStateManager(), this.getApp());
-        this.nifty.fromXml("Interface/help_screen.xml", "help_screen", helpScreen);
+        this.getNifty().fromXml("Interface/help_screen.xml", "help_screen", helpScreen);
     }
     
     /**
@@ -87,21 +81,21 @@ public class StartScreen extends AbstractAppState implements ScreenController {
         this.getStateManager().detach(this);
         AboutScreen aboutScreen = new AboutScreen();
         aboutScreen.initialize(this.getStateManager(), this.getApp());
-        this.nifty.fromXml("Interface/about_screen.xml", "about_screen", aboutScreen);
+        this.getNifty().fromXml("Interface/about_screen.xml", "about_screen", aboutScreen);
     }
     
     /**
      * Show confirmation popUp for exit action
      */
     public void salir() {
-        this.nifty.showPopup(this.nifty.getCurrentScreen(), this.getPopUpElement().getId(), null);
+        this.getNifty().showPopup(this.getNifty().getCurrentScreen(), this.getPopUpExit().getId(), null);
     }
     
     /**
      * Confirm exit action
      */
     public void aceptar() {
-        this.nifty.exit();
+        this.getNifty().exit();
         this.getApp().stop();
     }
 
@@ -109,39 +103,15 @@ public class StartScreen extends AbstractAppState implements ScreenController {
      * Close popUp
      */    
     public void cancelar() { 
-        this.nifty.closePopup(this.popUpElement.getId());
+        this.getNifty().closePopup(this.popUpExit.getId());
     }
 
-    public Main getApp() {
-        return app;
+    public Element getPopUpExit() {
+        return popUpExit;
     }
 
-    public void setApp(Main app) {
-        this.app = app;
-    }
-
-    public AppStateManager getStateManager() {
-        return stateManager;
-    }
-
-    public void setStateManager(AppStateManager stateManager) {
-        this.stateManager = stateManager;
-    }
-
-    public Element getPopUpElement() {
-        return popUpElement;
-    }
-
-    public void setPopUpElement(Element popUpElement) {
-        this.popUpElement = popUpElement;
-    }
-
-    public AudioNode getAudioMenu() {
-        return audioMenu;
-    }
-
-    public void setAudioMenu(AudioNode audioMenu) {
-        this.audioMenu = audioMenu;
+    public void setPopUpExit(Element popUpExit) {
+        this.popUpExit = popUpExit;
     }
     
 }

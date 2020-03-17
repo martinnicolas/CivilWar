@@ -6,7 +6,6 @@
 package mygame.screens;
 
 import com.jme3.app.Application;
-import com.jme3.app.state.AbstractAppState;
 import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
@@ -17,18 +16,12 @@ import mygame.Main;
  *
  * @author martin
  */
-public class LoadingScreen extends AbstractAppState implements ScreenController {
-     
-    private Nifty nifty;
-    private Screen screen;  
-    private Main app;
-    private AppStateManager stateManager;
+public class LoadingScreen extends AbstractScreen implements ScreenController {
     
-
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        this.nifty = nifty;
-        this.screen = screen;
+        this.setNifty(nifty);
+        this.setScreen(screen);
     }
 
     @Override
@@ -51,22 +44,6 @@ public class LoadingScreen extends AbstractAppState implements ScreenController 
     @Override
     public void update(float tpf) {
         super.update(tpf); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-        public Main getApp() {
-        return app;
-    }
-
-    public void setApp(Main app) {
-        this.app = app;
-    }
-
-    public AppStateManager getStateManager() {
-        return stateManager;
-    }
-
-    public void setStateManager(AppStateManager stateManager) {
-        this.stateManager = stateManager;
     }
     
 }

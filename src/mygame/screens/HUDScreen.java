@@ -13,15 +13,12 @@ import de.lessvoid.nifty.screen.ScreenController;
  *
  * @author martin
  */
-public class HUDScreen implements ScreenController {
-
-    private Nifty nifty;
-    private Screen screen;
+public class HUDScreen extends AbstractScreen implements ScreenController {
 
     @Override
     public void bind(Nifty nifty, Screen screen) {
-        this.nifty = nifty;
-        this.screen = screen;
+        this.setNifty(nifty);
+        this.setScreen(screen);
     }
 
     @Override
