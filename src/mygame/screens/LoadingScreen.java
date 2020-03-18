@@ -5,12 +5,9 @@
  */
 package mygame.screens;
 
-import com.jme3.app.Application;
-import com.jme3.app.state.AppStateManager;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
 import de.lessvoid.nifty.screen.ScreenController;
-import mygame.Main;
 
 /**
  *
@@ -32,18 +29,6 @@ public class LoadingScreen extends AbstractScreen implements ScreenController {
     @Override
     public void onEndScreen() {
         
-    }
-        
-    @Override
-    public void initialize(AppStateManager stateManager, Application app) {
-        super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
-        this.setStateManager(stateManager);
-        this.setApp((Main)app);
-    }
-
-    @Override
-    public void update(float tpf) {
-        super.update(tpf); //To change body of generated methods, choose Tools | Templates.
     }
     
 }

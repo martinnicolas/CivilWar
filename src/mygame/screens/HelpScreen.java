@@ -21,12 +21,6 @@ import mygame.Main;
 public class HelpScreen extends AbstractScreen implements ScreenController {
     
     @Override
-    public void bind(Nifty nifty, Screen screen) {
-        this.setNifty(nifty);
-        this.setScreen(screen);
-    }
-
-    @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
         this.setStateManager(stateManager);
@@ -34,6 +28,19 @@ public class HelpScreen extends AbstractScreen implements ScreenController {
         this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
         this.getAudioNode().setLooping(true);  // activate continuous playing
         this.getAudioNode().setPositional(false);   
+        this.getApp().getRootNode().attachChild(this.getAudioNode());
+    }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        this.getApp().getRootNode().detachChild(this.getAudioNode());
+    }
+    
+    @Override
+    public void bind(Nifty nifty, Screen screen) {
+        this.setNifty(nifty);
+        this.setScreen(screen);
     }
 
     @Override
@@ -47,7 +54,7 @@ public class HelpScreen extends AbstractScreen implements ScreenController {
     }
     
     /**
-     * Volver al menu principal
+     * Back to start screen
      */
     public void volver() {
         this.getStateManager().detach(this);

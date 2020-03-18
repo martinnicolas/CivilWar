@@ -25,6 +25,23 @@ public class StartScreen extends AbstractScreen implements ScreenController {
     private Element popUpExit;
     
     @Override
+    public void initialize(AppStateManager stateManager, Application app) {
+        super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
+        this.setStateManager(stateManager);
+        this.setApp((Main)app);
+        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
+        this.getAudioNode().setLooping(true);  // activate continuous playing
+        this.getAudioNode().setPositional(false);   
+        this.getApp().getRootNode().attachChild(this.getAudioNode());
+    }
+    
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        this.getApp().getRootNode().detachChild(this.getAudioNode());
+    }
+    
+        @Override
     public void bind(Nifty nifty, Screen screen) {
         this.setNifty(nifty);
         this.setScreen(screen);
@@ -39,21 +56,6 @@ public class StartScreen extends AbstractScreen implements ScreenController {
     @Override
     public void onEndScreen() {
         this.getAudioNode().stop();
-    }
-    
-    @Override
-    public void initialize(AppStateManager stateManager, Application app) {
-        super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
-        this.setStateManager(stateManager);
-        this.setApp((Main)app);
-        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
-        this.getAudioNode().setLooping(true);  // activate continuous playing
-        this.getAudioNode().setPositional(false);   
-    }
-
-    @Override
-    public void update(float tpf) {
-        super.update(tpf); //To change body of generated methods, choose Tools | Templates.
     }
     
     /**
