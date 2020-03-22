@@ -15,7 +15,7 @@ import mygame.controls.EnemyControl;
  */
 public class SoldierEnemy extends Enemy {
     
-    public final String MODEL_PATH = "Models/D05150293DS/D0515029.j3o";
+    public static final String MODEL_PATH = "Models/D05150293DS/D0515029.j3o";
     public static final String SPATIAL_NAME = "enemy";
 
     public SoldierEnemy(AssetManager assetManager, int energy, int damage) {
