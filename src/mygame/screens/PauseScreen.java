@@ -36,7 +36,6 @@ public class PauseScreen extends AbstractScreen implements ScreenController{
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
         this.setApp((Main) app);
-        this.setStateManager(stateManager);
         this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
         this.getAudioNode().setLooping(true);  // activate continuous playing
         this.getAudioNode().setPositional(false);
@@ -78,11 +77,11 @@ public class PauseScreen extends AbstractScreen implements ScreenController{
      * Exit current Level and init start screen
      */
     public void aceptar() {
-        this.getStateManager().detach(this.getLevel());
+        this.getApp().getStateManager().detach(this.getLevel());
         this.getNifty().exit();
-        this.getStateManager().detach(this);
+        this.getApp().getStateManager().detach(this);
         StartScreen startScreen = new StartScreen();
-        startScreen.initialize(this.getStateManager(), this.getApp());
+        startScreen.initialize(this.getApp().getStateManager(), this.getApp());
         this.getNifty().fromXml("Interface/start_screen.xml", "start_screen", startScreen);
     }
     

@@ -21,6 +21,7 @@ import de.lessvoid.nifty.Nifty;
 import java.util.List;
 import mygame.Main;
 import mygame.characters.Player;
+import mygame.controls.PlayerControl;
 import mygame.controls.PlayerHUDControl;
 import mygame.screens.PauseScreen;
 
@@ -34,7 +35,6 @@ public abstract class Level extends AbstractAppState {
     private AppStateManager stateManager;
     private Player player;
     private AudioNode audioNode;
-    private Node localRootNode;
     private Node rootNode;
     private AssetManager assetManager;
     private RigidBodyControl control;
@@ -76,7 +76,7 @@ public abstract class Level extends AbstractAppState {
                                                           this.getApp().getGuiViewPort());
         this.setNifty(niftyDisplay.getNifty());
         PauseScreen pauseScreen = new PauseScreen(this);
-        pauseScreen.initialize(stateManager, app);
+        pauseScreen.initialize(this.getApp().getStateManager(), this.getApp());
         this.getNifty().fromXml("Interface/pause_screen.xml", "pause_screen", pauseScreen);
         this.getApp().getGuiViewPort().addProcessor(niftyDisplay);
     }
@@ -85,7 +85,7 @@ public abstract class Level extends AbstractAppState {
      * Close pause screen
      */
     private void closePauseScreen() {
-        this.getStateManager().detach(this.getStateManager().getState(PauseScreen.class));
+        this.getApp().getStateManager().detach(this.getApp().getStateManager().getState(PauseScreen.class));
         this.getNifty().exit();
     }
     
@@ -93,21 +93,21 @@ public abstract class Level extends AbstractAppState {
      * Disable physics
      */
     private void disablePhysics() {
-       this.getStateManager().getState(BulletAppState.class).setEnabled(false); 
+       this.getApp().getStateManager().getState(BulletAppState.class).setEnabled(false); 
     }
     
     /**
      * Enable physics
      */
     private void enablePhysics() {
-       this.getStateManager().getState(BulletAppState.class).setEnabled(true);
+       this.getApp().getStateManager().getState(BulletAppState.class).setEnabled(true);
     }
     
     /**
      * Enable all controls when Level resumes
      */
     private void enableAllControls() {
-        List<Spatial> spatials = this.getLocalRootNode().getChildren();
+        List<Spatial> spatials = this.getApp().getRootNode().getChildren();
         for (Spatial spatial : spatials) {
             for (int i = 0; i < spatial.getNumControls(); i++) {
                 Control spatialControl = spatial.getControl(i);
@@ -126,7 +126,7 @@ public abstract class Level extends AbstractAppState {
      * Disable all controls when Level is paused
      */
     private void disableAllControls() {
-        List<Spatial> spatials = this.getLocalRootNode().getChildren();
+        List<Spatial> spatials = this.getApp().getRootNode().getChildren();
         for (Spatial spatial : spatials) {
             for (int i = 0; i < spatial.getNumControls(); i++) {
                 Control spatialControl = spatial.getControl(i);
@@ -147,20 +147,13 @@ public abstract class Level extends AbstractAppState {
     public void removeSettings() {
         this.getPlayer().getPlayerNode().getControl(PlayerHUDControl.class).getNifty().exit();
         this.getPlayer().getPlayerNode().removeControl(PlayerHUDControl.class);
-        BulletAppState bulletAppState = this.getStateManager().getState(BulletAppState.class);
-        this.getStateManager().detach(bulletAppState);
+        this.getPlayer().getPlayerNode().removeControl(PlayerControl.class);
+        BulletAppState bulletAppState = this.getApp().getStateManager().getState(BulletAppState.class);
+        this.getApp().getStateManager().detach(bulletAppState);
         this.getApp().getInputManager().removeListener(this.getPlayer());
     }
     
     public abstract void setUpAudio();
-    
-    public AppStateManager getStateManager() {
-        return stateManager;
-    }
-
-    public void setStateManager(AppStateManager stateManager) {
-        this.stateManager = stateManager;
-    }
     
     public Main getApp() {
         return this.app;
@@ -178,36 +171,12 @@ public abstract class Level extends AbstractAppState {
         this.player = player;
     };
     
-    public Node getRootNode() {
-        return rootNode;
-    }
-
-    public void setRootNode(Node rootNode) {
-        this.rootNode = rootNode;
-    }
-
-    public AssetManager getAssetManager() {
-        return assetManager;
-    }
-
-    public void setAssetManager(AssetManager assetManager) {
-        this.assetManager = assetManager;
-    }
-
     public RigidBodyControl getControl() {
         return control;
     }
 
     public void setControl(RigidBodyControl control) {
         this.control = control;
-    }
-    
-    public Node getLocalRootNode() {
-        return localRootNode;
-    }
-
-    public void setLocalRootNode(Node localRootNode) {
-        this.localRootNode = localRootNode;
     }
     
     public AudioNode getAudioNode() {

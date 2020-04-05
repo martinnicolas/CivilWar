@@ -27,7 +27,6 @@ public class StartScreen extends AbstractScreen implements ScreenController {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
-        this.setStateManager(stateManager);
         this.setApp((Main)app);
         this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
         this.getAudioNode().setLooping(true);  // activate continuous playing
@@ -63,16 +62,16 @@ public class StartScreen extends AbstractScreen implements ScreenController {
      */
     public void jugar() {
         this.getNifty().exit();
-        this.getStateManager().attach(new Level1());
+        this.getApp().getStateManager().attach(new Level1());
     }
     
     /**
      * Show Help Screen
      */
     public void ayuda() {
-        this.getStateManager().detach(this);
+        this.getApp().getStateManager().detach(this);
         HelpScreen helpScreen = new HelpScreen();
-        helpScreen.initialize(this.getStateManager(), this.getApp());
+        helpScreen.initialize(this.getApp().getStateManager(), this.getApp());
         this.getNifty().fromXml("Interface/help_screen.xml", "help_screen", helpScreen);
     }
     
@@ -80,9 +79,9 @@ public class StartScreen extends AbstractScreen implements ScreenController {
      * Show About Screen
      */
     public void acerca() {
-        this.getStateManager().detach(this);
+        this.getApp().getStateManager().detach(this);
         AboutScreen aboutScreen = new AboutScreen();
-        aboutScreen.initialize(this.getStateManager(), this.getApp());
+        aboutScreen.initialize(this.getApp().getStateManager(), this.getApp());
         this.getNifty().fromXml("Interface/about_screen.xml", "about_screen", aboutScreen);
     }
     

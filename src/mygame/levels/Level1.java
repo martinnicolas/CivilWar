@@ -17,6 +17,8 @@ import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.DirectionalLight;
+import com.jme3.light.Light;
+import com.jme3.light.LightList;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.LightScatteringFilter;
@@ -49,6 +51,8 @@ public class Level1 extends Level implements PhysicsCollisionListener {
     private static final int SHADOWMAP_SIZE = 2048;
     //Shadow size
     private static final int SHADOW_SIZE = 2;
+    //Lights
+    private DirectionalLight directionalLight;
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -56,22 +60,17 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         //TODO: initialize your AppState, e.g. attach spatials to rootNode
         //this is called on the OpenGL thread after the AppState has been attached
         this.setApp((Main) app);
-        this.setStateManager(stateManager);
-        this.setRootNode(this.getApp().getRootNode());
-        this.setAssetManager(this.getApp().getAssetManager());
-        this.setLocalRootNode(new Node("Level 1"));
-        this.getRootNode().attachChild(this.getLocalRootNode());
 
         //Setup audio effects for Level 1
         this.setUpAudio();
 
         //Setup Physics
         BulletAppState bulletAppState = new BulletAppState();
-        this.getStateManager().attach(bulletAppState);
+        this.getApp().getStateManager().attach(bulletAppState);
 
         // We load the scene from the zip file and adjust its size.
         //assetManager.registerLocator("town.zip", ZipLocator.class);
-        Spatial sceneModel = this.getAssetManager().loadModel(Level1.SCENE_PATH);
+        Spatial sceneModel = this.getApp().getAssetManager().loadModel(Level1.SCENE_PATH);
         sceneModel.setLocalScale(2f);
         // We set up collision detection for the scene by creating a
         // compound collision shape and a static RigidBodyControl with mass zero.
@@ -80,32 +79,33 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         CollisionShape sceneShape = CollisionShapeFactory.createMeshShape((Node) sceneModel);
         this.setControl(new RigidBodyControl(sceneShape, 0));
         sceneModel.addControl(this.getControl());
-        this.getLocalRootNode().attachChild(sceneModel);
+        this.getApp().getRootNode().attachChild(sceneModel);
         bulletAppState.getPhysicsSpace().addAll(sceneModel);
-        
-        //Setup lights and shadows
-        this.setUpLightsAndShadows();
         
         //Load player
         this.setPlayer(new Player(this));
         this.getPlayer().setInitialLocation(Level1.PLAYER_INITIAL_LOCATION);
-        this.getLocalRootNode().attachChild(this.getPlayer().getPlayerNode());
+        this.getApp().getRootNode().attachChild(this.getPlayer().getPlayerNode());
         bulletAppState.getPhysicsSpace().addAll(this.getPlayer().getPlayerNode());
 
         //Load some enemy
-        SoldierEnemy soldierEnemy = new SoldierEnemy(this.getAssetManager(), 100, 10);
-        this.getLocalRootNode().attachChild(soldierEnemy.getSpatial());
+        SoldierEnemy soldierEnemy = new SoldierEnemy(this.getApp().getAssetManager(), 100, 10);
+        this.getApp().getRootNode().attachChild(soldierEnemy.getSpatial());
         bulletAppState.getPhysicsSpace().addAll(soldierEnemy.getSpatial());
         
         //Load some ammo bonus
-        AmmoBonus ammoBonus = new AmmoBonus(this.getAssetManager(), 10, new Vector3f(-29, 10, 26));
-        this.getLocalRootNode().attachChild(ammoBonus.getSpatial());
+        AmmoBonus ammoBonus = new AmmoBonus(this.getApp().getAssetManager(), 10, new Vector3f(-29, 10, 26));
+        this.getApp().getRootNode().attachChild(ammoBonus.getSpatial());
         bulletAppState.getPhysicsSpace().addAll(ammoBonus.getSpatial());
         
         //Load some health bonus
-        HealthBonus healthBonus = new HealthBonus(this.getAssetManager(), 10, new Vector3f(-29, 10, 27));
-        this.getLocalRootNode().attachChild(healthBonus.getSpatial());
+        HealthBonus healthBonus = new HealthBonus(this.getApp().getAssetManager(), 10, new Vector3f(-29, 10, 27));
+        this.getApp().getRootNode().attachChild(healthBonus.getSpatial());
         bulletAppState.getPhysicsSpace().addAll(healthBonus.getSpatial());
+        
+        //Setup lights and shadows
+        this.setUpLights();
+        this.setUpShadowProcessors();
         
         //Add collision listener
         bulletAppState.getPhysicsSpace().addCollisionListener(this);
@@ -135,32 +135,41 @@ public class Level1 extends Level implements PhysicsCollisionListener {
 
     @Override
     public void cleanup() {
-        this.removeSettings();
+        super.cleanup();
         //TODO: clean up what you initialized in the initialize method,
         //e.g. remove all spatials from rootNode
         //this is called on the OpenGL thread after the AppState has been detached
-        this.getRootNode().detachChild(this.getLocalRootNode());
-        super.cleanup();
+        LightList lightsList = this.getApp().getRootNode().getWorldLightList();
+        for (Light light : lightsList) {
+            this.getApp().getRootNode().removeLight(light);
+        }
+        this.getApp().getViewPort().clearProcessors();
+        this.removeSettings();
+        this.getApp().getRootNode().detachAllChildren();
     }
     
     /**
-     * Setup lights and shadows
+     * Setup lights
      */
-    private void setUpLightsAndShadows() {
-        //Add some light
-        DirectionalLight directionalLight = new DirectionalLight();
-        directionalLight.setDirection(Level1.LIGHT_DIRECTION.normalizeLocal());
-        this.getLocalRootNode().addLight(directionalLight);
+    private void setUpLights() {
+        this.setDirectionalLight(new DirectionalLight());
+        this.getDirectionalLight().setDirection(Level1.LIGHT_DIRECTION.normalizeLocal());
+        this.getApp().getRootNode().addLight(this.getDirectionalLight());
+    }
+    
+    /**
+     * Setup shadow processors
+     */
+    private void setUpShadowProcessors() {
         //Add some shadows
-        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(this.getAssetManager(), Level1.SHADOWMAP_SIZE, Level1.SHADOW_SIZE);
-        dlsr.setLight(directionalLight);
+        DirectionalLightShadowRenderer dlsr = new DirectionalLightShadowRenderer(this.getApp().getAssetManager(), Level1.SHADOWMAP_SIZE, Level1.SHADOW_SIZE);
+        dlsr.setLight(this.getDirectionalLight());
         this.getApp().getViewPort().addProcessor(dlsr);
         //Add light scattering
-        FilterPostProcessor fpp=new FilterPostProcessor(this.getAssetManager());
+        FilterPostProcessor fpp = new FilterPostProcessor(this.getApp().getAssetManager());
         LightScatteringFilter sunlight = new LightScatteringFilter(Level1.LIGHT_DIRECTION.multLocal(-3000));
         fpp.addFilter(sunlight);
         this.getApp().getViewPort().addProcessor(fpp); 
-
     }
     
     /**
@@ -168,11 +177,10 @@ public class Level1 extends Level implements PhysicsCollisionListener {
      */
     @Override
     public void setUpAudio() {
-        //Setup ambient audio
-        this.setAudioNode(new AudioNode(this.getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", AudioData.DataType.Stream));
+        this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", AudioData.DataType.Stream));
         this.getAudioNode().setLooping(true);  // activate continuous playing
         this.getAudioNode().setPositional(false);
-        this.getLocalRootNode().attachChild(this.getAudioNode());
+        this.getApp().getRootNode().attachChild(this.getAudioNode());
         this.getAudioNode().play();// play continuously!
     }
     
@@ -291,7 +299,7 @@ public class Level1 extends Level implements PhysicsCollisionListener {
 
     private void restoreControlForAlives() {
         //enable all controls
-        List<Spatial> spatials = this.getLocalRootNode().getChildren();
+        List<Spatial> spatials = this.getApp().getRootNode().getChildren();
         for (Spatial spatial : spatials) {
             for (int i = 0; i < spatial.getNumControls(); i++) {
                 Control spatialControl = spatial.getControl(i);
@@ -301,6 +309,14 @@ public class Level1 extends Level implements PhysicsCollisionListener {
                 }
             }
         }
+    }
+
+    public DirectionalLight getDirectionalLight() {
+        return directionalLight;
+    }
+
+    public void setDirectionalLight(DirectionalLight directionalLight) {
+        this.directionalLight = directionalLight;
     }
 
 }

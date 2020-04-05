@@ -23,7 +23,6 @@ public class AboutScreen extends AbstractScreen implements ScreenController {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app); 
-        this.setStateManager(stateManager);
         this.setApp((Main) app);
         this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
         this.getAudioNode().setLooping(true);  // activate continuous playing
@@ -57,9 +56,9 @@ public class AboutScreen extends AbstractScreen implements ScreenController {
      * Volver al menu principal
      */
     public void volver() {
-        this.getStateManager().detach(this);
+        this.getApp().getStateManager().detach(this);
         StartScreen startScreen = new StartScreen();
-        startScreen.initialize(this.getStateManager(), this.getApp());
+        startScreen.initialize(this.getApp().getStateManager(), this.getApp());
         this.getNifty().fromXml("Interface/start_screen.xml", "start_screen", startScreen);
     }
     

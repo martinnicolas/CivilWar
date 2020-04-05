@@ -46,7 +46,6 @@ public class Player implements ActionListener{
     private Vector3f walkDirection = new Vector3f();
     private Main app;
     private Level level;
-    private Node localRootNode;
     private AssetManager assetManager;
     private Node playerNode;
     private AudioNode pickedAmmoAudio, pickedHealthAudio, jumpAudio, walkAudio, shootAudio, emptyWeaponAudio;
@@ -64,8 +63,6 @@ public class Player implements ActionListener{
     public Player(Level level) {
         this.level = level;
         this.app = level.getApp();
-        this.localRootNode = level.getLocalRootNode();
-        this.assetManager = level.getAssetManager();
         this.setUpProperties();
         this.setUpPlayerWeapon();
         this.setUpAudio();
@@ -94,13 +91,13 @@ public class Player implements ActionListener{
      * Setup player weapon
      */
     private void setUpPlayerWeapon() {
-        AK47Weapon ak47 = new AK47Weapon(this.getAssetManager(), new Vector3f(-1f,-1.1f, 2f));
+        AK47Weapon ak47 = new AK47Weapon(this.getApp().getAssetManager(), new Vector3f(-1f,-1.1f, 2f));
         ak47.getSpatial().setLocalRotation(new Quaternion(0f, -1f, 0f, 1f));        
         //Create camera node for weapon spatial
         CameraNode cameraNode = new CameraNode("camera_node", this.getApp().getCamera());
         cameraNode.setControlDir(CameraControl.ControlDirection.CameraToSpatial);
         cameraNode.attachChild(ak47.getSpatial());
-        this.getLocalRootNode().attachChild(cameraNode);
+        this.getApp().getRootNode().attachChild(cameraNode);
     }
 
     /**
@@ -108,41 +105,41 @@ public class Player implements ActionListener{
      */
     private void setUpAudio() {
         //Attach audio for jump action
-        this.setJumpAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/jumppp11.ogg", DataType.Buffer));
+        this.setJumpAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/jumppp11.ogg", DataType.Buffer));
         this.getJumpAudio().setPositional(false);
         this.getJumpAudio().setLooping(false);
         this.getJumpAudio().setVolume(20);
-        this.getLocalRootNode().attachChild(this.getJumpAudio());
+        this.getApp().getRootNode().attachChild(this.getJumpAudio());
         //Attach audio for walk action
-        this.setWalkAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/sfx_step_grass_l.ogg", DataType.Buffer));
+        this.setWalkAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/sfx_step_grass_l.ogg", DataType.Buffer));
         this.getWalkAudio().setPositional(false);
         this.getWalkAudio().setLooping(true);
         this.getWalkAudio().setVolume(2);
-        this.getLocalRootNode().attachChild(this.getWalkAudio());
+        this.getApp().getRootNode().attachChild(this.getWalkAudio());
         //Attach audio for shoot action
-        this.setShootAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/shots/pistol.wav", DataType.Buffer));
+        this.setShootAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/shots/pistol.wav", DataType.Buffer));
         this.getShootAudio().setPositional(false);
         this.getShootAudio().setLooping(false);
         this.getShootAudio().setVolume(2);
-        this.getLocalRootNode().attachChild(this.getShootAudio());
+        this.getApp().getRootNode().attachChild(this.getShootAudio());
         //Attach audio for empty weapon
-        this.setEmptyWeaponAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/shots/Gun_Cock.wav", DataType.Buffer));
+        this.setEmptyWeaponAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/shots/Gun_Cock.wav", DataType.Buffer));
         this.getEmptyWeaponAudio().setPositional(false);
         this.getEmptyWeaponAudio().setLooping(false);
         this.getEmptyWeaponAudio().setVolume(2);
-        this.getLocalRootNode().attachChild(this.getEmptyWeaponAudio());
+        this.getApp().getRootNode().attachChild(this.getEmptyWeaponAudio());
         //Attach audio for picked ammo action
-        this.setPickedAmmoAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/bonus/picked_ammo.wav", DataType.Buffer));
+        this.setPickedAmmoAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/bonus/picked_ammo.wav", DataType.Buffer));
         this.getPickedAmmoAudio().setPositional(false);
         this.getPickedAmmoAudio().setLooping(false);
         this.getPickedAmmoAudio().setVolume(2);
-        this.getLocalRootNode().attachChild(this.getPickedAmmoAudio());
+        this.getApp().getRootNode().attachChild(this.getPickedAmmoAudio());
         //Attach audio for picked health action
-        this.setPickedHealthAudio(new AudioNode(this.getAssetManager(), "Sounds/Effects/bonus/picked_health.wav", DataType.Buffer));
+        this.setPickedHealthAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/bonus/picked_health.wav", DataType.Buffer));
         this.getPickedHealthAudio().setPositional(false);
         this.getPickedHealthAudio().setLooping(false);
         this.getPickedHealthAudio().setVolume(2);
-        this.getLocalRootNode().attachChild(this.getPickedHealthAudio());
+        this.getApp().getRootNode().attachChild(this.getPickedHealthAudio());
     }
 
     /**
@@ -265,20 +262,20 @@ public class Player implements ActionListener{
         // Collect intersections between Ray and Shootables in results list.
         // DO NOT check collision with the root node, or else ALL collisions will hit the
         // skybox! Always make a separate node for objects you want to collide with.
-        this.getLevel().getLocalRootNode().collideWith(ray, results);
+        this.getApp().getRootNode().collideWith(ray, results);
         if (results.size() > 0) {
             // The closest collision point is what was truly hit:
             CollisionResult closest = results.getClosestCollision();
             // Let's interact - we mark the hit
             Sphere sphere = new Sphere(10, 10, 0.02f);
             Geometry shootsMark = new Geometry("shoots_mark", sphere);
-            Material markMaterial = new Material(this.getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
+            Material markMaterial = new Material(this.getApp().getAssetManager(), "Common/MatDefs/Misc/Unshaded.j3md");
             markMaterial.setColor("Color", ColorRGBA.Black);
             shootsMark.setMaterial(markMaterial);
             shootsMark.setLocalTranslation(closest.getContactPoint());
             shootsMark.addControl(new RigidBodyControl(1f));            
-            this.getLevel().getLocalRootNode().attachChild(shootsMark);
-            this.getLevel().getStateManager().getState(BulletAppState.class).getPhysicsSpace().addAll(shootsMark);
+            this.getApp().getRootNode().attachChild(shootsMark);
+            this.getApp().getStateManager().getState(BulletAppState.class).getPhysicsSpace().addAll(shootsMark);
         }
     }
 
@@ -296,22 +293,6 @@ public class Player implements ActionListener{
 
     public void setApp(Main app) {
         this.app = app;
-    }
-
-    public Node getLocalRootNode() {
-        return localRootNode;
-    }
-
-    public void setLocalRootNode(Node localRootNode) {
-        this.localRootNode = localRootNode;
-    }
-
-    public AssetManager getAssetManager() {
-        return assetManager;
-    }
-
-    public void setAssetManager(AssetManager assetManager) {
-        this.assetManager = assetManager;
     }
 
     public Node getPlayerNode() {

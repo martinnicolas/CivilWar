@@ -6,7 +6,6 @@
 package mygame.screens;
 
 import com.jme3.app.state.AbstractAppState;
-import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioNode;
 import de.lessvoid.nifty.Nifty;
 import de.lessvoid.nifty.screen.Screen;
@@ -19,7 +18,6 @@ import mygame.Main;
 public abstract class AbstractScreen extends AbstractAppState {
 
     private Main app;
-    private AppStateManager stateManager;
     private AudioNode audioNode;
     private Nifty nifty;
     private Screen screen;
@@ -30,14 +28,6 @@ public abstract class AbstractScreen extends AbstractAppState {
 
     public void setApp(Main app) {
         this.app = app;
-    }
-
-    public AppStateManager getStateManager() {
-        return stateManager;
-    }
-
-    public void setStateManager(AppStateManager stateManager) {
-        this.stateManager = stateManager;
     }
 
     public AudioNode getAudioNode() {
