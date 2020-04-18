@@ -37,7 +37,7 @@
                 </panel>
             </panel>
             <panel width="100%" height="10%" childLayout="horizontal">
-                <text width="10%" height="100%" font="aurulent-sans-16.fnt" halign="left" color="#ffff" text="CivilWar 1.0" />
+                <text width="10%" height="100%" font="aurulent-sans-16.fnt" halign="left" color="#ffff" text="Civil War 0.0.1" />
             </panel>
         </layer>
     </screen>

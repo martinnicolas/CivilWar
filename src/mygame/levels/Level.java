@@ -5,15 +5,18 @@
  */
 package mygame.levels;
 
+import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AbstractAppState;
-import com.jme3.app.state.AppStateManager;
-import com.jme3.asset.AssetManager;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
 import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
+import com.jme3.light.Light;
+import com.jme3.light.LightList;
 import com.jme3.niftygui.NiftyJmeDisplay;
-import com.jme3.scene.Node;
+import com.jme3.post.FilterPostProcessor;
+import com.jme3.post.SceneProcessor;
+import com.jme3.renderer.ViewPort;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
@@ -21,6 +24,7 @@ import de.lessvoid.nifty.Nifty;
 import java.util.List;
 import mygame.Main;
 import mygame.characters.Player;
+import mygame.controls.BonusControl;
 import mygame.controls.PlayerControl;
 import mygame.controls.PlayerHUDControl;
 import mygame.screens.PauseScreen;
@@ -31,12 +35,9 @@ import mygame.screens.PauseScreen;
  */
 public abstract class Level extends AbstractAppState {
     
-    private Main app;
-    private AppStateManager stateManager;
+    private SimpleApplication app;
     private Player player;
     private AudioNode audioNode;
-    private Node rootNode;
-    private AssetManager assetManager;
     private RigidBodyControl control;
     //For pause screen
     private Nifty nifty;
@@ -145,21 +146,40 @@ public abstract class Level extends AbstractAppState {
      * Remove Level settings
      */
     public void removeSettings() {
+        ViewPort viewPort = this.getApp().getViewPort();
+        for(SceneProcessor processor: viewPort.getProcessors()){
+            if(processor instanceof FilterPostProcessor){
+                ((FilterPostProcessor)processor).removeAllFilters();
+            }
+            viewPort.removeProcessor(processor);
+        }
+        LightList lightsList = this.getApp().getRootNode().getWorldLightList();
+        for (Light light : lightsList) {
+            this.getApp().getRootNode().removeLight(light);
+        }
+        BulletAppState bulletAppState = this.getApp().getStateManager().getState(BulletAppState.class);
+        List<Spatial> spatialsList = this.getApp().getRootNode().getChildren();
+        for (Spatial spatial : spatialsList) {
+            bulletAppState.getPhysicsSpace().removeAll(spatial);
+            if (spatial.getName().equals("ammo") || spatial.getName().equals("bonus")) {
+                spatial.removeControl(BonusControl.class);
+            }
+        }
         this.getPlayer().getPlayerNode().getControl(PlayerHUDControl.class).getNifty().exit();
         this.getPlayer().getPlayerNode().removeControl(PlayerHUDControl.class);
         this.getPlayer().getPlayerNode().removeControl(PlayerControl.class);
-        BulletAppState bulletAppState = this.getApp().getStateManager().getState(BulletAppState.class);
         this.getApp().getStateManager().detach(bulletAppState);
         this.getApp().getInputManager().removeListener(this.getPlayer());
+        this.getApp().getRootNode().detachAllChildren();
     }
     
     public abstract void setUpAudio();
     
-    public Main getApp() {
+    public SimpleApplication getApp() {
         return this.app;
     };
     
-    public void setApp(Main app) {
+    public void setApp(SimpleApplication app) {
         this.app = app;
     };
     

@@ -5,6 +5,7 @@
  */
 package mygame.controls;
 
+import com.jme3.app.SimpleApplication;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
@@ -23,11 +24,11 @@ import mygame.screens.HUDScreen;
  */
 public class PlayerHUDControl extends AbstractControl {
     
-    private Main app;
+    private SimpleApplication app;
     private Player player;
     private Nifty nifty;
     
-    public PlayerHUDControl(Main app, Player player) {
+    public PlayerHUDControl(SimpleApplication app, Player player) {
         this.app = app;
         this.player = player;
         this.showHUDScreen();
@@ -78,7 +79,7 @@ public class PlayerHUDControl extends AbstractControl {
         healthText.setText(Integer.toString(Math.round(this.getPlayer().getControl().getHealth())));
     }
 
-    public Main getApp() {
+    public SimpleApplication getApp() {
         return app;
     }
 

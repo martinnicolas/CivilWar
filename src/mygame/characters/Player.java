@@ -5,7 +5,7 @@
  */
 package mygame.characters;
 
-import com.jme3.asset.AssetManager;
+import com.jme3.app.SimpleApplication;
 import com.jme3.audio.AudioData.DataType;
 import com.jme3.audio.AudioNode;
 import com.jme3.bullet.BulletAppState;
@@ -43,10 +43,9 @@ import mygame.weapons.AK47Weapon;
  */
 public class Player implements ActionListener{
 
-    private Vector3f walkDirection = new Vector3f();
-    private Main app;
+    private Vector3f walkDirection = Vector3f.ZERO;
+    private SimpleApplication app;
     private Level level;
-    private AssetManager assetManager;
     private Node playerNode;
     private AudioNode pickedAmmoAudio, pickedHealthAudio, jumpAudio, walkAudio, shootAudio, emptyWeaponAudio;
     private boolean left = false, right = false, up = false, down = false;
@@ -106,36 +105,42 @@ public class Player implements ActionListener{
     private void setUpAudio() {
         //Attach audio for jump action
         this.setJumpAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/jumppp11.ogg", DataType.Buffer));
+        this.getJumpAudio().setName("player_jump_audio");
         this.getJumpAudio().setPositional(false);
         this.getJumpAudio().setLooping(false);
         this.getJumpAudio().setVolume(20);
         this.getApp().getRootNode().attachChild(this.getJumpAudio());
         //Attach audio for walk action
         this.setWalkAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/sfx_step_grass_l.ogg", DataType.Buffer));
+        this.getWalkAudio().setName("player_walk_audio");
         this.getWalkAudio().setPositional(false);
         this.getWalkAudio().setLooping(true);
         this.getWalkAudio().setVolume(2);
         this.getApp().getRootNode().attachChild(this.getWalkAudio());
         //Attach audio for shoot action
         this.setShootAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/shots/pistol.wav", DataType.Buffer));
+        this.getShootAudio().setName("player_shoot_audio");
         this.getShootAudio().setPositional(false);
         this.getShootAudio().setLooping(false);
         this.getShootAudio().setVolume(2);
         this.getApp().getRootNode().attachChild(this.getShootAudio());
         //Attach audio for empty weapon
         this.setEmptyWeaponAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/shots/Gun_Cock.wav", DataType.Buffer));
+        this.getEmptyWeaponAudio().setName("player_empty_weapon_audio");
         this.getEmptyWeaponAudio().setPositional(false);
         this.getEmptyWeaponAudio().setLooping(false);
         this.getEmptyWeaponAudio().setVolume(2);
         this.getApp().getRootNode().attachChild(this.getEmptyWeaponAudio());
         //Attach audio for picked ammo action
         this.setPickedAmmoAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/bonus/picked_ammo.wav", DataType.Buffer));
+        this.getPickedAmmoAudio().setName("player_picked_ammo_audio");
         this.getPickedAmmoAudio().setPositional(false);
         this.getPickedAmmoAudio().setLooping(false);
         this.getPickedAmmoAudio().setVolume(2);
         this.getApp().getRootNode().attachChild(this.getPickedAmmoAudio());
         //Attach audio for picked health action
         this.setPickedHealthAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/bonus/picked_health.wav", DataType.Buffer));
+        this.getPickedHealthAudio().setName("player_picked_health_audio");
         this.getPickedHealthAudio().setPositional(false);
         this.getPickedHealthAudio().setLooping(false);
         this.getPickedHealthAudio().setVolume(2);
@@ -169,7 +174,8 @@ public class Player implements ActionListener{
      */
     public void setInitialLocation(Vector3f initialLocation) {
         this.getControl().setPhysicsLocation(initialLocation);
-        this.getApp().getCamera().lookAt(Vector3f.ZERO, Vector3f.UNIT_Y);
+        this.getControl().setWalkDirection(Vector3f.ZERO);
+        this.getApp().getCamera().lookAt(this.getControl().getWalkDirection(), Vector3f.UNIT_Y);
     }
 
     @Override
@@ -287,7 +293,7 @@ public class Player implements ActionListener{
         this.level = level;
     }
 
-    public Main getApp() {
+    public SimpleApplication getApp() {
         return app;
     }
 

@@ -6,6 +6,7 @@
 package mygame.levels;
 
 import com.jme3.app.Application;
+import com.jme3.app.SimpleApplication;
 import com.jme3.app.state.AppStateManager;
 import com.jme3.audio.AudioData;
 import com.jme3.audio.AudioNode;
@@ -17,8 +18,6 @@ import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.DirectionalLight;
-import com.jme3.light.Light;
-import com.jme3.light.LightList;
 import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.LightScatteringFilter;
@@ -28,7 +27,6 @@ import com.jme3.scene.control.Control;
 import com.jme3.shadow.DirectionalLightShadowRenderer;
 import java.util.List;
 import mygame.enemies.SoldierEnemy;
-import mygame.Main;
 import mygame.bonuses.AmmoBonus;
 import mygame.bonuses.HealthBonus;
 import mygame.characters.Player;
@@ -59,7 +57,7 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         super.initialize(stateManager, app);
         //TODO: initialize your AppState, e.g. attach spatials to rootNode
         //this is called on the OpenGL thread after the AppState has been attached
-        this.setApp((Main) app);
+        this.setApp((SimpleApplication) app);
 
         //Setup audio effects for Level 1
         this.setUpAudio();
@@ -139,13 +137,7 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         //TODO: clean up what you initialized in the initialize method,
         //e.g. remove all spatials from rootNode
         //this is called on the OpenGL thread after the AppState has been detached
-        LightList lightsList = this.getApp().getRootNode().getWorldLightList();
-        for (Light light : lightsList) {
-            this.getApp().getRootNode().removeLight(light);
-        }
-        this.getApp().getViewPort().clearProcessors();
         this.removeSettings();
-        this.getApp().getRootNode().detachAllChildren();
     }
     
     /**
@@ -154,7 +146,7 @@ public class Level1 extends Level implements PhysicsCollisionListener {
     private void setUpLights() {
         this.setDirectionalLight(new DirectionalLight());
         this.getDirectionalLight().setDirection(Level1.LIGHT_DIRECTION.normalizeLocal());
-        this.getApp().getRootNode().addLight(this.getDirectionalLight());
+        this.getApp().getRootNode().addLight(this.getDirectionalLight());        
     }
     
     /**
@@ -169,7 +161,7 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         FilterPostProcessor fpp = new FilterPostProcessor(this.getApp().getAssetManager());
         LightScatteringFilter sunlight = new LightScatteringFilter(Level1.LIGHT_DIRECTION.multLocal(-3000));
         fpp.addFilter(sunlight);
-        this.getApp().getViewPort().addProcessor(fpp); 
+        this.getApp().getViewPort().addProcessor(fpp);
     }
     
     /**
@@ -178,6 +170,7 @@ public class Level1 extends Level implements PhysicsCollisionListener {
     @Override
     public void setUpAudio() {
         this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/Outdoor_Ambiance.ogg", AudioData.DataType.Stream));
+        this.getAudioNode().setName("audio_level1");
         this.getAudioNode().setLooping(true);  // activate continuous playing
         this.getAudioNode().setPositional(false);
         this.getApp().getRootNode().attachChild(this.getAudioNode());
