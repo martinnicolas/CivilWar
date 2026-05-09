@@ -6,9 +6,6 @@
             <extension file="assets-impl.xml" id="assets">
                 <dependency dependsOn="-init-assets" target="-do-init"/>
             </extension>
-            <extension file="desktop-deployment-impl.xml" id="desktop-deployment">
-                <dependency dependsOn="-desktop-deployment" target="jar"/>
-            </extension>
         </buildExtensions>
         <data xmlns="http://www.netbeans.org/ns/j2se-project/3">
             <name>CivilWar</name>

@@ -21,7 +21,7 @@
             </panel>
         </layer>
     </screen>
-    <popup id="popUpExit" backgroundColor="#1119" childLayout="center" controller="mygame.screens.StartScreen">
+    <popup id="popUpExit" backgroundColor="#1119" childLayout="center">
         <panel id="container" style="nifty-panel" childLayout="vertical" width="400px" height="200px">
             <panel id="panel_top" height="80%" width="100%" align="center" childLayout="center">
                 <text text="Está seguro que desea salir?" style="base-font" color="#eeef" width="100%" />
@@ -46,7 +46,7 @@
             </panel>
         </panel>        
     </popup>
-    <popup id="popUpHelpScreen" backgroundColor="#1119" childLayout="center" controller="mygame.screens.HelpScreen">
+    <popup id="popUpHelpScreen" backgroundColor="#1119" childLayout="center">
         <panel id="GPanel1" childLayout="vertical" width="800px" height="600px" padding="20px,20px,20px,20px" style="nifty-panel">
             <panel childLayout="vertical" width="100%" height="80%">                    
                 <panel width="100%" height="25%" childLayout="horizontal">

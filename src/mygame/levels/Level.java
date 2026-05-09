@@ -22,7 +22,6 @@ import com.jme3.scene.control.AbstractControl;
 import com.jme3.scene.control.Control;
 import de.lessvoid.nifty.Nifty;
 import java.util.List;
-import mygame.Main;
 import mygame.characters.Player;
 import mygame.controls.BonusControl;
 import mygame.controls.PlayerControl;

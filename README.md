@@ -4,8 +4,8 @@
 
 # Requirements
 
-  + JMonkeyEngine 3.1.0 Stable
-  + JDK 1.8.0
+  + JMonkeyEngine 3.8.0 Stable
+  + JDK 21
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/5104496/61678559-8c1b7080-acd9-11e9-9828-932e21c7c888.png" alt="CivilWar1" width="350" height="200"/> <img src="https://user-images.githubusercontent.com/5104496/61678611-bc630f00-acd9-11e9-8350-4997ef8ba1d1.png" alt="CivilWar3" width="350" height="200"/>

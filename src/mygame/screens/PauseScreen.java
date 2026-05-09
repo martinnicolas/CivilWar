@@ -22,7 +22,6 @@ import mygame.levels.Level;
  */
 public class PauseScreen extends AbstractScreen implements ScreenController{
     
-    private Nifty nifty;
     private Level level;
     private Element popUpExit;
     private Element popUpHelpScreen;
@@ -90,21 +89,21 @@ public class PauseScreen extends AbstractScreen implements ScreenController{
      * Cancel and return to pause menu screen
      */
     public void cancelar() {
-        this.nifty.closePopup(this.getPopUpExit().getId());
+        this.getNifty().closePopup(this.getPopUpExit().getId());
     }
     
     /**
      * Shows a help popup screen
      */
     public void ayuda() {
-        this.nifty.showPopup(this.nifty.getCurrentScreen(), this.getPopUpHelpScreen().getId(), null);
+        this.getNifty().showPopup(this.getNifty().getCurrentScreen(), this.getPopUpHelpScreen().getId(), null);
     }
     
     /**
      * Close the help popup screen
      */
     public void volver() {
-        this.nifty.closePopup(this.getPopUpHelpScreen().getId());
+        this.getNifty().closePopup(this.getPopUpHelpScreen().getId());
     }
 
     /**

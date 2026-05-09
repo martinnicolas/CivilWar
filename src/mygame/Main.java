@@ -5,12 +5,8 @@ import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.renderer.RenderManager;
 import com.jme3.system.AppSettings;
 import de.lessvoid.nifty.Nifty;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.imageio.ImageIO;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import mygame.screens.StartScreen;
 
 /**
@@ -23,14 +19,15 @@ public class Main extends SimpleApplication {
     
     public static void main(String[] args) {
         Main app = new Main();
-        AppSettings cfg = new AppSettings(true);
-        cfg.setFrameRate(60); // set to less than or equal screen refresh rate
-        cfg.setVSync(true);   // prevents page tearing
-        cfg.setFrequency(60); // set to screen refresh rate
-        cfg.setResolution(1360, 768);   
-        cfg.setFullscreen(true);         
-        cfg.setSamples(2);    // anti-aliasing
-        cfg.setTitle("CivilWar"); // branding: window name
+        AppSettings settings = new AppSettings(true);
+        settings.setFrameRate(60); // set to less than or equal screen refresh rate
+        settings.setVSync(true);   // prevents page tearing
+        settings.setFrequency(60); // set to screen refresh rate
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        settings.setResolution(screenSize.width, screenSize.height);
+        settings.setFullscreen(false);
+        settings.setSamples(2);    // anti-aliasing
+        settings.setTitle("CivilWar"); // branding: window name
         /*try {
             // Branding: window icon
             cfg.setIcons(new BufferedImage[]{ImageIO.read(new File("assets/Interface/icon.gif"))});
@@ -42,7 +39,7 @@ public class Main extends SimpleApplication {
         app.setShowSettings(false); // or don't display splashscreen
         app.setDisplayFps(false);
         app.setDisplayStatView(false);
-        app.setSettings(cfg);
+        app.setSettings(settings);
         app.start();
     }
 
