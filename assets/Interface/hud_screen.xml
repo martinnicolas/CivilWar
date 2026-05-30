@@ -1,24 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <nifty xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
-    <useControls filename="nifty-default-controls.xml"/>
-    <useStyles filename="nifty-default-styles.xml"/>
-    <screen id="hud_screen" controller="mygame.screens.HUDScreen">
-        <layer id="background" childLayout="center">
-            <image filename="Interface/images/hud/crosshairs.png"></image>
+    <screen id="hud_screen" controller="com.mygame.screens.HUDScreen">
+        <layer id="crosshair_horizontal" childLayout="center">
+            <panel id="crosshair_h" width="16px" height="2px" backgroundColor="#ffff"/>
+        </layer>
+        <layer id="crosshair_vertical" childLayout="center">
+            <panel id="crosshair_v" width="2px" height="16px" backgroundColor="#ffff"/>
         </layer>
         <layer id="foreground" childLayout="horizontal">
             <panel id="panel_left" childLayout="vertical" width="80%" height="100%"/>
             <panel id="panel_right" childLayout="vertical" width="20%" height="100%">
-                <panel id="panel_top_right1" childLayout="horizontal" backgroundColor="#1119" width="100%" height="10%">
-                    <control name="label" id="ammo" color="#FFF" width="50%" text="Ammo" halign="right" height="100%"/>
-                    <control name="label" id="ammo_text" color="#FFF" width="50%" text="" halign="left" height="100%"/>
+                <panel id="status_background" childLayout="vertical" backgroundImage="Interface/images/hud/background.png" width="275px" height="150px" align="right" marginTop="18px" marginRight="18px" padding="16px,20px,16px,20px">
+                    <panel id="panel_top_right1" childLayout="horizontal" width="100%" height="40px" marginTop="15px">
+                        <control name="label" id="ammo_text" color="#FFF" width="80%" text="Ammo" halign="left" height="100%"/>
+                        <control name="label" id="ammo_counter" color="#FFF" width="20%" text="0" halign="right" height="100%"/>
+                    </panel>
+                    <panel id="panel_top_right2" childLayout="horizontal" width="100%" height="40px" marginTop="10px">
+                        <control name="label" id="health_text" color="#FFF" width="80%" text="Health" halign="left" height="100%"/>
+                        <control name="label" id="health_counter" color="#FFF" width="20%" text="0" halign="right" height="100%"/>
+                    </panel>
                 </panel>
-                <panel id="panel_top_right2" childLayout="horizontal" backgroundColor="#1119" width="100%" height="10%">
-                    <control name="label" id="health" color="#FFF" width="50%" text="Health" halign="right" height="100%"/>
-                    <control name="label" id="health_text" color="#FFF" width="50%" text="" halign="left" height="100%"/>
-                </panel>
-                <panel id="panel_bot_right" width="100%" valign="center" height="80%"/>
+                <panel id="panel_bot_right" width="100%" height="100%"/>
             </panel>
+        </layer>
+        <layer id="damage_layer" childLayout="center">
+            <panel
+                id="damage_flash"
+                width="100%"
+                height="100%"
+                backgroundColor="#f004"
+                visible="false"/>
         </layer>
     </screen>
 </nifty>

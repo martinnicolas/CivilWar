@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
-    <useControls filename="nifty-default-controls.xml"/>
-    <useStyles filename="nifty-default-styles.xml"/>
-    <screen id="loading_screen" controller="mygame.screens.LoadingScreen">
-        <layer id="background" childLayout="center" backgroundColor="#0000">
+    <screen id="loading_screen" controller="com.mygame.screens.LoadingScreen">
+        <layer id="background" childLayout="center" backgroundColor="#0000" backgroundImage="Interface/images/fondoayuda.jpeg">
             <effect>
                 <onStartScreen name="fade" />
             </effect>
-            <panel id="panel_loading" childLayout="center" backgroundColor="#1119" width="90%" height="90%">
-                <text text="Loading..." style="base-font" color="#eeef" width="100%" />                
+            <panel id="panel_loading" childLayout="center" width="90%" height="90%" padding="0px,0px,0px,0px">
+                <panel id="loading_content" childLayout="vertical" width="100%" height="96px">
+                    <panel childLayout="center" width="100%" height="40px">
+                        <text text="Loading..." style="base-font" color="#eeef" width="100%" />
+                    </panel>
+                    <panel id="progress_container" childLayout="horizontal" backgroundColor="#333f" width="60%" height="24px" align="center">
+                        <panel id="progress_bar" childLayout="center" backgroundColor="#7A0000" width="0%" height="100%">
+                        </panel>
+                    </panel>
+                    <panel childLayout="center" width="100%" height="32px">
+                        <text id="loading_percent" text="0%" style="base-font" color="#eeef" width="100%" />
+                    </panel>
+                </panel>
             </panel>
         </layer>
     </screen>
 </nifty>
-
-

@@ -1,10 +1,12 @@
 # CivilWar
 
+[![Build](https://github.com/martinnicolas/CivilWar/actions/workflows/build.yml/badge.svg)](https://github.com/martinnicolas/CivilWar/actions/workflows/build.yml)
+
 3D Game, FPS (First Person Shooter)
 
 # Requirements
 
-  + JMonkeyEngine 3.8.0 Stable
+  + JMonkeyEngine 3.8.1 Stable
   + JDK 21
 
 <p align="center">

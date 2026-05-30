@@ -7,7 +7,7 @@ Material MyMaterial : Common/MatDefs/Light/Lighting.j3md {
         BackfaceShadows : false
         Specular : 0.0 0.0 0.0 1.0
         Shininess : 50.0
-        LightMap : Flip Repeat Models/MedKit_mk2/MedKit_Color.png
+        LightMap : Flip Repeat Models/MedicalKit/MedKit_Color.png
     }
     AdditionalRenderState {
       PointSprite On

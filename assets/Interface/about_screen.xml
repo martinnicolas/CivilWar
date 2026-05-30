@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
-    <useControls filename="nifty-default-controls.xml"/>
-    <useStyles filename="nifty-default-styles.xml"/>
-    <registerSound id="menu_hover" filename="Sounds/Effects/menu_hover.wav" />
-    <screen id="about_screen" controller="mygame.screens.AboutScreen">
+    <screen id="about_screen" controller="com.mygame.screens.AboutScreen">
         <layer id="background" childLayout="center" backgroundImage="Interface/images/fondoayuda.jpeg">            
             <effect>
                 <onStartScreen name="fade" />
@@ -27,11 +24,10 @@
                         <effect>
                             <onFocus name="playSound" sound="menu_hover"/>
                         </effect>
-                        <interact onClick="volver()"/>
+                        <interact onClick="back()"/>
                     </control>
                 </panel>                
             </panel>
         </layer>
     </screen>
 </nifty>
-

@@ -1,3 +1,16 @@
-/nbproject/private/
-/build/
-/dist/
+# Gradle
+.gradle/
+build/
+
+# IDEs
+.idea/
+*.iml
+.vscode/
+
+# Legacy NetBeans
+nbproject/private/
+
+# Legacy Ant
+dist/
+
+*.j3odata

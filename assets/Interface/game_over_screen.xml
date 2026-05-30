@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
+    <screen id="game_over_screen" controller="com.mygame.screens.GameOverScreen">
+        <layer id="background" childLayout="center" backgroundImage="Interface/images/game_over.png">            
+            <effect>
+                <onStartScreen name="fade" />
+            </effect>
+            <panel id="panel_game_over" childLayout="vertical" width="90%" height="90%">
+                <panel width="100%" height="90%" childLayout="center">
+                    <panel width="90%" height="90%" childLayout="vertical">
+                        <panel width="100%" height="50%" childLayout="center">
+                            <image filename="Interface/images/logo.png"></image>
+                        </panel>
+                        <panel width="100%" height="50%" childLayout="vertical">
+                            <text text="Fuiste eliminado por una horda de Zombies" style="base-font" color="#eeef" width="100%" />
+                        </panel>
+                    </panel>                    
+                </panel>
+                <panel width="100%" height="10%" childLayout="center">
+                    <control name="button" id="startButton" visibleToMouse="true" width="300px" label="Menu principal" height="30px">
+                        <effect>
+                            <onFocus name="playSound" sound="menu_hover"/>
+                        </effect>
+                        <interact onClick="start()"/>
+                    </control>
+                </panel>                
+            </panel>
+        </layer>
+    </screen>
+</nifty>
