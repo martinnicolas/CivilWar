@@ -1,6 +1,7 @@
 plugins {
     id 'java'
     id 'application'
+    id 'checkstyle'
 }
 
 group 'com.mygame'
@@ -92,4 +93,8 @@ java {
 
 wrapper {
     gradleVersion = '8.6'
+}
+
+checkstyle {
+    toolVersion = '10.26.1'
 }

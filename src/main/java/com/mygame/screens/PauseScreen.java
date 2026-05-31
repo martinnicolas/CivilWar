@@ -20,7 +20,7 @@ import com.mygame.levels.Level;
  *
  * @author martin
  */
-public class PauseScreen extends AbstractScreen implements ScreenController{
+public class PauseScreen extends AbstractScreen implements ScreenController {
     
     private Level level;
     private Element popUpExit;

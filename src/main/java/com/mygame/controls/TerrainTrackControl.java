@@ -20,8 +20,8 @@ import com.jme3.scene.control.AbstractControl;
  */
 public class TerrainTrackControl extends AbstractControl {
     
-    private final Ray ray = new Ray(Vector3f.ZERO.clone(), new Vector3f(0,-1,0));
-    private final Vector3f up = new Vector3f(0, 50 , 0);
+    private final Ray ray = new Ray(Vector3f.ZERO.clone(), new Vector3f(0, -1, 0));
+    private final Vector3f up = new Vector3f(0, 50, 0);
     private final CollisionResults results = new CollisionResults();
     private final float offset = 0.1745207f;
     private Spatial terrain;
@@ -40,8 +40,8 @@ public class TerrainTrackControl extends AbstractControl {
             terrain.collideWith(ray, results);
             for (CollisionResult collisionResult : results) {
                 if (isTerrain(collisionResult.getGeometry())) {
-                    Vector3f loc = collisionResult.getContactPoint();
-                    spatial.setLocalTranslation(spatial.getLocalTranslation().setY(loc.getY() - offset));
+                    Vector3f location = collisionResult.getContactPoint();
+                    spatial.setLocalTranslation(spatial.getLocalTranslation().setY(location.getY() - offset));
                     return;
                 }
             }
@@ -49,7 +49,7 @@ public class TerrainTrackControl extends AbstractControl {
     }
     
     private boolean isTerrain(Spatial spat) {
-        while(true) {
+        while (true) {
             if (spat == null) {
                 return false;
             } else if (spat.getName().contains("terrain")) {

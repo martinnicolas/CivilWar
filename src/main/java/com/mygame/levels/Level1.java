@@ -35,7 +35,6 @@ import com.mygame.enemies.ZombieEnemy;
 import com.mygame.bonuses.AmmoBonus;
 import com.mygame.bonuses.HealthBonus;
 import com.mygame.characters.Player;
-import com.mygame.controls.PlayerHUDControl;
 
 /**
  *
@@ -376,7 +375,7 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         if (bonusSpatial == null) { return; }
 
         RigidBodyControl spatialControl = bonusSpatial.getControl(RigidBodyControl.class);
-        if(spatialControl != null && spatialControl.isEnabled()) {
+        if (spatialControl != null && spatialControl.isEnabled()) {
             this.getPlayer().plusPickedBonus(bonusSpatial);
             spatialControl.setEnabled(false);
             this.getBulletAppState().getPhysicsSpace().remove(spatialControl);

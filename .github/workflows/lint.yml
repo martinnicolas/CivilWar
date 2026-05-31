@@ -1,0 +1,22 @@
+name: Lint
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  checkstyle:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - uses: gradle/actions/setup-gradle@v4
+
+      - run: chmod +x gradlew
+      - run: ./gradlew checkstyleMain checkstyleTest

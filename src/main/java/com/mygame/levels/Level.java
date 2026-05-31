@@ -231,8 +231,8 @@ public abstract class Level extends AbstractAppState {
             this.getAudioNode().removeFromParent();
         }
         ViewPort viewPort = this.getApp().getViewPort();
-        for(SceneProcessor processor: viewPort.getProcessors()){
-            if(processor instanceof FilterPostProcessor filterPostProcessor){
+        for (SceneProcessor processor: viewPort.getProcessors()) {
+            if (processor instanceof FilterPostProcessor filterPostProcessor) {
                 filterPostProcessor.removeAllFilters();
             }
             viewPort.removeProcessor(processor);

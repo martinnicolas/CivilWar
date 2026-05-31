@@ -1,13 +1,16 @@
-# CivilWar
+# Civil War
 
 [![Build](https://github.com/martinnicolas/CivilWar/actions/workflows/build.yml/badge.svg)](https://github.com/martinnicolas/CivilWar/actions/workflows/build.yml)
+
+[![Lint](https://github.com/martinnicolas/CivilWar/actions/workflows/lint.yml/badge.svg)](https://github.com/martinnicolas/CivilWar/actions/workflows/lint.yml)
 
 3D Game, FPS (First Person Shooter)
 
 # Requirements
 
-  + JMonkeyEngine 3.8.1 Stable
-  + JDK 21
+  + Java 21
+  + [jMonkeyEngine 3.8.1 Stable](https://jmonkeyengine.org/)
+  + Gradle
 
 <p align="center">
 <img src="https://user-images.githubusercontent.com/5104496/61678559-8c1b7080-acd9-11e9-9828-932e21c7c888.png" alt="CivilWar1" width="350" height="200"/> <img src="https://user-images.githubusercontent.com/5104496/61678611-bc630f00-acd9-11e9-8350-4997ef8ba1d1.png" alt="CivilWar3" width="350" height="200"/>

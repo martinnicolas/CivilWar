@@ -26,7 +26,7 @@ public class StartScreen extends AbstractScreen implements ScreenController {
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app); //To change body of generated methods, choose Tools | Templates.
-        this.setApp((Main)app);
+        this.setApp((Main) app);
         this.setAudioNode(new AudioNode(this.getApp().getAssetManager(), "Sounds/Music/ambientmain_0.ogg", AudioData.DataType.Stream));
         this.getAudioNode().setName("audio_start_screen");
         this.getAudioNode().setLooping(true);  // activate continuous playing

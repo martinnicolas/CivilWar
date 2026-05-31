@@ -33,7 +33,7 @@ import com.mygame.weapons.AK47Weapon;
  *
  * @author martin
  */
-public class Player implements ActionListener{
+public class Player implements ActionListener {
 
     private Vector3f walkDirection = Vector3f.ZERO;
     private SimpleApplication app;
@@ -87,7 +87,7 @@ public class Player implements ActionListener{
      * Setup player weapon
      */
     private void setUpPlayerWeapon() {
-        AK47Weapon ak47 = new AK47Weapon(this.getApp().getAssetManager(), new Vector3f(-1f,-1.1f, 2f));
+        AK47Weapon ak47 = new AK47Weapon(this.getApp().getAssetManager(), new Vector3f(-1f, -1.1f, 2f));
         ak47.getSpatial().setLocalRotation(new Quaternion(0f, -1f, 0f, 1f));        
         //Create camera node for weapon spatial
         CameraNode cameraNode = new CameraNode("camera_node", this.getApp().getCamera());
