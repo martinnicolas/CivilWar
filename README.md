@@ -1,8 +1,6 @@
 # Civil War
 
-[![Build](https://github.com/martinnicolas/CivilWar/actions/workflows/build.yml/badge.svg)](https://github.com/martinnicolas/CivilWar/actions/workflows/build.yml)
-
-[![Lint](https://github.com/martinnicolas/CivilWar/actions/workflows/lint.yml/badge.svg)](https://github.com/martinnicolas/CivilWar/actions/workflows/lint.yml)
+[![Build](https://github.com/martinnicolas/CivilWar/actions/workflows/build.yml/badge.svg)](https://github.com/martinnicolas/CivilWar/actions/workflows/build.yml) [![Lint](https://github.com/martinnicolas/CivilWar/actions/workflows/lint.yml/badge.svg)](https://github.com/martinnicolas/CivilWar/actions/workflows/lint.yml)
 
 3D Game, FPS (First Person Shooter)
 
