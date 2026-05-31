@@ -15,6 +15,7 @@ import com.jme3.bullet.collision.PhysicsCollisionListener;
 import com.jme3.bullet.collision.PhysicsRayTestResult;
 import com.jme3.bullet.collision.shapes.CollisionShape;
 import com.jme3.bullet.control.GhostControl;
+import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.bullet.util.CollisionShapeFactory;
 import com.jme3.light.AmbientLight;
@@ -35,6 +36,7 @@ import com.mygame.enemies.ZombieEnemy;
 import com.mygame.bonuses.AmmoBonus;
 import com.mygame.bonuses.HealthBonus;
 import com.mygame.characters.Player;
+import com.mygame.controls.EnemyControl;
 
 /**
  *
@@ -296,12 +298,12 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         }
 
         if (hasName(nodeA, Player.SPATIAL_NAME) || hasName(nodeB, Player.SPATIAL_NAME)) {
-            pickBonus(bonus);
+            this.pickBonus(bonus);
         }
     }
 
     @Override
-    public boolean handleShootingCollision(Ray ray) {
+    public void handleShootingCollision(Ray ray) {
         Vector3f rayFrom = ray.getOrigin();
         Vector3f rayTo = ray.getDirection().normalize().multLocal(1000f).addLocal(rayFrom);
         List<PhysicsRayTestResult> results = this.getBulletAppState().getPhysicsSpace().rayTest(rayFrom, rayTo);
@@ -330,11 +332,18 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         }
 
         if (closestEnemy == null) {
-            return false;
+            return;
         }
 
-        closestEnemy.kill(this.getBulletAppState().getPhysicsSpace());
-        return true;
+        closestEnemy.kill();
+        closestEnemy.getSpatial().removeControl(EnemyControl.class);
+
+        PhysicsControl physicsControl = closestEnemy.getSpatial().getControl(PhysicsControl.class);
+        if (physicsControl != null) {
+            physicsControl.setEnabled(false);
+            this.getBulletAppState().getPhysicsSpace().remove(physicsControl);
+            closestEnemy.getSpatial().removeControl(physicsControl);
+        }
     }
     
     /**

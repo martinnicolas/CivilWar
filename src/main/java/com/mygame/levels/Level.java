@@ -291,7 +291,7 @@ public abstract class Level extends AbstractAppState {
      * @param ray shooting ray
      * @return true when the hit was consumed by the level
      */
-    public abstract boolean handleShootingCollision(Ray ray);
+    public abstract void handleShootingCollision(Ray ray);
             
     /**
     * Get the assets loading progress for level

@@ -6,11 +6,8 @@
 package com.mygame.enemies;
 
 import com.jme3.asset.AssetManager;
-import com.jme3.bullet.PhysicsSpace;
-import com.jme3.bullet.control.PhysicsControl;
 import com.jme3.scene.Spatial;
 import com.mygame.controls.EnemyAnimationControl;
-import com.mygame.controls.EnemyControl;
 
 /**
  *
@@ -30,33 +27,22 @@ public abstract class Enemy {
     }
     
     /**
-    * Kill this enemy and leave its spatial in the scene as an inert body.
-    * @param physicsSpace physics space where the enemy controls are registered
+    * Kill the enemy by running die animation
     */
-    public void kill(PhysicsSpace physicsSpace) {
+    public void kill() {
         if (!this.isAlive()) {
             return;
         }
 
+        this.setEnergy(0);
         EnemyAnimationControl animationControl = this.getSpatial().getControl(EnemyAnimationControl.class);
         if (animationControl != null) {
             animationControl.die();
         }
-
-        this.getSpatial().removeControl(EnemyControl.class);
-
-        PhysicsControl physicsControl = this.getSpatial().getControl(PhysicsControl.class);
-        if (physicsControl != null) {
-            physicsControl.setEnabled(false);
-            if (physicsSpace != null) {
-                physicsSpace.remove(physicsControl);
-            }
-            this.getSpatial().removeControl(physicsControl);
-        }
     }
 
     public boolean isAlive() {
-        return this.getSpatial() != null && this.getSpatial().getControl(EnemyControl.class) != null;
+        return this.getEnergy() > 0;
     }
     
     public AssetManager getAssetManager() {
