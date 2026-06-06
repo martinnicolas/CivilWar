@@ -69,6 +69,34 @@ public abstract class Level extends AbstractAppState {
      */
     public abstract boolean loadLevel();
     
+        /**
+     * Setup the audio level
+     */
+    public abstract void setUpAudio();
+
+    /**
+     * Handle a shooting raycast before the generic scene raycast.
+     * @param ray shooting ray
+     */
+    public abstract void handleShootingCollision(Ray ray);
+    
+    /**
+     * Loads the player in the level
+     */
+    public abstract void loadPlayer();
+    
+    /**
+    * Get the assets loading progress for level
+    * 
+    * @return assets loading progress percentage
+    */
+    public float getLoadingProgress() {
+        if (this.getLoadingSteps() == 0) {
+            return 0f;
+        }
+        return Math.min(1f, (float) this.getLoadingStep() / (float) this.getLoadingSteps());
+    }    
+    
     /**
      * Start the Level once every resource is ready.
      */
@@ -82,7 +110,7 @@ public abstract class Level extends AbstractAppState {
             this.getAudioNode().play();
         }
     }
-    
+      
     /**
      * End the game and starts GameOverScreen
      */
@@ -279,30 +307,6 @@ public abstract class Level extends AbstractAppState {
                 this.removePhysicsAndBonusControls(child, bulletAppState);
             }
         }
-    }
-    
-    /**
-     * Setup the audio level
-     */
-    public abstract void setUpAudio();
-
-    /**
-     * Handle a shooting raycast before the generic scene raycast.
-     * @param ray shooting ray
-     * @return true when the hit was consumed by the level
-     */
-    public abstract void handleShootingCollision(Ray ray);
-            
-    /**
-    * Get the assets loading progress for level
-    * 
-    * @return assets loading progress percentage
-    */
-    public float getLoadingProgress() {
-        if (this.getLoadingSteps() == 0) {
-            return 0f;
-        }
-        return Math.min(1f, (float) this.getLoadingStep() / (float) this.getLoadingSteps());
     }
     
     public SimpleApplication getApp() {

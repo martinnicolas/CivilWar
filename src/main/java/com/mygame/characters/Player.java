@@ -73,14 +73,14 @@ public class Player implements ActionListener {
         // We set up collision detection for the player by creating
         // a capsule collision shape and a Player Control which extends 
         // CharacterControl.
-        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(RADIUS, HEIGTH, AXIS);
+        CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(Player.RADIUS, Player.HEIGTH, Player.AXIS);
         this.setPlayerNode(new Node(Player.SPATIAL_NAME));
         this.getPlayerNode().addControl(new GhostControl(capsuleShape));
         this.getPlayerNode().addControl(new PlayerControl(capsuleShape));
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         this.getApp().getFlyByCamera().setEnabled(true);
         this.getApp().getFlyByCamera().setMoveSpeed(50);
-        this.getWalkDirection().set(0, 0, 0);
+        this.getWalkDirection().set(Vector3f.ZERO);
     }
     
     /**

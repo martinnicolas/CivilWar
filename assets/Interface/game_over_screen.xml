@@ -11,8 +11,14 @@
                         <panel width="100%" height="50%" childLayout="center">
                             <image filename="Interface/images/logo.png"></image>
                         </panel>
-                        <panel width="100%" height="50%" childLayout="vertical">
-                            <text text="Fuiste eliminado por una horda de Zombies" style="base-font" color="#eeef" width="100%" />
+                        <panel width="100%" height="50%" childLayout="vertical" padding="30px" backgroundColor="#1119">
+                            <text text="La misión ha fracasado." style="base-font" color="#eeef" width="100%" />
+                            <text text="Te adentraste en territorio infestado con la esperanza de recuperar suministros esenciales para el campamento." style="base-font" color="#eeef" width="100%" />
+                            <text text="Medicinas, combustible y provisiones que podrían haber ayudado a los supervivientes a resistir unos días más." style="base-font" color="#eeef" width="100%" />
+                            <text text="Sin embargo, la amenaza fue mayor de lo esperado." style="base-font" color="#eeef" width="100%" />
+                            <text text="El campamento deberá seguir adelante sin los recursos que buscabas." style="base-font" color="#eeef" width="100%" />
+                            <text text="Mientras los muertos continúan multiplicándose, cada expedición se vuelve más peligrosa que la anterior." style="base-font" color="#eeef" width="100%" />
+                            <text text="Quizás otro superviviente logre completar la misión." style="base-font" color="#eeef" width="100%" />
                         </panel>
                     </panel>                    
                 </panel>

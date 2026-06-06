@@ -13,7 +13,7 @@
                         </panel>
                         <panel width="100%" height="50%" childLayout="vertical">
                             <text text="CivilWar 0.0.1-alpha" style="base-font" color="#eeef" width="100%" />
-                            <text text="jMonkeyEngine SDK 3.8.0-stable" style="base-font" color="#eeef" width="100%" />
+                            <text text="jMonkeyEngine SDK 3.9.0-stable" style="base-font" color="#eeef" width="100%" />
                             <text text="JDK 21" style="base-font" color="#eeef" width="100%" />
                             <text text="https://github.com/martinnicolas/CivilWar.git" style="base-font" color="#eeef" width="100%" />
                         </panel>

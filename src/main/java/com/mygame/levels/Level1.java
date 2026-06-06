@@ -37,12 +37,16 @@ import com.mygame.bonuses.AmmoBonus;
 import com.mygame.bonuses.HealthBonus;
 import com.mygame.characters.Player;
 import com.mygame.controls.EnemyControl;
+import com.mygame.utils.Level1SpawnSettings;
+import com.mygame.utils.Spawnable;
+import com.mygame.utils.SpawnFactory;
+import com.mygame.utils.SpawnSettings;
 
 /**
  *
  * @author martin
  */
-public class Level1 extends Level implements PhysicsCollisionListener {
+public class Level1 extends Level implements PhysicsCollisionListener, SpawnSettings {
 
     //Temporary vectors used on each frame. They here to avoid instanciating new vectors on each frame
     private final Vector3f camDir = new Vector3f(), camLeft = new Vector3f();
@@ -93,6 +97,17 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         }
         this.setLoadingStep(this.getLoadingStep() + 1);
         return this.getLoadingStep() >= this.getLoadingSteps();
+    }
+    
+    /**
+     * Load player.
+     */
+    @Override
+    public void loadPlayer() {
+        this.setPlayer(new Player(this));
+        this.getPlayer().setInitialLocation(Level1.PLAYER_INITIAL_LOCATION);
+        this.getLevelNode().attachChild(this.getPlayer().getPlayerNode());
+        this.getBulletAppState().getPhysicsSpace().addAll(this.getPlayer().getPlayerNode());
     }
 
     @Override
@@ -150,48 +165,12 @@ public class Level1 extends Level implements PhysicsCollisionListener {
     }
     
     /**
-     * Load player.
-     */
-    private void loadPlayer() {
-        this.setPlayer(new Player(this));
-        this.getPlayer().setInitialLocation(Level1.PLAYER_INITIAL_LOCATION);
-        this.getLevelNode().attachChild(this.getPlayer().getPlayerNode());
-        this.getBulletAppState().getPhysicsSpace().addAll(this.getPlayer().getPlayerNode());
-    }
-    
-    /**
      * Load level enemies.
      */
     private void loadEnemies() {
-        Vector3f[] enemiesPositions = {
-            new Vector3f(-320, 10, -320),
-            new Vector3f(320, 10, -320),
-            new Vector3f(-320, 10, 320),
-            new Vector3f(320, 10, 320),
-            new Vector3f(0, 10, -450),
-            new Vector3f(0, 10, 450),
-            new Vector3f(-450, 10, 0),
-            new Vector3f(450, 10, 0),
-            new Vector3f(-500, 10, 500),
-            new Vector3f(500, 10, -500),
-            new Vector3f(200, 10, -100),
-            new Vector3f(100, 10, -50),
-            new Vector3f(50, 10, -300),
-            new Vector3f(20, 10, -20),
-            new Vector3f(20, 10, -200),
-            new Vector3f(20, 10, -50),
-            new Vector3f(0, 10, 0),
-            new Vector3f(0, 10, 50),
-            new Vector3f(10, 10, 50),
-            new Vector3f(10, 10, 70),
-        };
-
-        for (Vector3f position : enemiesPositions) {
-            ZombieEnemy zombieEnemy = new ZombieEnemy(this.getApp().getAssetManager(), 100, 10);
-            zombieEnemy.getSpatial().setLocalTranslation(position);
+        for (ZombieEnemy zombieEnemy : SpawnFactory.spawn(ZombieEnemy.class, this, this)) {
+            this.attachSpawned(zombieEnemy);
             this.getEnemiesBySpatial().put(zombieEnemy.getSpatial(), zombieEnemy);
-            this.getLevelNode().attachChild(zombieEnemy.getSpatial());
-            this.getBulletAppState().getPhysicsSpace().addAll(zombieEnemy.getSpatial());
         }
     }
     
@@ -199,16 +178,8 @@ public class Level1 extends Level implements PhysicsCollisionListener {
      * Load ammo bonus.
      */
     private void loadAmmoBonus() {
-        Vector3f[] ammoBonusesPositions = {
-            new Vector3f(-28, 10, 26),
-            new Vector3f(40, 10, 80),
-            new Vector3f(-90, 10, -40),
-        };
-        
-        for (Vector3f position : ammoBonusesPositions) {
-            AmmoBonus ammoBonus = new AmmoBonus(this.getApp().getAssetManager(), 10, position);
-            this.getLevelNode().attachChild(ammoBonus.getSpatial());
-            this.getBulletAppState().getPhysicsSpace().addAll(ammoBonus.getSpatial());   
+        for (AmmoBonus ammoBonus : SpawnFactory.spawn(AmmoBonus.class, this, this)) {
+            this.attachSpawned(ammoBonus);
         }
     }
     
@@ -216,17 +187,14 @@ public class Level1 extends Level implements PhysicsCollisionListener {
      * Load health bonus.
      */
     private void loadHealthBonus() {
-        Vector3f[] healthBonusesPositions = {
-            new Vector3f(-28, 10, 45),
-            new Vector3f(40, 10, 88),
-            new Vector3f(-90, 10, -60),
-        };
-
-        for (Vector3f position : healthBonusesPositions) {
-          HealthBonus healthBonus = new HealthBonus(this.getApp().getAssetManager(), 10, position);
-          this.getLevelNode().attachChild(healthBonus.getSpatial());
-          this.getBulletAppState().getPhysicsSpace().addAll(healthBonus.getSpatial());
+        for (HealthBonus healthBonus : SpawnFactory.spawn(HealthBonus.class, this, this)) {
+            this.attachSpawned(healthBonus);
         }
+    }
+
+    private void attachSpawned(Spawnable spawnable) {
+        this.getLevelNode().attachChild(spawnable.getSpatial());
+        this.getBulletAppState().getPhysicsSpace().addAll(spawnable.getSpatial());
     }
     
     /**
@@ -273,7 +241,7 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         //Check for collisions with health
         this.checkPlayerCollisionsWithBonus(event, HealthBonus.SPATIAL_NAME);
         //Check for player collisions with enemy
-        this.checkPlayerCollisionsWithEnemy(event, Player.SPATIAL_NAME);
+        this.checkPlayerCollisionsWithEnemy(event);
     }
     
     /**
@@ -346,13 +314,28 @@ public class Level1 extends Level implements PhysicsCollisionListener {
         }
     }
     
+    @Override
+    public List<Vector3f> getZombieSpawnPositions() {
+        return Level1SpawnSettings.ZOMBIE_SPAWN_POSITIONS;
+    }
+    
+    @Override
+    public List<Vector3f> getAmmoBonusSpawnPositions() {
+        return Level1SpawnSettings.AMMO_BONUS_SPAWN_POSITIONS;
+    }
+    
+    @Override
+    public List<Vector3f> getHealthBonusSpawnPositions() {
+        return Level1SpawnSettings.HEALTH_BONUS_SPAWN_POSITIONS;
+    }    
+    
     /**
      * Check player collision with enemies
      * 
      * @param event
      * @param playerName 
      */
-    private void checkPlayerCollisionsWithEnemy(PhysicsCollisionEvent event, String playerName) {
+    private void checkPlayerCollisionsWithEnemy(PhysicsCollisionEvent event) {
         Spatial nodeA = event.getNodeA();
         Spatial nodeB = event.getNodeB();
         Spatial enemy = null;

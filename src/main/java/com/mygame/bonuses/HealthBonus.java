@@ -20,6 +20,7 @@ public class HealthBonus extends Bonus {
     public static final String SPATIAL_NAME = "health";
     public static final float LOCAL_SCALE = 1f;
     public static final float MASS = 2f;
+    public static final int DEFAULT_AMOUNT = 10;
 
     public HealthBonus(AssetManager assetManager, int amount, Vector3f localTranslation) {
         super(assetManager, amount, localTranslation);

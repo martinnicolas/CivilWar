@@ -8,12 +8,13 @@ package com.mygame.bonuses;
 import com.jme3.asset.AssetManager;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Spatial;
+import com.mygame.utils.Spawnable;
 
 /**
  *
  * @author martin
  */
-public abstract class Bonus {
+public abstract class Bonus implements Spawnable {
     
     private AssetManager assetManager;
     private Spatial spatial;
@@ -50,6 +51,7 @@ public abstract class Bonus {
         this.localTranslation = localTranslation;
     }
 
+    @Override
     public Spatial getSpatial() {
         return spatial;
     }

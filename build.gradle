@@ -22,7 +22,7 @@ repositories {
 }
 
 project.ext {
-  jmeVer = '3.8.1-stable'
+  jmeVer = '3.9.0-stable'
 }
 
 project(":assets") {
