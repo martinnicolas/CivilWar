@@ -27,18 +27,18 @@ public class PlayerHUDControl extends AbstractControl {
     
     public static String DEFAULT_FONT_COLOR = "#FFF";
     public static String EMPTY_FONT_COLOR = "#FF0000";
-    public static float REMAINING_TIME = 300f;
     public static String TIMER_FORMAT = "00  :  %02d  :  %02d";
     
     private SimpleApplication app;
     private Player player;
     private Nifty nifty;
     private float damageFlashTimer = 0f;
-    private float remainingTime = REMAINING_TIME;
+    private float remainingTime;
     
     public PlayerHUDControl(SimpleApplication app, Player player) {
         this.app = app;
         this.player = player;
+        this.remainingTime = player.getLevel().getMaxTimeToFinish();
         this.showHUDScreen();
     }
 
@@ -121,22 +121,22 @@ public class PlayerHUDControl extends AbstractControl {
         int minutes = (int) remainingTime / 60;
         int seconds = (int) remainingTime % 60;
 
-        String timer = String.format(TIMER_FORMAT, minutes, seconds);
+        String timer = String.format(PlayerHUDControl.TIMER_FORMAT, minutes, seconds);
         timerText.setText(timer);
     }
     
     private void setNotEnoughTextColor(Label ammoText, Label ammoCounter) {
-        ammoText.setColor(new Color(EMPTY_FONT_COLOR));
-        ammoCounter.setColor(new Color(EMPTY_FONT_COLOR));
+        ammoText.setColor(new Color(PlayerHUDControl.EMPTY_FONT_COLOR));
+        ammoCounter.setColor(new Color(PlayerHUDControl.EMPTY_FONT_COLOR));
     }
     
     private void setEnoughTextColor(Label ammoText, Label ammoCounter) {
         Color ammoTextColor = ammoText.getColor();
 
-        if (ammoTextColor == null || DEFAULT_FONT_COLOR.equals(ammoTextColor.getColorString())) { return; }
+        if (ammoTextColor == null || PlayerHUDControl.DEFAULT_FONT_COLOR.equals(ammoTextColor.getColorString())) { return; }
         
-        ammoText.setColor(new Color(DEFAULT_FONT_COLOR));
-        ammoCounter.setColor(new Color(DEFAULT_FONT_COLOR));
+        ammoText.setColor(new Color(PlayerHUDControl.DEFAULT_FONT_COLOR));
+        ammoCounter.setColor(new Color(PlayerHUDControl.DEFAULT_FONT_COLOR));
     }
     
     private void updateDamageFlash(float tpf) {

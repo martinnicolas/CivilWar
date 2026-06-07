@@ -37,7 +37,7 @@ import com.mygame.bonuses.AmmoBonus;
 import com.mygame.bonuses.HealthBonus;
 import com.mygame.characters.Player;
 import com.mygame.controls.EnemyControl;
-import com.mygame.utils.Level1SpawnSettings;
+import com.mygame.utils.Level1Settings;
 import com.mygame.utils.Spawnable;
 import com.mygame.utils.SpawnFactory;
 import com.mygame.utils.SpawnSettings;
@@ -69,6 +69,10 @@ public class Level1 extends Level implements PhysicsCollisionListener, SpawnSett
     private DirectionalLight directionalLight;
     private BulletAppState bulletAppState;
     private final Map<Spatial, ZombieEnemy> enemiesBySpatial = new HashMap<>();
+    
+    public Level1() {
+        this.setMaxTimeToFinish(Level1Settings.getMaxTimeToFinishTheLevel());
+    }
 
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
@@ -316,17 +320,17 @@ public class Level1 extends Level implements PhysicsCollisionListener, SpawnSett
     
     @Override
     public List<Vector3f> getZombieSpawnPositions() {
-        return Level1SpawnSettings.ZOMBIE_SPAWN_POSITIONS;
+        return Level1Settings.getZombieSpawnPositions();
     }
     
     @Override
     public List<Vector3f> getAmmoBonusSpawnPositions() {
-        return Level1SpawnSettings.AMMO_BONUS_SPAWN_POSITIONS;
+        return Level1Settings.getAmmoBonusSpawnPositions();
     }
     
     @Override
     public List<Vector3f> getHealthBonusSpawnPositions() {
-        return Level1SpawnSettings.HEALTH_BONUS_SPAWN_POSITIONS;
+        return Level1Settings.getHealthBonusSpawnPositions();
     }    
     
     /**

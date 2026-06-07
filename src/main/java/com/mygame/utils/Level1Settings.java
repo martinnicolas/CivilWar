@@ -9,13 +9,15 @@ import com.jme3.math.Vector3f;
 import java.util.List;
 
 /**
- * Interface to set zombie enemies, ammo bonus and health bonus positions for Level 1
+ * Settings for Level 1 logic.
  * 
  * @author martin
  */
-public interface Level1SpawnSettings {
+public final class Level1Settings {
+
+    private static final float MAX_TIME_TO_FINISH_THE_LEVEL = 300f;
     
-    List<Vector3f> ZOMBIE_SPAWN_POSITIONS = List.of(
+    private static final List<Vector3f> ZOMBIE_SPAWN_POSITIONS = List.of(
         new Vector3f(-320, 10, -320),
         new Vector3f(320, 10, -320),
         new Vector3f(-320, 10, 320),
@@ -48,15 +50,34 @@ public interface Level1SpawnSettings {
         new Vector3f(40, 10, -20)
     );
     
-    List<Vector3f> AMMO_BONUS_SPAWN_POSITIONS = List.of(
+    private static final List<Vector3f> AMMO_BONUS_SPAWN_POSITIONS = List.of(
         new Vector3f(-28, 10, 26),
         new Vector3f(40, 10, 80),
         new Vector3f(-90, 10, -40)
     );
     
-    List<Vector3f> HEALTH_BONUS_SPAWN_POSITIONS = List.of(
+    private static final List<Vector3f> HEALTH_BONUS_SPAWN_POSITIONS = List.of(
         new Vector3f(-28, 10, 45),
         new Vector3f(40, 10, 88),
         new Vector3f(-90, 10, -60)
     );
+
+    private Level1Settings() {
+    }
+
+    public static float getMaxTimeToFinishTheLevel() {
+        return Level1Settings.MAX_TIME_TO_FINISH_THE_LEVEL;
+    }
+
+    public static List<Vector3f> getZombieSpawnPositions() {
+        return Level1Settings.ZOMBIE_SPAWN_POSITIONS;
+    }
+
+    public static List<Vector3f> getAmmoBonusSpawnPositions() {
+        return Level1Settings.AMMO_BONUS_SPAWN_POSITIONS;
+    }
+
+    public static List<Vector3f> getHealthBonusSpawnPositions() {
+        return Level1Settings.HEALTH_BONUS_SPAWN_POSITIONS;
+    }
 }

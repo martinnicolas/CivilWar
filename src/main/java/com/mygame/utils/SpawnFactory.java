@@ -14,16 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
+ * Spawn factory to spawn spawnable objects on the game (Enemy, Bonus)
+ * 
  * @author martin
  */
 public final class SpawnFactory {
-
-    private static final int DEFAULT_BONUS_AMOUNT = 10;
-
-    private SpawnFactory() {
-    }
-
     /**
      * Spawn objects in the level using the provided settings.
      * @param <T> spawn object type
@@ -42,6 +37,13 @@ public final class SpawnFactory {
         return spawnedObjects;
     }
 
+    /**
+     * Get the spawnable objects positions to spawn 
+     * 
+     * @param spawnClass Spawnable to spawn
+     * @param settings Level that implements SpawnSettings
+     * @return 
+     */
     private static List<Vector3f> getSpawnPositions(Class<? extends Spawnable> spawnClass, SpawnSettings settings) {
         if (spawnClass.equals(ZombieEnemy.class)) {
             return settings.getZombieSpawnPositions();
@@ -55,6 +57,15 @@ public final class SpawnFactory {
         throw new IllegalArgumentException("Unsupported spawn class: " + spawnClass.getName());
     }
 
+    /**
+     * Factory to create Spawneable object according to class in some position
+     * 
+     * @param <T>
+     * @param spawnClass
+     * @param level
+     * @param position
+     * @return 
+     */
     private static <T extends Spawnable> T create(Class<T> spawnClass, Level level, Vector3f position) {
         if (spawnClass.equals(ZombieEnemy.class)) {
             ZombieEnemy zombieEnemy = new ZombieEnemy(level.getApp().getAssetManager(), ZombieEnemy.DEFAULT_ENERGY, ZombieEnemy.DEFAULT_DAMAGE, position);

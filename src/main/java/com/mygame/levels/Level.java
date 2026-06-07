@@ -50,6 +50,7 @@ public abstract class Level extends AbstractAppState {
     private int loadingStep;
     private int loadingSteps;
     private boolean gameOverStarted;
+    private float maxTimeToFinish;
     //For pause screen
     private Nifty nifty;
     
@@ -380,5 +381,12 @@ public abstract class Level extends AbstractAppState {
     public void setGameOverStarted(boolean gameOverStarted) {
         this.gameOverStarted = gameOverStarted;
     }
-    
+
+    public float getMaxTimeToFinish() {
+        return maxTimeToFinish;
+    }
+
+    public void setMaxTimeToFinish(float maxTimeToFinish) {
+        this.maxTimeToFinish = maxTimeToFinish;
+    }
 }
