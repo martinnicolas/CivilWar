@@ -7,7 +7,7 @@
 # Requirements
 
   + Java 21
-  + [jMonkeyEngine 3.8.1 Stable](https://jmonkeyengine.org/)
+  + [jMonkeyEngine 3.0.0-Stable](https://jmonkeyengine.org/)
   + Gradle
 
 <p align="center">

@@ -27,11 +27,14 @@ public class PlayerHUDControl extends AbstractControl {
     
     public static String DEFAULT_FONT_COLOR = "#FFF";
     public static String EMPTY_FONT_COLOR = "#FF0000";
+    public static float REMAINING_TIME = 300f;
+    public static String TIMER_FORMAT = "00  :  %02d  :  %02d";
     
     private SimpleApplication app;
     private Player player;
     private Nifty nifty;
     private float damageFlashTimer = 0f;
+    private float remainingTime = REMAINING_TIME;
     
     public PlayerHUDControl(SimpleApplication app, Player player) {
         this.app = app;
@@ -42,6 +45,7 @@ public class PlayerHUDControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         this.updateHUD();
+        this.updateTimer(tpf);
         this.updateDamageFlash(tpf);
     }
 
@@ -96,6 +100,29 @@ public class PlayerHUDControl extends AbstractControl {
 
         ammoCounter.setText(Integer.toString(this.getPlayer().getControl().getAmmoes()));        
         healthCounter.setText(Integer.toString(Math.round(this.getPlayer().getControl().getHealth())));
+    }
+    
+    private void updateTimer(float tpf) {
+        if (remainingTime > 0) {
+            remainingTime -= tpf; 
+        } else {
+            this.getPlayer().getLevel().gameOver();
+            return;
+        }
+        
+        Screen screen = this.getNifty().getScreen("hud_screen");
+        
+        if (screen == null) { return; }
+        
+        Label timerText = (Label) screen.findNiftyControl("timer_text", Label.class);
+        
+        if (timerText == null) { return; }
+        
+        int minutes = (int) remainingTime / 60;
+        int seconds = (int) remainingTime % 60;
+
+        String timer = String.format(TIMER_FORMAT, minutes, seconds);
+        timerText.setText(timer);
     }
     
     private void setNotEnoughTextColor(Label ammoText, Label ammoCounter) {

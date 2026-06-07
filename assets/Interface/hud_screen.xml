@@ -8,7 +8,12 @@
             <panel id="crosshair_v" width="2px" height="16px" backgroundColor="#ffff"/>
         </layer>
         <layer id="foreground" childLayout="horizontal">
-            <panel id="panel_left" childLayout="vertical" width="80%" height="100%"/>
+            <panel id="panel_left" childLayout="vertical" width="80%" height="100%">
+                <panel id="panel_left_spacer" width="100%" height="75%"/>
+                <panel id="timer_background" childLayout="vertical" backgroundImage="Interface/images/hud/timer.png" width="150px" height="150px" align="left" marginBottom="18px" marginLeft="18px" padding="16px,20px,16px,20px">
+                    <control name="label" id="timer_text" color="#FFF" width="100%" text="00  00  00" halign="left" height="100%"/>
+                </panel>
+            </panel>
             <panel id="panel_right" childLayout="vertical" width="20%" height="100%">
                 <panel id="status_background" childLayout="vertical" backgroundImage="Interface/images/hud/background.png" width="275px" height="150px" align="right" marginTop="18px" marginRight="18px" padding="16px,20px,16px,20px">
                     <panel id="panel_top_right1" childLayout="horizontal" width="100%" height="40px" marginTop="15px">
