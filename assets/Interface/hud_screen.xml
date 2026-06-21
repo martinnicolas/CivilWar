@@ -8,10 +8,17 @@
             <panel id="crosshair_v" width="2px" height="16px" backgroundColor="#ffff"/>
         </layer>
         <layer id="foreground" childLayout="horizontal">
-            <panel id="panel_left" childLayout="vertical" width="80%" height="100%">
+            <panel id="panel_left" childLayout="vertical" width="75%" height="100%">
                 <panel id="panel_left_spacer" width="100%" height="75%"/>
-                <panel id="timer_background" childLayout="vertical" backgroundImage="Interface/images/hud/timer.png" width="150px" height="150px" align="left" marginBottom="18px" marginLeft="18px" padding="16px,20px,16px,20px">
-                    <control name="label" id="timer_text" color="#FFF" width="100%" text="00  00  00" halign="left" height="100%"/>
+                <panel id="panel_bottom" childLayout="horizontal" width="100%">
+                    <panel id="timer_background" childLayout="vertical" backgroundImage="Interface/images/hud/timer.png" width="150px" height="150px" align="left" marginBottom="18px" marginLeft="18px" padding="16px,20px,16px,20px">
+                        <control name="label" id="timer_text" color="#FFF" width="100%" text="00  00  00" halign="left" height="100%"/>
+                    </panel>
+                    <panel id="elements_background" childLayout="horizontal" backgroundImage="Interface/images/hud/elements.png" width="300px" height="200px" align="left" marginBottom="18px" marginLeft="18px" padding="16px,20px,16px,20px">
+                        <control name="label" id="fuel_text" color="#FFF" width="33%" text="0/0" halign="right" valign="bottom"/>
+                        <control name="label" id="water_text" color="#FFF" width="33%" text="0/0" halign="right" valign="bottom"/>
+                        <control name="label" id="medical_text" color="#FFF" width="33%" text="0/0" halign="right" valign="bottom"/>
+                    </panel>
                 </panel>
             </panel>
             <panel id="panel_right" childLayout="vertical" width="20%" height="100%">

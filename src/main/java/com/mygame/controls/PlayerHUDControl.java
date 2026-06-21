@@ -27,7 +27,7 @@ public class PlayerHUDControl extends AbstractControl {
     
     public static String DEFAULT_FONT_COLOR = "#FFF";
     public static String EMPTY_FONT_COLOR = "#FF0000";
-    public static String TIMER_FORMAT = "00  :  %02d  :  %02d";
+    public static String TIMER_FORMAT = "00    %02d    %02d";
     
     private SimpleApplication app;
     private Player player;
