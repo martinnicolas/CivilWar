@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <nifty xmlns="http://nifty-gui.lessvoid.com/nifty-gui" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd https://raw.githubusercontent.com/void256/nifty-gui/1.4/nifty-core/src/main/resources/nifty.xsd">
     <screen id="loading_screen" controller="com.mygame.screens.LoadingScreen">
-        <layer id="background" childLayout="center" backgroundColor="#0000" backgroundImage="Interface/images/fondoayuda.jpeg">
+        <layer id="background" childLayout="center" backgroundColor="#0000" backgroundImage="Interface/images/loading.png">
             <effect>
                 <onStartScreen name="fade" />
             </effect>

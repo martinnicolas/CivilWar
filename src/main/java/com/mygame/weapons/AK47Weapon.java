@@ -18,6 +18,7 @@ public class AK47Weapon extends Weapon {
     public static final String MODEL_PATH = "Models/AK-47/AK-47.j3o";
     public static final String SPATIAL_NAME = "AK47";
     public static final float LOCAL_SCALE = 0.5f;
+    public static final int DEFAULT_DAMAGE = 10;
 
     public AK47Weapon(AssetManager assetManager, Vector3f localTranslation) {
         super(assetManager, localTranslation);
@@ -33,6 +34,7 @@ public class AK47Weapon extends Weapon {
         this.getSpatial().setLocalTranslation(this.getLocalTranslation());
         this.getSpatial().setLocalScale(AK47Weapon.LOCAL_SCALE);
         this.getSpatial().setShadowMode(RenderQueue.ShadowMode.Receive);
+        this.setDamage(AK47Weapon.DEFAULT_DAMAGE);
     }
     
 }

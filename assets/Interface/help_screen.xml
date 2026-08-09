@@ -5,9 +5,9 @@
             <effect>
                 <onStartScreen name="fade" />
             </effect>
-            <panel id="GPanel1" childLayout="vertical" width="800px" height="600px" padding="20px,20px,20px,20px" style="nifty-panel">
-                <panel childLayout="vertical" width="100%" height="80%">                    
-                    <panel width="100%" height="25%" childLayout="horizontal">
+            <panel id="GPanel1" childLayout="vertical" width="800px" height="700px" padding="20px,20px,20px,20px" style="nifty-panel">
+                <panel childLayout="vertical" width="100%" height="90%">
+                    <panel width="100%" height="20%" childLayout="horizontal">
                         <panel width="50%" height="100%" childLayout="center">
                             <image filename="Interface/images/arrows.png"></image>
                         </panel>
@@ -15,7 +15,7 @@
                             <text text="Girar hacia la izquierda, derecha, arriba y abajo" style="base-font" color="#eeef" width="100%" />
                         </panel>
                     </panel>             
-                    <panel width="100%" height="25%" childLayout="horizontal">
+                    <panel width="100%" height="20%" childLayout="horizontal">
                         <panel width="50%" height="100%" childLayout="center">
                             <image filename="Interface/images/f.png"></image>
                         </panel>
@@ -23,7 +23,7 @@
                             <text text="Disparar" style="base-font" color="#eeef" width="100%" />
                         </panel>
                     </panel>                    
-                    <panel width="100%" height="25%" childLayout="horizontal">
+                    <panel width="100%" height="20%" childLayout="horizontal">
                         <panel width="50%" height="100%" childLayout="center">
                             <image filename="Interface/images/p.png"></image>
                         </panel>
@@ -31,16 +31,24 @@
                             <text text="Pausa y acceso al menú" style="base-font" color="#eeef" width="100%" />                            
                         </panel>
                     </panel>                    
-                    <panel width="100%" height="25%" childLayout="horizontal">
+                    <panel width="100%" height="20%" childLayout="horizontal">
                         <panel width="50%" height="100%" childLayout="center">
                             <image filename="Interface/images/spacebar.png"></image>
                         </panel>
                         <panel width="50%" height="100%" childLayout="center">
                             <text text="Saltar" style="base-font" color="#eeef" width="100%" />                            
                         </panel>
-                    </panel>                                            
+                    </panel>
+                    <panel width="100%" height="20%" childLayout="horizontal">
+                        <panel width="50%" height="100%" childLayout="center">
+                            <image filename="Interface/images/mouse.png"></image>
+                        </panel>
+                        <panel width="50%" height="100%" childLayout="center">
+                            <text text="Apuntar" style="base-font" color="#eeef" width="100%" />                            
+                        </panel>
+                    </panel>
                 </panel>
-                <panel width="100%" height="25%" childLayout="center">
+                <panel width="100%" height="10%" childLayout="center">
                     <control name="button" id="buttonVolver" visibleToMouse="true" width="300px" label="Volver" height="30px">
                         <effect>
                             <onFocus name="playSound" sound="menu_hover"/>

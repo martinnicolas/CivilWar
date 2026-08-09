@@ -31,4 +31,23 @@ public interface SpawnSettings {
      * @return health bonus spawn positions
      */
     List<Vector3f> getHealthBonusSpawnPositions();
+    
+    /**
+     * Get the water collectible spawn positions.
+     * @return water collectible spawn positions
+     */
+    List<Vector3f> getWaterCollectibleSpawnPositions();
+    
+    /**
+     * Get the health collectible spawn positions.
+     * @return health collectible spawn positions
+     */
+    List<Vector3f> getHealthCollectibleSpawnPositions();
+    
+    
+    /**
+     * Get the health collectible spawn positions.
+     * @return health collectible spawn positions
+     */
+    List<Vector3f> getFuelCollectibleSpawnPositions();
 }

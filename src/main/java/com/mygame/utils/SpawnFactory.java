@@ -8,13 +8,16 @@ package com.mygame.utils;
 import com.jme3.math.Vector3f;
 import com.mygame.bonuses.AmmoBonus;
 import com.mygame.bonuses.HealthBonus;
+import com.mygame.collectibles.FuelCollectible;
+import com.mygame.collectibles.HealthCollectible;
+import com.mygame.collectibles.WaterCollectible;
 import com.mygame.enemies.ZombieEnemy;
 import com.mygame.levels.Level;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Spawn factory to spawn spawnable objects on the game (Enemy, Bonus)
+ * Spawn factory to spawn spawnable objects on the game (Enemy, Bonus and Collectibles)
  * 
  * @author martin
  */
@@ -54,6 +57,15 @@ public final class SpawnFactory {
         if (spawnClass.equals(HealthBonus.class)) {
             return settings.getHealthBonusSpawnPositions();
         }
+        if (spawnClass.equals(WaterCollectible.class)) {
+            return settings.getWaterCollectibleSpawnPositions();
+        }
+        if (spawnClass.equals(HealthCollectible.class)) {
+            return settings.getHealthCollectibleSpawnPositions();
+        }
+        if (spawnClass.equals(FuelCollectible.class)) {
+            return settings.getFuelCollectibleSpawnPositions();
+        }
         throw new IllegalArgumentException("Unsupported spawn class: " + spawnClass.getName());
     }
 
@@ -76,6 +88,15 @@ public final class SpawnFactory {
         }
         if (spawnClass.equals(HealthBonus.class)) {
             return spawnClass.cast(new HealthBonus(level.getApp().getAssetManager(), HealthBonus.DEFAULT_AMOUNT, position));
+        }
+        if (spawnClass.equals(WaterCollectible.class)) {
+            return spawnClass.cast(new WaterCollectible(level.getApp().getAssetManager(), position));
+        }
+        if (spawnClass.equals(HealthCollectible.class)) {
+            return spawnClass.cast(new HealthCollectible(level.getApp().getAssetManager(), position));
+        }
+        if (spawnClass.equals(FuelCollectible.class)) {
+            return spawnClass.cast(new FuelCollectible(level.getApp().getAssetManager(), position));
         }
         throw new IllegalArgumentException("Unsupported spawn class: " + spawnClass.getName());
     }

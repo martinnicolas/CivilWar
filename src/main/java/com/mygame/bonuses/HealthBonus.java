@@ -8,6 +8,7 @@ package com.mygame.bonuses;
 import com.jme3.asset.AssetManager;
 import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.math.Vector3f;
+import com.jme3.renderer.queue.RenderQueue;
 import com.mygame.controls.BonusControl;
 
 /**
@@ -35,6 +36,7 @@ public class HealthBonus extends Bonus {
         this.getSpatial().setName(HealthBonus.SPATIAL_NAME);
         this.getSpatial().setLocalTranslation(this.getLocalTranslation());
         this.getSpatial().setLocalScale(HealthBonus.LOCAL_SCALE);
+        this.getSpatial().setShadowMode(RenderQueue.ShadowMode.CastAndReceive);
         this.getSpatial().addControl(new RigidBodyControl(HealthBonus.MASS));
         this.getSpatial().addControl(new BonusControl(this.getAmount()));
     }

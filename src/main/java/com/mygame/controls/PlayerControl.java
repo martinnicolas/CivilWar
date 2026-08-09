@@ -19,6 +19,10 @@ public class PlayerControl extends CharacterControl {
     private static final float MAX_HEALTH = 100;
     private int ammoes = MAX_AMMOS;
     private float health = MAX_HEALTH;
+    private int waterCollectibles = 0;
+    private int healthCollectibles = 0;
+    private int fuelCollectibles = 0;
+    private float remainingTime = 0; 
     //Settings for CharacterControl
     private static final float STEP_HEIGHT = 0.5f;
     private static final float JUMP_SPEED = 15;
@@ -40,6 +44,22 @@ public class PlayerControl extends CharacterControl {
 
     public void plusHealth(int plusHealth) {
         this.setHealth(this.getHealth() + plusHealth);
+    }
+    
+    public void plusWaterCollectible() {
+        this.setWaterCollectibles(this.getWaterCollectibles() + 1);
+    }
+
+    public void plusHealthCollectible() {
+        this.setHealthCollectibles(this.getHealthCollectibles() + 1);
+    }
+    
+    public void plusFuelCollectible() {
+        this.setFuelCollectibles(this.getFuelCollectibles() + 1);
+    }
+    
+    public int amountOfCollectiblesCollected() {
+        return this.getFuelCollectibles() + this.getWaterCollectibles() + this.getHealthCollectibles();
     }
     
     public boolean haveEnoughAmmoes() {
@@ -73,5 +93,44 @@ public class PlayerControl extends CharacterControl {
     public void setHealth(float health) {
         this.health = health;
     }
+
+    public int getWaterCollectibles() {
+        return waterCollectibles;
+    }
+
+    public void setWaterCollectibles(int waterCollectibles) {
+        this.waterCollectibles = waterCollectibles;
+    }
+
+    public int getHealthCollectibles() {
+        return healthCollectibles;
+    }
+
+    public void setHealthCollectibles(int healthCollectibles) {
+        this.healthCollectibles = healthCollectibles;
+    }
+
+    public int getFuelCollectibles() {
+        return fuelCollectibles;
+    }
+
+    public void setFuelCollectibles(int fuelCollectibles) {
+        this.fuelCollectibles = fuelCollectibles;
+    }
+
+    public float getRemainingTime() {
+        return remainingTime;
+    }
+
+    public void setRemainingTime(float remainingTime) {
+        this.remainingTime = remainingTime;
+    }
     
+    public void decrementRemainingTime(float tpf) {
+        this.setRemainingTime(this.getRemainingTime() - tpf);
+    }
+    
+    public boolean enoughRemainingTime() {
+        return this.getRemainingTime() > 0;
+    }
 }

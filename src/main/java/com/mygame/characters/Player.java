@@ -22,12 +22,16 @@ import com.jme3.scene.Spatial;
 import com.jme3.scene.control.CameraControl;
 import com.mygame.bonuses.AmmoBonus;
 import com.mygame.bonuses.HealthBonus;
+import com.mygame.collectibles.FuelCollectible;
+import com.mygame.collectibles.HealthCollectible;
+import com.mygame.collectibles.WaterCollectible;
 import com.mygame.controls.BonusControl;
 import com.mygame.controls.EnemyControl;
 import com.mygame.controls.PlayerControl;
 import com.mygame.controls.PlayerHUDControl;
 import com.mygame.levels.Level;
 import com.mygame.weapons.AK47Weapon;
+import com.mygame.weapons.Weapon;
 
 /**
  *
@@ -56,6 +60,8 @@ public class Player implements ActionListener {
     private static final String JUMP_KEY = "Jump";
     private static final String PAUSE_KEY = "Pause";
     private static final String SHOOT_KEY = "Shoot";
+    //Player weapon
+    private Weapon weapon;
 
     public Player(Level level) {
         this.level = level;
@@ -81,6 +87,8 @@ public class Player implements ActionListener {
         this.getApp().getFlyByCamera().setEnabled(true);
         this.getApp().getFlyByCamera().setMoveSpeed(50);
         this.getWalkDirection().set(Vector3f.ZERO);
+        // Set max time to finish the level
+        this.getControl().setRemainingTime(this.getLevel().getMaxTimeToFinish());
     }
     
     /**
@@ -89,6 +97,7 @@ public class Player implements ActionListener {
     private void setUpPlayerWeapon() {
         AK47Weapon ak47 = new AK47Weapon(this.getApp().getAssetManager(), new Vector3f(-1f, -1.1f, 2f));
         ak47.getSpatial().setLocalRotation(new Quaternion(0f, -1f, 0f, 1f));        
+        this.setWeapon(ak47);
         //Create camera node for weapon spatial
         CameraNode cameraNode = new CameraNode("camera_node", this.getApp().getCamera());
         cameraNode.setControlDir(CameraControl.ControlDirection.CameraToSpatial);
@@ -97,7 +106,7 @@ public class Player implements ActionListener {
     }
 
     /**
-     * Settup audio
+     * Setup audio
      */
     private void setUpAudio() {
         //Attach audio for jump action
@@ -109,7 +118,7 @@ public class Player implements ActionListener {
         this.getApp().getRootNode().attachChild(this.getJumpAudio());
         //Attach audio for scream action
         this.setScreamAudio(new AudioNode(this.getApp().getAssetManager(), "Sounds/Effects/aww/aw02.ogg", DataType.Buffer));
-        this.getScreamAudio().setName("player_jump_audio");
+        this.getScreamAudio().setName("player_scream_audio");
         this.getScreamAudio().setPositional(false);
         this.getScreamAudio().setLooping(false);
         this.getScreamAudio().setVolume(20);
@@ -152,7 +161,7 @@ public class Player implements ActionListener {
     }
 
     /**
-     * Settup keys
+     * Setup keys
      */
     private void setUpKeys() {
         this.getApp().getInputManager().addMapping(Player.LEFT_KEY, new KeyTrigger(KeyInput.KEY_A));
@@ -234,6 +243,28 @@ public class Player implements ActionListener {
             case HealthBonus.SPATIAL_NAME -> {
                 this.getControl().plusHealth(bonusControl.getBonusAmount());
                 this.getPickedHealthAudio().playInstance();
+            }
+        }
+    }
+    
+    /**
+     * Plus picked collectible. Receive a picked Spatial Collectible and plus its amount to the stored
+     * 
+     * @param collectibleSpatial 
+     */
+    public void plusPickedCollectible(Spatial collectibleSpatial) {
+        switch (collectibleSpatial.getName()) {
+            case WaterCollectible.SPATIAL_NAME -> {
+                this.getControl().plusWaterCollectible();
+                this.getPickedAmmoAudio().playInstance();
+            }
+            case HealthCollectible.SPATIAL_NAME -> {
+                this.getControl().plusHealthCollectible();
+                this.getPickedAmmoAudio().playInstance();
+            }
+            case FuelCollectible.SPATIAL_NAME -> {
+                this.getControl().plusFuelCollectible();
+                this.getPickedAmmoAudio().playInstance();
             }
         }
     }
@@ -396,4 +427,11 @@ public class Player implements ActionListener {
         this.emptyWeaponAudio = emptyWeaponAudio;
     }
 
+    public Weapon getWeapon() {
+        return weapon;
+    }
+
+    public void setWeapon(Weapon weapon) {
+        this.weapon = weapon;
+    }
 }

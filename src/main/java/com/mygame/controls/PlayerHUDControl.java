@@ -28,17 +28,18 @@ public class PlayerHUDControl extends AbstractControl {
     public static String DEFAULT_FONT_COLOR = "#FFF";
     public static String EMPTY_FONT_COLOR = "#FF0000";
     public static String TIMER_FORMAT = "00    %02d    %02d";
+    public static String FUEL_COLLECTIBLES_STATUS_FORMAT = "%01d/%01d";
+    public static String WATER_COLLECTIBLES_STATUS_FORMAT = "%01d/%01d";
+    public static String HEALTH_COLLECTIBLES_STATUS_FORMAT = "%01d/%01d";
     
     private SimpleApplication app;
     private Player player;
     private Nifty nifty;
     private float damageFlashTimer = 0f;
-    private float remainingTime;
     
     public PlayerHUDControl(SimpleApplication app, Player player) {
         this.app = app;
         this.player = player;
-        this.remainingTime = player.getLevel().getMaxTimeToFinish();
         this.showHUDScreen();
     }
 
@@ -73,14 +74,19 @@ public class PlayerHUDControl extends AbstractControl {
      * Update HUD indicators
      */
     private void updateHUD() {
-        Screen screen = this.getNifty().getScreen("hud_screen");
+        Screen hudScreen = this.getNifty().getScreen("hud_screen");
         
-        if (screen == null) { return; }
-        
-        Label ammoText = (Label) screen.findNiftyControl("ammo_text", Label.class);
-        Label ammoCounter = (Label) screen.findNiftyControl("ammo_counter", Label.class);
-        Label healthText = (Label) screen.findNiftyControl("health_text", Label.class);
-        Label healthCounter = (Label) screen.findNiftyControl("health_counter", Label.class);
+        if (hudScreen == null) { return; }
+
+        this.updateBonusInidicators(hudScreen);
+        this.updateCollectiblesIndicators(hudScreen);
+    }
+    
+    private void updateBonusInidicators(Screen hudScreen) {
+        Label ammoText = (Label) hudScreen.findNiftyControl("ammo_text", Label.class);
+        Label ammoCounter = (Label) hudScreen.findNiftyControl("ammo_counter", Label.class);
+        Label healthText = (Label) hudScreen.findNiftyControl("health_text", Label.class);
+        Label healthCounter = (Label) hudScreen.findNiftyControl("health_counter", Label.class);
         
         if (ammoText == null || ammoCounter == null || healthText == null || healthCounter == null) { return; }
         
@@ -102,29 +108,6 @@ public class PlayerHUDControl extends AbstractControl {
         healthCounter.setText(Integer.toString(Math.round(this.getPlayer().getControl().getHealth())));
     }
     
-    private void updateTimer(float tpf) {
-        if (remainingTime > 0) {
-            remainingTime -= tpf; 
-        } else {
-            this.getPlayer().getLevel().gameOver();
-            return;
-        }
-        
-        Screen screen = this.getNifty().getScreen("hud_screen");
-        
-        if (screen == null) { return; }
-        
-        Label timerText = (Label) screen.findNiftyControl("timer_text", Label.class);
-        
-        if (timerText == null) { return; }
-        
-        int minutes = (int) remainingTime / 60;
-        int seconds = (int) remainingTime % 60;
-
-        String timer = String.format(PlayerHUDControl.TIMER_FORMAT, minutes, seconds);
-        timerText.setText(timer);
-    }
-    
     private void setNotEnoughTextColor(Label ammoText, Label ammoCounter) {
         ammoText.setColor(new Color(PlayerHUDControl.EMPTY_FONT_COLOR));
         ammoCounter.setColor(new Color(PlayerHUDControl.EMPTY_FONT_COLOR));
@@ -137,6 +120,45 @@ public class PlayerHUDControl extends AbstractControl {
         
         ammoText.setColor(new Color(PlayerHUDControl.DEFAULT_FONT_COLOR));
         ammoCounter.setColor(new Color(PlayerHUDControl.DEFAULT_FONT_COLOR));
+    }
+    
+    private void updateCollectiblesIndicators(Screen hudScreen) {
+        Label fuelCollectibleAmount = (Label) hudScreen.findNiftyControl("fuel_text", Label.class);
+        Label waterCollectibleAmount = (Label) hudScreen.findNiftyControl("water_text", Label.class);
+        Label healthCollectibleAmount = (Label) hudScreen.findNiftyControl("medical_text", Label.class);
+        
+        if (fuelCollectibleAmount == null || healthCollectibleAmount == null || waterCollectibleAmount == null) { return; }
+        
+        int currentHealthCollectiblesCollected = this.getPlayer().getControl().getHealthCollectibles();
+        int currentWaterCollectiblesCollected = this.getPlayer().getControl().getWaterCollectibles();
+        int currentFuelCollectiblesCollected = this.getPlayer().getControl().getFuelCollectibles();
+        
+        int maxAmountOfHealthCollectibles = this.getPlayer().getLevel().getMaxSizeOfHealthCollectibles();
+        int maxAmountOfWaterCollectibles = this.getPlayer().getLevel().getMaxSizeOfWaterCollectibles();
+        int maxAmountOfFuelCollectibles = this.getPlayer().getLevel().getMaxSizeOfFuelCollectibles();
+
+        String currentFuelCollectibleStatus = String.format(PlayerHUDControl.FUEL_COLLECTIBLES_STATUS_FORMAT, currentFuelCollectiblesCollected, maxAmountOfFuelCollectibles);
+        fuelCollectibleAmount.setText(currentFuelCollectibleStatus);   
+        String currentWaterCollectibleStatus = String.format(PlayerHUDControl.WATER_COLLECTIBLES_STATUS_FORMAT, currentWaterCollectiblesCollected, maxAmountOfWaterCollectibles);
+        waterCollectibleAmount.setText(currentWaterCollectibleStatus);
+        String currentHealthCollectibleStatus = String.format(PlayerHUDControl.HEALTH_COLLECTIBLES_STATUS_FORMAT, currentHealthCollectiblesCollected, maxAmountOfHealthCollectibles);
+        healthCollectibleAmount.setText(currentHealthCollectibleStatus);
+    }
+    
+    private void updateTimer(float tpf) {
+        Screen screen = this.getNifty().getScreen("hud_screen");
+        
+        if (screen == null) { return; }
+        
+        Label timerText = (Label) screen.findNiftyControl("timer_text", Label.class);
+        
+        if (timerText == null) { return; }
+        
+        int minutes = (int) this.getPlayer().getControl().getRemainingTime() / 60;
+        int seconds = (int) this.getPlayer().getControl().getRemainingTime() % 60;
+
+        String timer = String.format(PlayerHUDControl.TIMER_FORMAT, minutes, seconds);
+        timerText.setText(timer);
     }
     
     private void updateDamageFlash(float tpf) {
@@ -184,5 +206,4 @@ public class PlayerHUDControl extends AbstractControl {
     public void setNifty(Nifty nifty) {
         this.nifty = nifty;
     }
-    
 }

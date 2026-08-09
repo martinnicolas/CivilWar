@@ -16,6 +16,7 @@ import com.jme3.bullet.control.RigidBodyControl;
 import com.jme3.light.Light;
 import com.jme3.light.LightList;
 import com.jme3.math.Ray;
+import com.jme3.math.Vector3f;
 import com.jme3.niftygui.NiftyJmeDisplay;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.SceneProcessor;
@@ -33,6 +34,7 @@ import com.mygame.controls.BonusControl;
 import com.mygame.controls.PlayerControl;
 import com.mygame.controls.PlayerHUDControl;
 import com.mygame.screens.GameOverScreen;
+import com.mygame.screens.LevelFinishScreen;
 import com.mygame.screens.NiftyScreenHelper;
 import com.mygame.screens.PauseScreen;
 
@@ -50,6 +52,7 @@ public abstract class Level extends AbstractAppState {
     private int loadingStep;
     private int loadingSteps;
     private boolean gameOverStarted;
+    private boolean levelFinishStarted;
     private float maxTimeToFinish;
     //For pause screen
     private Nifty nifty;
@@ -70,7 +73,7 @@ public abstract class Level extends AbstractAppState {
      */
     public abstract boolean loadLevel();
     
-        /**
+    /**
      * Setup the audio level
      */
     public abstract void setUpAudio();
@@ -85,6 +88,38 @@ public abstract class Level extends AbstractAppState {
      * Loads the player in the level
      */
     public abstract void loadPlayer();
+    
+    /**
+     * Returns the max amount of water collectibles for level
+     * @return 
+     */
+    public abstract int getMaxSizeOfWaterCollectibles();
+    
+    /**
+     * Returns the max amount of health collectibles for level
+     * @return 
+     */
+    public abstract int getMaxSizeOfHealthCollectibles();
+    
+    /**
+     * Returns the max amount of fuel collectibles for level
+     * @return 
+     */
+    public abstract int getMaxSizeOfFuelCollectibles();
+    
+    /**
+     * Returns the positions for explosions for level
+     * @return 
+     */
+    public abstract List<Vector3f> getExplosionPositions();
+    
+    /**
+     * Get max size of collectibles for level
+     * @return 
+     */
+    public int getMaxAmountOfCollectibles() {
+        return this.getMaxSizeOfFuelCollectibles() + this.getMaxSizeOfWaterCollectibles() + this.getMaxSizeOfHealthCollectibles();
+    }
     
     /**
     * Get the assets loading progress for level
@@ -121,6 +156,16 @@ public abstract class Level extends AbstractAppState {
         this.disableAllLevelElements();
         this.showGameOverScreen();
     }
+    
+    /**
+     * Finish the level and starts FinishLevelScreen
+     */
+    public void finishLevel() {
+        if (this.isLevelFinishStarted()) { return; }
+        this.setLevelFinishStarted(true);
+        this.disableAllLevelElements();
+        this.showLevelFinishScreen();
+    }    
     
     /**
      * Pause the game.
@@ -189,6 +234,23 @@ public abstract class Level extends AbstractAppState {
         GameOverScreen gameOverScreen = new GameOverScreen();
         gameOverScreen.initialize(this.getApp().getStateManager(), this.getApp());
         this.getNifty().fromXml("Interface/game_over_screen.xml", "game_over_screen", gameOverScreen);
+        this.getApp().getGuiViewPort().addProcessor(niftyDisplay);
+    }
+    
+    /**
+     * Show game over screen
+     */
+    private void showLevelFinishScreen() {
+        NiftyJmeDisplay niftyDisplay = new NiftyJmeDisplay(this.getApp().getAssetManager(),
+                                                          this.getApp().getInputManager(),
+                                                          this.getApp().getAudioRenderer(),
+                                                          this.getApp().getGuiViewPort());
+        this.setNifty(niftyDisplay.getNifty());
+        NiftyScreenHelper.loadDefaults(this.getNifty());
+        NiftyScreenHelper.registerMenuSounds(this.getNifty());
+        LevelFinishScreen levelFinishScreen = new LevelFinishScreen();
+        levelFinishScreen.initialize(this.getApp().getStateManager(), this.getApp());
+        this.getNifty().fromXml("Interface/level_finish_screen.xml", "level_finish_screen", levelFinishScreen);
         this.getApp().getGuiViewPort().addProcessor(niftyDisplay);
     }
     
@@ -380,6 +442,14 @@ public abstract class Level extends AbstractAppState {
 
     public void setGameOverStarted(boolean gameOverStarted) {
         this.gameOverStarted = gameOverStarted;
+    }
+    
+    public boolean isLevelFinishStarted() {
+        return levelFinishStarted;
+    }
+
+    public void setLevelFinishStarted(boolean levelFinishStarted) {
+        this.levelFinishStarted = levelFinishStarted;
     }
 
     public float getMaxTimeToFinish() {

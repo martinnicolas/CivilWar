@@ -34,7 +34,9 @@ public class EnemyControl extends AbstractControl {
         Spatial playerSpatial = this.getSpatial().getParent().getChild(Player.SPATIAL_NAME);
         Vector3f playerLocaltion = playerSpatial.getWorldTranslation();
         Vector3f distance = playerLocaltion.subtract(this.getSpatial().getWorldTranslation());
-        if (distance.length() >= ATTACK_DISTANCE) {
+        distance.setY(0);
+        float distanceToPlayer = distance.length();
+        if (distanceToPlayer >= ATTACK_DISTANCE) {
             distance.normalizeLocal();
             lookRotation.lookAt(distance, Vector3f.UNIT_Y);
             this.getSpatial().setLocalRotation(lookRotation);

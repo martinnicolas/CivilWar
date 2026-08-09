@@ -33,12 +33,7 @@ public abstract class Enemy implements Spawnable {
     /**
     * Kill the enemy by running die animation
     */
-    public void kill() {
-        if (!this.isAlive()) {
-            return;
-        }
-
-        this.setEnergy(0);
+    public void die() {
         EnemyAnimationControl animationControl = this.getSpatial().getControl(EnemyAnimationControl.class);
         if (animationControl != null) {
             animationControl.die();
@@ -88,5 +83,9 @@ public abstract class Enemy implements Spawnable {
 
     public void setLocalTranslation(Vector3f localTranslation) {
         this.localTranslation = localTranslation;
+    }
+    
+    public void loadDamage(float damage) {
+        this.setEnergy(this.getEnergy() - damage);
     }
 }
