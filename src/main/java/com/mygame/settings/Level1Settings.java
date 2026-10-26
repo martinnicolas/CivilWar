@@ -5,9 +5,7 @@
  */
 package com.mygame.settings;
 
-import com.jme3.math.FastMath;
 import com.jme3.math.Vector3f;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -17,24 +15,24 @@ import java.util.List;
  */
 public final class Level1Settings {
 
-    private static final float MAX_TIME_TO_FINISH_THE_LEVEL = 200f; //300f (4 minutes)
+    private static final float MAX_TIME_TO_FINISH_THE_LEVEL = 300f; //300f (4 minutes)
     
     private static final List<Vector3f> ZOMBIE_SPAWN_POSITIONS = List.of(
-        new Vector3f(-320, 10, -320),
-        new Vector3f(320, 10, -320),
-        new Vector3f(-320, 10, 320),
-        new Vector3f(320, 10, 320),
-        new Vector3f(0, 10, -450),
-        new Vector3f(0, 10, 450),
-        new Vector3f(-450, 10, 0),
-        new Vector3f(450, 10, 0),
-        new Vector3f(-500, 10, 500),
-        new Vector3f(500, 10, -500),
-        new Vector3f(200, 10, -100),
-        new Vector3f(100, 10, -50),
-        new Vector3f(50, 10, -300),
+        new Vector3f(-110, 3, -311),
+        new Vector3f(-80, 3, -353),
+        new Vector3f(-70, 3, -326),
+        new Vector3f(-23, 3, -307),
+        new Vector3f(7, 3, -300),
+        new Vector3f(48, 3, -313),
+        new Vector3f(87, 3, -315),
+        new Vector3f(89, 3, -270),
+        new Vector3f(-30, 10, 150),
+        new Vector3f(50, 10, -550),
+        new Vector3f(20, 10, -10),
+        new Vector3f(10, 10, -50),
+        new Vector3f(50, 10, -30),
         new Vector3f(20, 10, -20),
-        new Vector3f(20, 10, -200),
+        new Vector3f(20, 10, -25),
         new Vector3f(20, 10, -50),
         new Vector3f(0, 10, 0),
         new Vector3f(0, 10, 50),
@@ -46,8 +44,8 @@ public final class Level1Settings {
         new Vector3f(80, 10, 80),
         new Vector3f(-100, 10, 0),
         new Vector3f(100, 10, 0),
-        new Vector3f(0, 10, -100),
-        new Vector3f(0, 10, 100),
+        new Vector3f(0, 10, -10),
+        new Vector3f(0, 10, 10),
         new Vector3f(-40, 10, 20),
         new Vector3f(40, 10, -20)
     );
@@ -65,30 +63,37 @@ public final class Level1Settings {
     );
     
     private static final List<Vector3f> WATER_COLLECTIBLE_SPAWN_POSITIONS = List.of(
-        new Vector3f(-28, 10, 45),
-        new Vector3f(10, 10, 88),
-        new Vector3f(-70, 10, -60),
-        new Vector3f(-30, 10, -60),
-        new Vector3f(-14, 40, -88)
+        new Vector3f(-28, 10, 48),
+        new Vector3f(-54, 3, -59),
+        new Vector3f(-14, 40, -88),
+        new Vector3f(23, 17, -112),
+        new Vector3f(23, 1, -112)
     );    
     
     private static final List<Vector3f> HEALTH_COLLECTIBLE_SPAWN_POSITIONS = List.of(
         new Vector3f(-28, 10, 47),
-        new Vector3f(10, 10, 90),
-        new Vector3f(-70, 10, -62),
-        new Vector3f(-29, 10, -60),
-        new Vector3f(-16, 40, -88)
+        new Vector3f(-53, 3, -59),
+        new Vector3f(-16, 40, -88),
+        new Vector3f(9, 17, -112),
+        new Vector3f(8, 1, -111)
     );
 
     private static final List<Vector3f> FUEL_COLLECTIBLE_SPAWN_POSITIONS = List.of(
         new Vector3f(-29, 10, 47),
-        new Vector3f(11, 10, 90),
-        new Vector3f(-71, 10, -62),
-        new Vector3f(-31, 10, -60),
-        new Vector3f(-17, 40, -88)
+        new Vector3f(-52, 3, -59),
+        new Vector3f(-17, 40, -88),
+        new Vector3f(13, 17, -112),
+        new Vector3f(7, 1, -97)
     );
     
-    private static final List<Vector3f> EXPLOSION_POSITIONS = createExplosionGrid();
+    private static final List<Vector3f> EXPLOSION_POSITIONS = List.of(
+        new Vector3f(7, 3, -82),
+        new Vector3f(-38, 3, -96),
+        new Vector3f(-59, 3, -147),
+        new Vector3f(-18, 4, -153),
+        new Vector3f(19, 4, -143),
+        new Vector3f(28, 3, -95)
+    );
 
     private Level1Settings() {
     }
@@ -123,17 +128,5 @@ public final class Level1Settings {
     
     public static List<Vector3f> getExplosionPositions() {
         return Level1Settings.EXPLOSION_POSITIONS;
-    }
-    
-    private static List<Vector3f> createExplosionGrid() {
-        List<Vector3f> positions = new ArrayList<>();
-
-        for (int x = -120; x <= 120; x += 40) {
-            for (int z = -180; z <= 80; z += 40) {
-                positions.add(new Vector3f(x + FastMath.nextRandomFloat() * 10, 3, z + FastMath.nextRandomFloat() * 10));
-            }
-        }
-
-        return positions;
     }
 }

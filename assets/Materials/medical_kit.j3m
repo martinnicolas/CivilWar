@@ -1,0 +1,13 @@
+Material medical_kit : Common/MatDefs/Light/Lighting.j3md {
+    MaterialParameters {
+        DiffuseMap: Models/health/MedKit_Default.png
+        Diffuse: 1.0 1.0 1.0 1.0
+        Ambient: 1.0 1.0 1.0 1.0
+        Specular: 0.08 0.08 0.08 1.0
+        Shininess: 16.0
+        UseMaterialColors: true
+    }
+    AdditionalRenderState {
+        FaceCull Off
+    }
+}

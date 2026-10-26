@@ -42,6 +42,7 @@ public class ExplosionSequence {
                 explosionTimer = 0f;
 
                 ExplosionFactory.create(level, explosionPositions.get(nextExplosion));
+                FireFactory.create(level, explosionPositions.get(nextExplosion));
 
                 nextExplosion++;
 

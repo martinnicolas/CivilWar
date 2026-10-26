@@ -1,0 +1,15 @@
+Material shed_windows : Common/MatDefs/Light/Lighting.j3md {
+    MaterialParameters {
+        DiffuseMap: Models/shed/window.png
+        Diffuse: 1.0 1.0 1.0 1.0
+        AlphaDiscardThreshold: 0.01
+        UseMaterialColors: true
+        Ambient: 1.0 1.0 1.0 1.0
+        Shininess: 1
+    }
+    AdditionalRenderState {
+        Blend Alpha
+        DepthWrite Off
+        FaceCull Off
+    }
+}

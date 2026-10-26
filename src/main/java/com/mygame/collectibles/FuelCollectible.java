@@ -17,9 +17,9 @@ import com.mygame.controls.CollectibleControl;
  */
 public class FuelCollectible extends Collectible {
     
-    public static final String MODEL_PATH = "Models/fuel/fuel_2.j3o";
+    public static final String MODEL_PATH = "Models/fuel/plastic_jerrycan.j3o";
     public static final String SPATIAL_NAME = "fuel_collectible";
-    public static final float LOCAL_SCALE = 1f;
+    public static final float LOCAL_SCALE = 3f;
     public static final float MASS = 2f;
     public static final int DEFAULT_AMOUNT = 10;
 

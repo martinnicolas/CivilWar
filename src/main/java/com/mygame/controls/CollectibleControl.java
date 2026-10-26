@@ -38,10 +38,7 @@ public class CollectibleControl extends AbstractControl {
 
         if (spatial instanceof Geometry geometry) {
             Material material = geometry.getMaterial();
-            
-            if (material.getMaterialDef().getMaterialParam("Emissive") != null) {
-                material.setColor("Emissive", ColorRGBA.Orange.mult(intensity));
-            }
+            material.setColor("GlowColor", ColorRGBA.Yellow.mult(intensity));
         }
 
         if (spatial instanceof Node node) {

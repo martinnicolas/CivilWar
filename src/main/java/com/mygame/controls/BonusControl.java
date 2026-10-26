@@ -67,5 +67,4 @@ public class BonusControl extends AbstractControl {
     public void setBonusAmount(int bonusAmount) {
         this.bonusAmount = bonusAmount;
     }
-
 }

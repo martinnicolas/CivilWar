@@ -1,0 +1,14 @@
+Material metal_jerrycan_green : Common/MatDefs/Light/Lighting.j3md {
+    MaterialParameters {
+        DiffuseMap: Models/water/Image_0.jpg
+        NormalMap: Models/water/Image_2.png
+        Diffuse: 1.0 1.0 1.0 1.0
+        Ambient: 1.0 1.0 1.0 1.0
+        Specular: 0.45 0.45 0.45 1.0
+        Shininess: 32.0
+        UseMaterialColors: true
+    }
+    AdditionalRenderState {
+        FaceCull Off
+    }
+}

@@ -1,0 +1,14 @@
+Material plastic_jerrycan : Common/MatDefs/Light/Lighting.j3md {
+    MaterialParameters {
+        DiffuseMap: Models/fuel/Image_0.jpg
+        NormalMap: Models/fuel/Image_2.png
+        Diffuse: 1.0 1.0 1.0 1.0
+        Ambient: 1.0 1.0 1.0 1.0
+        Specular: 0.12 0.12 0.12 1.0
+        Shininess: 24.0
+        UseMaterialColors: true
+    }
+    AdditionalRenderState {
+        FaceCull Off
+    }
+}

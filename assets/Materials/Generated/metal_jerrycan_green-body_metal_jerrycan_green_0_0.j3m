@@ -1,0 +1,29 @@
+Material MyMaterial : Common/MatDefs/Light/PBRLighting.j3md {
+    MaterialParameters {
+        EmissivePower : 3.0
+        UseSpecularAA : true
+        BackfaceShadows : false
+        Roughness : 1.0
+        EmissiveIntensity : 1.0
+        Glossiness : 1.0
+        BaseColor : 1.0 1.0 1.0 1.0
+        ParallaxHeight : 0.05
+        Metallic : 1.0
+        AoPackedInMRMap : true
+        NormalType : 1.0
+        Emissive : 0.0 0.0 0.0 1.0
+        NormalMap : Texture2D[name=image2.png, image=Image[size=1024x1024, format=BGR8, id=3]]:returned null key
+        BaseColorMap : Texture2D[name=image0.jpeg, image=Image[size=1024x1024, format=BGR8, id=7]]:returned null key
+        MetallicRoughnessMap : Texture2D[name=image1.png, image=Image[size=1024x1024, format=Luminance8, id=8]]:returned null key
+        Specular : 1.0 1.0 1.0 1.0
+    }
+    AdditionalRenderState {
+        FaceCull Off
+        DepthWrite On
+        ColorWrite On
+        PolyOffset 0.0 0.0
+        DepthTest On
+        Blend Off
+        Wireframe Off
+    }
+}
