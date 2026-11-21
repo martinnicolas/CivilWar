@@ -28,6 +28,7 @@ import com.jme3.math.Vector3f;
 import com.jme3.post.FilterPostProcessor;
 import com.jme3.post.filters.BloomFilter;
 import com.jme3.post.filters.LightScatteringFilter;
+import com.jme3.post.ssao.SSAOFilter;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
@@ -61,7 +62,7 @@ public class Level1 extends Level implements PhysicsCollisionListener, SpawnSett
     //Scene path for Level 1
     private static final String SCENE_PATH = "Scenes/Level1.j3o";
     //Player initial location for Level 1.
-    private static final Vector3f PLAYER_INITIAL_LOCATION = new Vector3f(300, 10, 325);
+    private static final Vector3f PLAYER_INITIAL_LOCATION = new Vector3f(194, 3, 222);
     //Player exit location for Level1
     private static final Vector3f PLAYER_EXIT_LOCATION = new Vector3f(-93, 3, -395);
     //Player exit location properties
@@ -278,8 +279,11 @@ public class Level1 extends Level implements PhysicsCollisionListener, SpawnSett
         //Add bonus bloom
         BloomFilter bloom = new BloomFilter(BloomFilter.GlowMode.Objects);
         bloom.setBloomIntensity(2f);
+        //Add screen space ambient occlusion
+        SSAOFilter ssaoFilter = new SSAOFilter(12.94f, 43.92f, 0.33f, 0.61f);
         //Add Filter Post Processor
         fpp.addFilter(sunlight);
+        fpp.addFilter(ssaoFilter);
         fpp.addFilter(bloom);
         this.getApp().getViewPort().addProcessor(fpp);
     }  

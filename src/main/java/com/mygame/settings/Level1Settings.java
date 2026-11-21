@@ -51,19 +51,19 @@ public final class Level1Settings {
     );
     
     private static final List<Vector3f> AMMO_BONUS_SPAWN_POSITIONS = List.of(
-        new Vector3f(-28, 10, 26),
-        new Vector3f(40, 10, 80),
+        new Vector3f(24, 3, -70),
+        new Vector3f(-45, 3, -154),
         new Vector3f(-12, 40, -88)
     );
     
     private static final List<Vector3f> HEALTH_BONUS_SPAWN_POSITIONS = List.of(
-        new Vector3f(-28, 10, 45),
-        new Vector3f(40, 10, 88),
+        new Vector3f(27, 3, -67),
+        new Vector3f(-57, 3, -165),
         new Vector3f(-13, 40, -88)
     );
     
     private static final List<Vector3f> WATER_COLLECTIBLE_SPAWN_POSITIONS = List.of(
-        new Vector3f(-28, 10, 48),
+        new Vector3f(-43, 3, -149),
         new Vector3f(-54, 3, -59),
         new Vector3f(-14, 40, -88),
         new Vector3f(23, 17, -112),
@@ -71,7 +71,7 @@ public final class Level1Settings {
     );    
     
     private static final List<Vector3f> HEALTH_COLLECTIBLE_SPAWN_POSITIONS = List.of(
-        new Vector3f(-28, 10, 47),
+        new Vector3f(-49, 3, -144),
         new Vector3f(-53, 3, -59),
         new Vector3f(-16, 40, -88),
         new Vector3f(9, 17, -112),
@@ -79,7 +79,7 @@ public final class Level1Settings {
     );
 
     private static final List<Vector3f> FUEL_COLLECTIBLE_SPAWN_POSITIONS = List.of(
-        new Vector3f(-29, 10, 47),
+        new Vector3f(-56, 3, -143),
         new Vector3f(-52, 3, -59),
         new Vector3f(-17, 40, -88),
         new Vector3f(13, 17, -112),
