@@ -1,16 +1,22 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
 package com.mygame.controls;
 
 import com.jme3.renderer.RenderManager;
 import com.jme3.renderer.ViewPort;
-import com.jme3.scene.Spatial;
 import com.jme3.scene.control.AbstractControl;
-import com.jme3.scene.control.Control;
 import com.mygame.effects.ExplosionSequence;
 import com.mygame.levels.Level;
 import java.util.List;
 import com.jme3.math.Vector3f;
 
-/** Starts and updates the level's explosion sequence when its timer expires. */
+/**
+ *
+ * @author martin
+ */
 public class ExplosionSequenceControl extends AbstractControl {
 
     private final Level level;
@@ -40,10 +46,5 @@ public class ExplosionSequenceControl extends AbstractControl {
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-    }
-
-    @Override
-    public Control cloneForSpatial(Spatial spatial) {
-        return new ExplosionSequenceControl(level, explosionPositions);
     }
 }
