@@ -16,7 +16,7 @@ import de.lessvoid.nifty.screen.Screen;
  *
  * @author martin
  */
-public class PlayerDamageControl extends AbstractControl{
+public class PlayerDamageControl extends AbstractControl {
     
     private static final float DEFAULT_TIME_TO_SHOW_DAMAGE = 0.20f;
     private static final long DAMAGE_COOLDOWN_MS = 1000L;
@@ -25,7 +25,7 @@ public class PlayerDamageControl extends AbstractControl{
     private float damageFlashTimer = 0f;
     private long lastDamageTime = 0L;
     
-    public PlayerDamageControl(SimpleApplication app, Player player){
+    public PlayerDamageControl(SimpleApplication app, Player player) {
         this.app = app;
         this.player = player;
         
