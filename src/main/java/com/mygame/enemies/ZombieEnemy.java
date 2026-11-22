@@ -24,6 +24,7 @@ public class ZombieEnemy extends Enemy {
     public static final String MODEL_PATH = "Models/Zombie/zombie3.j3o";
     public static final String SPATIAL_NAME = "enemy";
     public static final float DEFAULT_ENERGY = 20;
+    public static final float MAX_ENERGY = 100;
     public static final float DEFAULT_DAMAGE = 10;
     private static final float COLLISION_RADIUS = 1.0f;
     private static final float COLLISION_HEIGHT = 5.0f;

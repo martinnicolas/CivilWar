@@ -27,8 +27,8 @@ import com.mygame.collectibles.HealthCollectible;
 import com.mygame.collectibles.WaterCollectible;
 import com.mygame.controls.BonusControl;
 import com.mygame.controls.EnemyControl;
-import com.mygame.controls.PlayerControl;
-import com.mygame.controls.PlayerHUDControl;
+import com.mygame.controls.PlayerCharacterControl;
+import com.mygame.controls.PlayerDamageControl;
 import com.mygame.levels.Level;
 import com.mygame.weapons.AK47Weapon;
 import com.mygame.weapons.Weapon;
@@ -45,9 +45,7 @@ public class Player implements ActionListener {
     private Node playerNode;
     private AudioNode pickedAmmoAudio, pickedHealthAudio, jumpAudio, screamAudio, walkAudio, shootAudio, emptyWeaponAudio;
     private boolean left = false, right = false, up = false, down = false;
-    private long lastDamageTime = 0L;
     public static final String SPATIAL_NAME = "player";
-    private static final long DAMAGE_COOLDOWN_MS = 1000L;
     //Player capsule dimensions
     private static final float RADIUS = 1.5f;
     private static final float HEIGTH = 3.0f;
@@ -82,7 +80,8 @@ public class Player implements ActionListener {
         CapsuleCollisionShape capsuleShape = new CapsuleCollisionShape(Player.RADIUS, Player.HEIGTH, Player.AXIS);
         this.setPlayerNode(new Node(Player.SPATIAL_NAME));
         this.getPlayerNode().addControl(new GhostControl(capsuleShape));
-        this.getPlayerNode().addControl(new PlayerControl(capsuleShape));
+        this.getPlayerNode().addControl(new PlayerCharacterControl(capsuleShape));
+        this.getPlayerNode().addControl(new PlayerDamageControl(this.getApp(), this));
         // We re-use the flyby camera for rotation, while positioning is handled by physics
         this.getApp().getFlyByCamera().setEnabled(true);
         this.getApp().getFlyByCamera().setMoveSpeed(50);
@@ -271,19 +270,16 @@ public class Player implements ActionListener {
     
     /**
      * Load player damage
+     * 
      * @param enemySpatial
      */
     public void loadDamage(Spatial enemySpatial) {
-        long now = System.currentTimeMillis();
-        
-        if (now - this.getLastDamageTime() <= Player.DAMAGE_COOLDOWN_MS) { return; }
-
-        if (this.getControl().haveEnoughHealth()) {
+        if (this.getControl().haveEnoughHealth() && this.getPlayerNode().getControl(PlayerDamageControl.class).canReceiveDamage()) {
             EnemyControl enemyControl = enemySpatial.getControl(EnemyControl.class);
-            this.setLastDamageTime(now);
+            this.getPlayerNode().getControl(PlayerDamageControl.class).setLastDamageTime(System.currentTimeMillis());
             this.getControl().discountHealth(enemyControl.getDamage());
             this.getScreamAudio().playInstance();
-            this.getPlayerNode().getControl(PlayerHUDControl.class).showDamageFlash();
+            this.getPlayerNode().getControl(PlayerDamageControl.class).showDamageFlash();
         }
     }  
 
@@ -319,8 +315,8 @@ public class Player implements ActionListener {
         this.playerNode = playerNode;
     }
 
-    public PlayerControl getControl() {
-        return this.getPlayerNode().getControl(PlayerControl.class);
+    public PlayerCharacterControl getControl() {
+        return this.getPlayerNode().getControl(PlayerCharacterControl.class);
     }
 
     public Vector3f getWalkDirection() {
@@ -361,14 +357,6 @@ public class Player implements ActionListener {
 
     public void setDown(boolean down) {
         this.down = down;
-    }
-
-    public long getLastDamageTime() {
-        return lastDamageTime;
-    }
-
-    public void setLastDamageTime(long lastDamageTime) {
-        this.lastDamageTime = lastDamageTime;
     }
     
     public AudioNode getScreamAudio() {

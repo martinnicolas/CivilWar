@@ -17,7 +17,6 @@ import de.lessvoid.nifty.tools.Color;
 import com.mygame.characters.Player;
 import com.mygame.screens.HUDScreen;
 import com.mygame.screens.NiftyScreenHelper;
-import de.lessvoid.nifty.elements.Element;
 
 /**
  *
@@ -35,7 +34,6 @@ public class PlayerHUDControl extends AbstractControl {
     private SimpleApplication app;
     private Player player;
     private Nifty nifty;
-    private float damageFlashTimer = 0f;
     
     public PlayerHUDControl(SimpleApplication app, Player player) {
         this.app = app;
@@ -46,13 +44,10 @@ public class PlayerHUDControl extends AbstractControl {
     @Override
     protected void controlUpdate(float tpf) {
         this.updateHUD();
-        this.updateTimer(tpf);
-        this.updateDamageFlash(tpf);
     }
 
     @Override
     protected void controlRender(RenderManager rm, ViewPort vp) {
-        
     }
     
     /**
@@ -80,8 +75,13 @@ public class PlayerHUDControl extends AbstractControl {
 
         this.updateBonusInidicators(hudScreen);
         this.updateCollectiblesIndicators(hudScreen);
+        this.updateTimer(hudScreen);
     }
     
+    /**
+     * Update HUD Bonus indicators
+     * @param hudScreen 
+     */
     private void updateBonusInidicators(Screen hudScreen) {
         Label ammoText = (Label) hudScreen.findNiftyControl("ammo_text", Label.class);
         Label ammoCounter = (Label) hudScreen.findNiftyControl("ammo_counter", Label.class);
@@ -108,11 +108,23 @@ public class PlayerHUDControl extends AbstractControl {
         healthCounter.setText(Integer.toString(Math.round(this.getPlayer().getControl().getHealth())));
     }
     
+    /**
+     * Set text color to empty font color when ammo is not enough
+     * 
+     * @param ammoText
+     * @param ammoCounter 
+     */
     private void setNotEnoughTextColor(Label ammoText, Label ammoCounter) {
         ammoText.setColor(new Color(PlayerHUDControl.EMPTY_FONT_COLOR));
         ammoCounter.setColor(new Color(PlayerHUDControl.EMPTY_FONT_COLOR));
     }
     
+    /**
+     * Set texto color to default font color when ammo is enough
+     * 
+     * @param ammoText
+     * @param ammoCounter 
+     */
     private void setEnoughTextColor(Label ammoText, Label ammoCounter) {
         Color ammoTextColor = ammoText.getColor();
 
@@ -122,6 +134,11 @@ public class PlayerHUDControl extends AbstractControl {
         ammoCounter.setColor(new Color(PlayerHUDControl.DEFAULT_FONT_COLOR));
     }
     
+    /**
+     * Update HUD Collectibles indicators
+     * 
+     * @param hudScreen 
+     */
     private void updateCollectiblesIndicators(Screen hudScreen) {
         Label fuelCollectibleAmount = (Label) hudScreen.findNiftyControl("fuel_text", Label.class);
         Label waterCollectibleAmount = (Label) hudScreen.findNiftyControl("water_text", Label.class);
@@ -145,12 +162,13 @@ public class PlayerHUDControl extends AbstractControl {
         healthCollectibleAmount.setText(currentHealthCollectibleStatus);
     }
     
-    private void updateTimer(float tpf) {
-        Screen screen = this.getNifty().getScreen("hud_screen");
-        
-        if (screen == null) { return; }
-        
-        Label timerText = (Label) screen.findNiftyControl("timer_text", Label.class);
+    /**
+     * Update HUD timer
+     * 
+     * @param hudScreen 
+     */
+    private void updateTimer(Screen hudScreen) {
+        Label timerText = (Label) hudScreen.findNiftyControl("timer_text", Label.class);
         
         if (timerText == null) { return; }
         
@@ -161,28 +179,6 @@ public class PlayerHUDControl extends AbstractControl {
         timerText.setText(timer);
     }
     
-    private void updateDamageFlash(float tpf) {
-        Screen screen = this.getNifty().getScreen("hud_screen");
-
-        if (screen == null) { return; }
-
-        Element damageFlash = screen.findElementById("damage_flash");
-
-        if (damageFlash == null) { return; }
-
-        if (this.damageFlashTimer > 0f) {
-            damageFlash.show();
-            this.damageFlashTimer -= tpf;
-        }
-        else {
-            damageFlash.hide();
-        }
-    }
-    
-    public void showDamageFlash() {
-        this.damageFlashTimer = 0.20f;
-    }
-
     public SimpleApplication getApp() {
         return app;
     }

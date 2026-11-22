@@ -45,7 +45,7 @@ import com.mygame.collectibles.FuelCollectible;
 import com.mygame.collectibles.HealthCollectible;
 import com.mygame.controls.EnemyControl;
 import com.mygame.collectibles.WaterCollectible;
-import com.mygame.effects.ExplosionSequence;
+import com.mygame.controls.ExplosionSequenceControl;
 import com.mygame.settings.Level1Settings;
 import com.mygame.utils.Spawnable;
 import com.mygame.utils.SpawnFactory;
@@ -83,8 +83,6 @@ public class Level1 extends Level implements PhysicsCollisionListener, SpawnSett
     private DirectionalLight directionalLight;
     private BulletAppState bulletAppState;
     private final Map<Spatial, ZombieEnemy> enemiesBySpatial = new HashMap<>();
-    //Explosion sequence
-    private ExplosionSequence explosionSequence;
     
     public Level1() {
         this.setMaxTimeToFinish(Level1Settings.getMaxTimeToFinishTheLevel());
@@ -93,6 +91,7 @@ public class Level1 extends Level implements PhysicsCollisionListener, SpawnSett
     @Override
     public void initialize(AppStateManager stateManager, Application app) {
         super.initialize(stateManager, app);
+        this.getLevelNode().addControl(new ExplosionSequenceControl(this, Level1Settings.getExplosionPositions()));
         this.setLoadingSteps(Level1.LOADING_STEPS);
     }
     
@@ -121,7 +120,7 @@ public class Level1 extends Level implements PhysicsCollisionListener, SpawnSett
         this.setLoadingStep(this.getLoadingStep() + 1);
         return this.getLoadingStep() >= this.getLoadingSteps();
     }
-    
+
     /**
      * Load player.
      */
@@ -159,15 +158,6 @@ public class Level1 extends Level implements PhysicsCollisionListener, SpawnSett
         
         if (this.getPlayer().getControl().enoughRemainingTime()) {
             this.getPlayer().getControl().decrementRemainingTime(tpf);
-        }
-        
-        if (!this.getPlayer().getControl().enoughRemainingTime() && explosionSequence == null) {
-            explosionSequence = new ExplosionSequence(this, Level1Settings.getExplosionPositions());
-        }
-        
-        if (explosionSequence != null) { 
-            explosionSequence.update(tpf);
-            if (explosionSequence.isFinished()) { this.gameOver(); }
         }
     }
 
@@ -381,10 +371,10 @@ public class Level1 extends Level implements PhysicsCollisionListener, SpawnSett
         Torus torus = new Torus(64, 32, 0.12f, 4f);
         Geometry ring = new Geometry("ExitRing", torus);
 
-        // Acostarlo sobre el suelo
+        // lay it on the floor
         ring.rotate(FastMath.HALF_PI, 0f, 0f);
 
-        // Apenas elevado para evitar z-fighting
+        // Barely elevated to avoid z-fighting
         ring.setLocalTranslation(PLAYER_EXIT_LOCATION.x, 0, PLAYER_EXIT_LOCATION.z);
 
         Material material = new Material(this.getApp().getAssetManager(), "Common/MatDefs/Light/Lighting.j3md");

@@ -15,6 +15,7 @@ import com.mygame.enemies.ZombieEnemy;
 import com.mygame.levels.Level;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /**
  * Spawn factory to spawn spawnable objects on the game (Enemy, Bonus and Collectibles)
@@ -80,7 +81,7 @@ public final class SpawnFactory {
      */
     private static <T extends Spawnable> T create(Class<T> spawnClass, Level level, Vector3f position) {
         if (spawnClass.equals(ZombieEnemy.class)) {
-            ZombieEnemy zombieEnemy = new ZombieEnemy(level.getApp().getAssetManager(), ZombieEnemy.DEFAULT_ENERGY, ZombieEnemy.DEFAULT_DAMAGE, position);
+            ZombieEnemy zombieEnemy = new ZombieEnemy(level.getApp().getAssetManager(), getRandomInRange(ZombieEnemy.DEFAULT_ENERGY, ZombieEnemy.MAX_ENERGY), ZombieEnemy.DEFAULT_DAMAGE, position);
             return spawnClass.cast(zombieEnemy);
         }
         if (spawnClass.equals(AmmoBonus.class)) {
@@ -99,5 +100,18 @@ public final class SpawnFactory {
             return spawnClass.cast(new FuelCollectible(level.getApp().getAssetManager(), position));
         }
         throw new IllegalArgumentException("Unsupported spawn class: " + spawnClass.getName());
+    }
+    
+    /**
+     * Gets a random float on given range
+     * 
+     * @param minValue
+     * @param maxValue
+     * @return 
+     */
+    private static float getRandomInRange(float minValue, float maxValue) {
+        Random random = new Random();
+        float randomInRange = minValue + random.nextFloat() * (maxValue - minValue);
+        return randomInRange;
     }
 }

@@ -12,7 +12,7 @@ import com.jme3.bullet.control.CharacterControl;
  *
  * @author martin
  */
-public class PlayerControl extends CharacterControl {
+public class PlayerCharacterControl extends CharacterControl {
     
     //Player settings for the game    
     private static final int MAX_AMMOS = 100;
@@ -29,7 +29,7 @@ public class PlayerControl extends CharacterControl {
     private static final float FALL_SPEED = 30;
     private static final float GRAVITY = 30;
     
-    public PlayerControl(CapsuleCollisionShape capsuleShape) {
+    public PlayerCharacterControl(CapsuleCollisionShape capsuleShape) {
         // The CharacterControl offers extra settings for
         // size, stepheight, jumping, falling, and gravity.
         super(capsuleShape, STEP_HEIGHT);

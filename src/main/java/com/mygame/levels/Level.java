@@ -31,7 +31,7 @@ import com.mygame.bonuses.AmmoBonus;
 import com.mygame.bonuses.HealthBonus;
 import com.mygame.characters.Player;
 import com.mygame.controls.BonusControl;
-import com.mygame.controls.PlayerControl;
+import com.mygame.controls.PlayerCharacterControl;
 import com.mygame.controls.PlayerHUDControl;
 import com.mygame.screens.GameOverScreen;
 import com.mygame.screens.LevelFinishScreen;
@@ -342,7 +342,7 @@ public abstract class Level extends AbstractAppState {
                 playerHUDControl.getNifty().exit();
                 this.getPlayer().getPlayerNode().removeControl(PlayerHUDControl.class);
             }
-            this.getPlayer().getPlayerNode().removeControl(PlayerControl.class);
+            this.getPlayer().getPlayerNode().removeControl(PlayerCharacterControl.class);
             this.getApp().getInputManager().removeListener(this.getPlayer());
         }
         if (bulletAppState != null) {
