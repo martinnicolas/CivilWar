@@ -15,7 +15,7 @@ import java.util.List;
  */
 public final class Level1Settings {
 
-    private static final float MAX_TIME_TO_FINISH_THE_LEVEL = 100f; //300f (4 minutes)
+    private static final float MAX_TIME_TO_FINISH_THE_LEVEL = 300f; //300f (4 minutes)
     
     private static final List<Vector3f> ZOMBIE_SPAWN_POSITIONS = List.of(
         new Vector3f(-110, 3, -311),
